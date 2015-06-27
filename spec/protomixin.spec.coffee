@@ -49,27 +49,32 @@ describe 'mixit.protomixin', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a post-mixin hook with the prototype context', ->
-      inclusion = _.extend(
+      mixin = _.extend(
         mixins.default(),
 
+        schema: ['special_key']
+
         # ...
-        # mixin methods that act on @num_foos
+        # mixin methods that act on @special_key
         # ..
 
-        post_protomixin: (schema) ->
-          for key in schema
+        post_protomixin: ->
+          for key in @schema
             unless @[key]?
               throw new TypeError("Wanted schema key #{key}")
       )
 
-      expect(->
-        class Foo
-          @mixinto_proto inclusion, ['num_foos']
-      ).toThrow new TypeError('Wanted schema key num_foos')
+      spyOn(mixin, 'post_protomixin').and.callThrough()
 
       expect(->
         class Foo
-          num_foos: 1
+          @mixinto_proto mixin, ['arg1', 'arg2']
+      ).toThrow new TypeError('Wanted schema key special_key')
 
-          @mixinto_proto inclusion, ['num_foos']
-      ).not.toThrow()
+
+      class Foo
+        special_key: 1
+
+        @mixinto_proto mixin, ['arg1', 'arg2']
+
+      expect(mixin.post_protomixin).toHaveBeenCalledWith(['arg1', 'arg2'])
