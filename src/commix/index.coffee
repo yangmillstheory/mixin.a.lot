@@ -31,7 +31,7 @@ allowInclude = ->
     @
 
 
-exports = commix: {
+module.exports = commix: {
   allowExtend
   allowInclude
 }
