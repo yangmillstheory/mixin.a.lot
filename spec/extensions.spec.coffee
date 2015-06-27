@@ -1,7 +1,7 @@
 describe 'mixit.extensions', ->
 
   mixit = require '../src/mixit'
-  {beforeOnce, _, default_mixin} = require './helpers'
+  {beforeOnce, _, mixins} = require './helpers'
 
   it 'should support extensions', ->
     expect(_.isFunction mixit.extensions).toBe true
@@ -13,7 +13,7 @@ describe 'mixit.extensions', ->
 
     it 'should allow class-level mixing', ->
       class Foo
-        @extend default_mixin()
+        @extend mixins.default()
 
       expect(Foo.foo).toBe 'bar'
       expect(Foo.bar).toBe 1
@@ -41,7 +41,7 @@ describe 'mixit.extensions', ->
 
     it 'should invoke a postextend hook with the class context', ->
       extension = _.extend(
-        default_mixin(),
+        mixins.default(),
         postextend: (key, value) ->
           @["__#{key}__"] = value
       )

@@ -1,7 +1,7 @@
 describe 'mixit.inclusions', =>
 
   mixit = require '../src/mixit'
-  {beforeOnce, _, default_mixin} = require './helpers'
+  {beforeOnce, _, mixins} = require './helpers'
 
   it 'should support inclusions', =>
     expect(_.isFunction mixit.inclusions).toBe true
@@ -13,7 +13,7 @@ describe 'mixit.inclusions', =>
 
     it 'should allow instance-level mixing', =>
       class Foo
-        @include default_mixin()
+        @include mixins.default()
 
       expect(Foo::foo).toBe 'bar'
       expect(Foo::bar).toBe 1
@@ -41,7 +41,7 @@ describe 'mixit.inclusions', =>
 
     it 'should invoke a postinclude hook with the prototype context', ->
       inclusion = _.extend(
-        default_mixin(),
+        mixins.default(),
         postinclude: (key, value) ->
           @["__#{key}__"] = value
       )
