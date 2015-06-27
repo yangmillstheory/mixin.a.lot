@@ -49,20 +49,8 @@ describe 'mixit.classmixin', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a post-mixin hook with the class context', ->
-      mixin = _.extend(
-        mixins.default(),
-
-        schema: ['special_key']
-
-        # ...
-        # mixin methods that act on @special_key
-        # ..
-
-        post_classmixin: ->
-          for key in @schema
-            unless @[key]?
-              throw new TypeError("Wanted schema key #{key}")
-      )
+      mixin = mixins.schematized()
+      mixin.post_classmixin = mixin.postmixin_hook
 
       spyOn(mixin, 'post_classmixin').and.callThrough()
 

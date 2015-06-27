@@ -49,20 +49,8 @@ describe 'mixit.protomixin', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a post-mixin hook with the prototype context', ->
-      mixin = _.extend(
-        mixins.default(),
-
-        schema: ['special_key']
-
-        # ...
-        # mixin methods that act on @special_key
-        # ..
-
-        post_protomixin: ->
-          for key in @schema
-            unless @[key]?
-              throw new TypeError("Wanted schema key #{key}")
-      )
+      mixin = mixins.schematized()
+      mixin.post_protomixin = mixin.postmixin_hook
 
       spyOn(mixin, 'post_protomixin').and.callThrough()
 
