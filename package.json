@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "coffee-script": "^1.9.2",
+    "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-coffee": "^2.3.1"
   }
