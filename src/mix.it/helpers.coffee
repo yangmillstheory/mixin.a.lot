@@ -12,5 +12,7 @@ HELPERS =
     else if typeof mixin != 'object'
       throw new TypeError("Expected object, got something else")
 
+  ArgumentError: class ArgumentError extends Error
+
 
 module.exports = HELPERS
