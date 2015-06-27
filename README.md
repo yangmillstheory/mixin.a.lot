@@ -15,7 +15,14 @@ Usage examples, edge cases.
     
 ## Development ##
 
-Build, tests, style.
+    $ cd mix.it
 
+To compile CoffeeScripts:
 
-
+    $ ./node_modules/.bin/gulp coffee
+    
+To run tests:
+    
+    $ ./node_modules/.bin/coffee jasmine.coffee
+    
+Pull requests are welcome; pull requests with tests are even more welcome.
