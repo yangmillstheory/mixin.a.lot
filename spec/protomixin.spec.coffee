@@ -1,4 +1,4 @@
-describe 'mixit.inclusions', ->
+describe 'mixit.protomixin', ->
 
   mixit = require '../src/mixit'
   {beforeOnce, _, mixins} = require './helpers'
@@ -6,7 +6,7 @@ describe 'mixit.inclusions', ->
   it 'should support inclusions', ->
     expect(_.isFunction mixit.enable_protomixin).toBe true
 
-  describe 'proto mixing', ->
+  describe 'protomixin', ->
 
     beforeOnce ->
       mixit.enable_protomixin()
