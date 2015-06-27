@@ -1,7 +1,7 @@
 describe 'mixit.classmixin', ->
 
   mixit = require '../src/mixit'
-  {beforeOnce, _, mixins} = require './helpers'
+  {beforeOnce, _, MIXINS} = require './helpers'
 
   it 'should allow classmixins', ->
     expect(_.isFunction mixit.enable_classmixin).toBe true
@@ -13,7 +13,7 @@ describe 'mixit.classmixin', ->
 
     it 'should mix into the class', ->
       class Foo
-        @mixinto_class mixins.default()
+        @mixinto_class MIXINS.default()
 
       expect(Foo.foo).toBe 'bar'
       expect(Foo.bar).toBe 1
@@ -49,7 +49,7 @@ describe 'mixit.classmixin', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a post-mixin hook with the class context', ->
-      mixin = mixins.schematized()
+      mixin = MIXINS.schematized()
       mixin.post_classmixin = mixin.postmixin_hook
 
       spyOn(mixin, 'post_classmixin').and.callThrough()

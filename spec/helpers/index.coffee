@@ -5,7 +5,7 @@ beforeOnce = (fn) ->
   beforeEach _.once(fn)
 
 
-mixins =
+MIXINS =
   default: ->
     foo: 'bar'
     bar: 1
@@ -26,4 +26,4 @@ mixins =
           throw new TypeError("Wanted schema key #{key}")
 
 
-module.exports = {beforeOnce, _, mixins}
+module.exports = {beforeOnce, _, MIXINS}

@@ -1,7 +1,7 @@
 describe 'mixit.protomixin', ->
 
   mixit = require '../src/mixit'
-  {beforeOnce, _, mixins} = require './helpers'
+  {beforeOnce, _, MIXINS} = require './helpers'
 
   it 'should allow protomixins', ->
     expect(_.isFunction mixit.enable_protomixin).toBe true
@@ -13,7 +13,7 @@ describe 'mixit.protomixin', ->
 
     it 'should mix into the prototype', ->
       class Foo
-        @mixinto_proto mixins.default()
+        @mixinto_proto MIXINS.default()
 
       expect(Foo::foo).toBe 'bar'
       expect(Foo::bar).toBe 1
@@ -49,7 +49,7 @@ describe 'mixit.protomixin', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a post-mixin hook with the prototype context', ->
-      mixin = mixins.schematized()
+      mixin = MIXINS.schematized()
       mixin.post_protomixin = mixin.postmixin_hook
 
       spyOn(mixin, 'post_protomixin').and.callThrough()
