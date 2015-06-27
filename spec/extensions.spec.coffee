@@ -40,13 +40,27 @@ describe 'mixit.extensions', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a postextend hook with the class context', ->
-      extension = _.extend(
+      inclusion = _.extend(
         mixins.default(),
-        postextend: (key, value) ->
-          @["__#{key}__"] = value
+
+        # ...
+        # mixin methods that act on @num_foos
+        # ..
+
+        postextend: (schema) ->
+          for key in schema
+            unless @[key]?
+              throw new TypeError("Wanted schema key #{key}")
       )
 
-      class Foo
-        @extend extension, 'secret', 100
+      expect(->
+        class Foo
+          @extend inclusion, ['num_foos']
+      ).toThrow new TypeError('Wanted schema key num_foos')
 
-      expect(Foo.__secret__).toBe 100
+      expect(->
+        class Foo
+          @num_foos: 1
+
+          @extend inclusion, ['num_foos']
+      ).not.toThrow()

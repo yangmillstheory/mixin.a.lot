@@ -42,11 +42,25 @@ describe 'mixit.inclusions', =>
     it 'should invoke a postinclude hook with the prototype context', ->
       inclusion = _.extend(
         mixins.default(),
-        postinclude: (key, value) ->
-          @["__#{key}__"] = value
+
+        # ...
+        # mixin methods that act on @num_foos
+        # ..
+
+        postinclude: (schema) ->
+          for key in schema
+            unless @[key]?
+              throw new TypeError("Wanted schema key #{key}")
       )
 
-      class Foo
-        @include inclusion, 'secret', 100
+      expect(->
+        class Foo
+          @include inclusion, ['num_foos']
+      ).toThrow new TypeError('Wanted schema key num_foos')
 
-      expect(Foo::__secret__).toBe 100
+      expect(->
+        class Foo
+          num_foos: 1
+
+          @include inclusion, ['num_foos']
+      ).not.toThrow()
