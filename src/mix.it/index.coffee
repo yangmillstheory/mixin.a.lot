@@ -33,4 +33,30 @@ enable_protomixin = ->
     @
 
 
-module.exports = {enable_classmixin, enable_protomixin}
+enable_blendmixin = ->
+  f_proto = Function::
+
+  ensure_can_blend = ->
+    unless _.has(f_proto, 'mixinto_class')
+      throw new TypeError 'class mixins disabled; call mixit.enable_classmixin()'
+    unless _.has(f_proto, 'mixinto_proto')
+      throw new TypeError 'proto mixins disabled; call mixit.enable_protomixin()'
+    f_proto.__can_blend = true
+
+  ensure_blendmixin = (mixin_conf) ->
+    unless _.has(mixin_conf, 'classmixin')
+      throw new HELPERS.ArgumentError("Expected mixin_conf to have .classmixin")
+    unless _.has(mixin_conf, 'protomixin')
+      throw new HELPERS.ArgumentError("Expected mixin_conf to have .protomixin")
+
+  f_proto.mixin_blended = (mixin_conf) ->
+    if !f_proto.__can_blend
+      ensure_can_blend()
+
+    ensure_blendmixin(mixin_conf)
+
+    @mixinto_proto(mixin_conf.protomixin)
+    @mixinto_class(mixin_conf.classmixin)
+
+
+module.exports = {enable_classmixin, enable_protomixin, enable_blendmixin}
