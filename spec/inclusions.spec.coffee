@@ -23,6 +23,15 @@ describe 'mixit.inclusions', =>
       expect(Foo.bar).toBeUndefined()
       expect(Foo.baz).toBeUndefined()
 
+    it 'should be order-dependent', ->
+      class Foo
+        @include foo: 'bar', baz: 'qux'
+        @include foo: 'baz', qux: 'baz'
+
+      expect(Foo::foo).toBe 'baz'
+      expect(Foo::baz).toBe 'qux'
+      expect(Foo::qux).toBe 'baz'
+
     it 'should throw an error when including bogus mixins', ->
       expect(->
         class Foo

@@ -23,6 +23,15 @@ describe 'mixit.extensions', ->
       expect(Foo::bar).toBeUndefined()
       expect(Foo::baz).toBeUndefined()
 
+    it 'should be order-dependent', ->
+      class Foo
+        @extend foo: 'bar', baz: 'qux'
+        @extend foo: 'baz', qux: 'baz'
+
+      expect(Foo.foo).toBe 'baz'
+      expect(Foo.baz).toBe 'qux'
+      expect(Foo.qux).toBe 'baz'
+
     it 'should throw an error when extending bogus mixins', ->
       expect(->
         class Foo
