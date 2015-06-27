@@ -3,7 +3,7 @@ describe 'mixit.protomixin', ->
   mixit = require '../src/mixit'
   {beforeOnce, _, mixins} = require './helpers'
 
-  it 'should support inclusions', ->
+  it 'should allow protomixins', ->
     expect(_.isFunction mixit.enable_protomixin).toBe true
 
   describe 'protomixin', ->

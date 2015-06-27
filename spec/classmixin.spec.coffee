@@ -3,7 +3,7 @@ describe 'mixit.classmixin', ->
   mixit = require '../src/mixit'
   {beforeOnce, _, mixins} = require './helpers'
 
-  it 'should support classmixins', ->
+  it 'should allow classmixins', ->
     expect(_.isFunction mixit.enable_classmixin).toBe true
 
   describe 'classmixin', ->
