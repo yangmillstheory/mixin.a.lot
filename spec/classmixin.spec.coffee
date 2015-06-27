@@ -1,19 +1,19 @@
-describe 'mixit.extensions', ->
+describe 'mixit.classmixins', ->
 
   mixit = require '../src/mixit'
   {beforeOnce, _, mixins} = require './helpers'
 
-  it 'should support extensions', ->
-    expect(_.isFunction mixit.extensions).toBe true
+  it 'should support classmixins', ->
+    expect(_.isFunction mixit.enable_classmixin).toBe true
 
-  describe 'extending', ->
+  describe 'class mixins', ->
 
     beforeOnce ->
-      mixit.extensions()
+      mixit.enable_classmixin()
 
-    it 'should allow class-level mixing', ->
+    it 'should mix into the class', ->
       class Foo
-        @extend mixins.default()
+        @mixinto_class mixins.default()
 
       expect(Foo.foo).toBe 'bar'
       expect(Foo.bar).toBe 1
@@ -25,30 +25,30 @@ describe 'mixit.extensions', ->
 
     it 'should be order-dependent', ->
       class Foo
-        @extend foo: 'bar', baz: 'qux'
-        @extend foo: 'baz', qux: 'baz'
+        @mixinto_class foo: 'bar', baz: 'qux'
+        @mixinto_class foo: 'baz', qux: 'baz'
 
       expect(Foo.foo).toBe 'baz'
       expect(Foo.baz).toBe 'qux'
       expect(Foo.qux).toBe 'baz'
 
-    it 'should throw an error when extending bogus mixins', ->
+    it 'should throw an error when mixing bogus mixins', ->
       expect(->
         class Foo
-          @extend 'String'
+          @mixinto_class 'String'
       ).toThrow new TypeError('Expected object, got something else')
 
       expect(->
         class Foo
-          @extend []
+          @mixinto_class []
       ).toThrow new TypeError('Expected object, got Array')
 
       expect(->
         class Foo
-          @extend undefined
+          @mixinto_class undefined
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
-    it 'should invoke a postextend hook with the class context', ->
+    it 'should invoke a post-mixin hook with the class context', ->
       inclusion = _.extend(
         mixins.default(),
 
@@ -56,7 +56,7 @@ describe 'mixit.extensions', ->
         # mixin methods that act on @num_foos
         # ..
 
-        postextend: (schema) ->
+        post_classmixin: (schema) ->
           for key in schema
             unless @[key]?
               throw new TypeError("Wanted schema key #{key}")
@@ -64,12 +64,12 @@ describe 'mixit.extensions', ->
 
       expect(->
         class Foo
-          @extend inclusion, ['num_foos']
+          @mixinto_class inclusion, ['num_foos']
       ).toThrow new TypeError('Wanted schema key num_foos')
 
       expect(->
         class Foo
           @num_foos: 1
 
-          @extend inclusion, ['num_foos']
+          @mixinto_class inclusion, ['num_foos']
       ).not.toThrow()

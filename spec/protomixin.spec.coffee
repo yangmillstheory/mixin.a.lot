@@ -1,19 +1,19 @@
-describe 'mixit.inclusions', =>
+describe 'mixit.inclusions', ->
 
   mixit = require '../src/mixit'
   {beforeOnce, _, mixins} = require './helpers'
 
-  it 'should support inclusions', =>
-    expect(_.isFunction mixit.inclusions).toBe true
+  it 'should support inclusions', ->
+    expect(_.isFunction mixit.enable_protomixin).toBe true
 
-  describe 'including', ->
+  describe 'proto mixing', ->
 
     beforeOnce ->
-      mixit.inclusions()
+      mixit.enable_protomixin()
 
-    it 'should allow instance-level mixing', =>
+    it 'should mix into the prototype', ->
       class Foo
-        @include mixins.default()
+        @mixinto_proto mixins.default()
 
       expect(Foo::foo).toBe 'bar'
       expect(Foo::bar).toBe 1
@@ -25,30 +25,30 @@ describe 'mixit.inclusions', =>
 
     it 'should be order-dependent', ->
       class Foo
-        @include foo: 'bar', baz: 'qux'
-        @include foo: 'baz', qux: 'baz'
+        @mixinto_proto foo: 'bar', baz: 'qux'
+        @mixinto_proto foo: 'baz', qux: 'baz'
 
       expect(Foo::foo).toBe 'baz'
       expect(Foo::baz).toBe 'qux'
       expect(Foo::qux).toBe 'baz'
 
-    it 'should throw an error when including bogus mixins', ->
+    it 'should throw an error when mixing bogus mixins', ->
       expect(->
         class Foo
-          @include 'String'
+          @mixinto_proto 'String'
       ).toThrow new TypeError('Expected object, got something else')
 
       expect(->
         class Foo
-          @include []
+          @mixinto_proto []
       ).toThrow new TypeError('Expected object, got Array')
 
       expect(->
         class Foo
-          @include undefined
+          @mixinto_proto undefined
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
-    it 'should invoke a postinclude hook with the prototype context', ->
+    it 'should invoke a post-mixin hook with the prototype context', ->
       inclusion = _.extend(
         mixins.default(),
 
@@ -56,7 +56,7 @@ describe 'mixit.inclusions', =>
         # mixin methods that act on @num_foos
         # ..
 
-        postinclude: (schema) ->
+        post_protomixin: (schema) ->
           for key in schema
             unless @[key]?
               throw new TypeError("Wanted schema key #{key}")
@@ -64,12 +64,12 @@ describe 'mixit.inclusions', =>
 
       expect(->
         class Foo
-          @include inclusion, ['num_foos']
+          @mixinto_proto inclusion, ['num_foos']
       ).toThrow new TypeError('Wanted schema key num_foos')
 
       expect(->
         class Foo
           num_foos: 1
 
-          @include inclusion, ['num_foos']
+          @mixinto_proto inclusion, ['num_foos']
       ).not.toThrow()
