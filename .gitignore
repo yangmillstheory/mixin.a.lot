@@ -1,4 +1,9 @@
-node_modules
 .idea
+
+node_modules
 dist
+
 *.log
+
+spec/**/*.js
+

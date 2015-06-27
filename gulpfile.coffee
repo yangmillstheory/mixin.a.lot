@@ -4,18 +4,18 @@ coffee = require 'gulp-coffee'
 del = require 'del'
 
 SRC = 'src'
-DEST = 'dist'
+DIST = 'dist'
 SPEC = 'spec'
 
 
 gulp.task 'clean', (postDelete) ->
-  del(DEST, force: true, postDelete?())
+  del([DIST, "#{SPEC}/**/*.spec.js"], force: true, postDelete?())
 
 gulp.task 'coffee:src', ->
   gulp
     .src("#{SRC}/**/*.coffee")
     .pipe(coffee(bare: true))
-    .pipe(gulp.dest(DEST))
+    .pipe(gulp.dest(DIST))
 
 gulp.task 'coffee:spec', ->
   gulp
