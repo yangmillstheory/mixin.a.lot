@@ -1,7 +1,8 @@
 "use strict"
 
 
-HELPERS = require('./helpers')
+HELPERS = require './helpers'
+_ = require 'underscore'
 
 
 postmixin_hooks = [
