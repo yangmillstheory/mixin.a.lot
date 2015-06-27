@@ -2,8 +2,9 @@
 
 CoffeeScript/JavaScript mix-in utilities. Patches `Function.prototype` with methods:
 
-* `mixinto_proto`
-* `mixinto_class`
+* `mixinto_proto(mixin)`
+* `mixinto_class(mixin)`
+* `mixin_blended(blendmixin)`
 
 ## Getting Started ##
 
