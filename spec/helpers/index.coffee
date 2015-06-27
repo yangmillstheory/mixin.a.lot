@@ -2,7 +2,7 @@ _ = require 'underscore'
 
 
 beforeOnce = (fn) ->
-  _.once(beforeEach fn)
+  beforeEach _.once(fn)
 
 
 mixins =
