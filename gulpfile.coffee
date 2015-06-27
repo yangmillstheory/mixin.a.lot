@@ -19,7 +19,7 @@ gulp.task 'coffee:src', ->
 
 gulp.task 'coffee:spec', ->
   gulp
-    .src("#{SPEC}/**/*.spec.coffee")
+    .src("#{SPEC}/**/*.coffee")
     .pipe(coffee(bare: true))
     .pipe(gulp.dest(SPEC))
 
