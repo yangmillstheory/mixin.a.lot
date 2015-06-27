@@ -6,6 +6,7 @@ beforeOnce = (fn) ->
 
 
 MIXINS =
+
   default: ->
     foo: 'bar'
     bar: 1
