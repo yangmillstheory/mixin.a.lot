@@ -1,6 +1,6 @@
-describe 'mixit.classmixin', ->
+describe 'mix.it.classmixin', ->
 
-  mixit = require '../src/mixit'
+  mixit = require '../src/mix.it'
   {beforeOnce, _, MIXINS} = require './helpers'
 
   it 'should allow classmixins', ->

@@ -1,6 +1,6 @@
-describe 'mixit.protomixin', ->
+describe 'mix.it.protomixin', ->
 
-  mixit = require '../src/mixit'
+  mixit = require '../src/mix.it'
   {beforeOnce, _, MIXINS} = require './helpers'
 
   it 'should allow protomixins', ->
