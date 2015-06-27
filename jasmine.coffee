@@ -14,9 +14,9 @@ j.loadConfig
 
 j.onComplete (passed) ->
   if passed
-    console.log 'No sweat.'
+    console.info  '\nNo sweat!'
   else
-    console.log 'Trouble and strife.'
+    console.error '\nTrouble and strife!'
 
 j.addReporter new SpecReporter
 j.execute()

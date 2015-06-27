@@ -38,4 +38,4 @@ inclusions = ->
     @
 
 
-module.exports = commix: {extensions, inclusions}
+module.exports = {extensions, inclusions}
