@@ -40,3 +40,13 @@ describe 'mixit.extensions', ->
       ).toThrow new TypeError('Expected object, got null-equivalent')
 
     it 'should invoke a postextend hook with the class context', ->
+      extension = _.extend(
+        default_mixin(),
+        postextend: (key, value) ->
+          @["__#{key}__"] = value
+      )
+
+      class Foo
+        @extend extension, 'secret', 100
+
+      expect(Foo.__secret__).toBe 100

@@ -38,3 +38,15 @@ describe 'mixit.inclusions', =>
         class Foo
           @include undefined
       ).toThrow new TypeError('Expected object, got null-equivalent')
+
+    it 'should invoke a postinclude hook with the prototype context', ->
+      inclusion = _.extend(
+        default_mixin(),
+        postinclude: (key, value) ->
+          @["__#{key}__"] = value
+      )
+
+      class Foo
+        @include inclusion, 'secret', 100
+
+      expect(Foo::__secret__).toBe 100
