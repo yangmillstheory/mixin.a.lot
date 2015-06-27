@@ -4,7 +4,7 @@ CoffeeScript/JavaScript mix-in utilities. Patches `Function.prototype` with meth
 
 * `mixinto_proto(mixin)`
 * `mixinto_class(mixin)`
-* `mixin_blended(blendmixin)`
+* `mixin_blended(classmixin: classmixin, protomixin: protomixin)`
 
 ## Getting Started ##
 
