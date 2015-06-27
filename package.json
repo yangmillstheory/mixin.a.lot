@@ -18,7 +18,6 @@
     "url": "https://github.com/yangmillstheory/commix/issues"
   },
   "devDependencies": {
-    "bower": "^1.4.1",
     "coffee-script": "^1.9.2",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-coffee": "^2.3.1"
