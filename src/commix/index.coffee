@@ -1,25 +1,13 @@
 "use strict"
 
 
+HELPERS = require('./helpers')
+
+
 module_kw = [
   'postextend'
   'postinclude'
 ]
-
-
-HELPERS =
-  rest_of: ->
-    if arguments.length > 1
-       return Array::slice.call arguments, 1
-    return []
-
-  validate_mixin: (mixin) ->
-    if Array.isArray(mixin)
-      throw new TypeError("Expected object, got Array")
-    else if !mixin?
-      throw new TypeError("Expected object, got null-equivalent")
-    else if typeof mixin != 'object'
-      throw new TypeError("Expected object, got something else")
 
 
 ###
@@ -37,7 +25,7 @@ extensions = ->
 
 
 ###
-  Allow instance-level mixins; i.e., mix into the prototype.
+  Allow instance-level mixins; i.e., mix into a Function.prototype.
 ###
 inclusions = ->
   Function::include = (mixin) ->
