@@ -13,13 +13,16 @@ gulp.task 'clean', (postDelete) ->
 
 gulp.task 'coffee:src', ->
   gulp
-    .src("#{SRC}/**/*.coffee")
+    .src([
+      "#{SRC}/**/*.coffee"
+      !"#{SRC}/**/*.spec.coffee"
+    ])
     .pipe(coffee(bare: true))
     .pipe(gulp.dest(DIST))
 
 gulp.task 'coffee:spec', ->
   gulp
-    .src("#{SPEC}/**/*.coffee")
+    .src("#{SRC}/**/*.spec.coffee")
     .pipe(coffee(bare: true))
     .pipe(gulp.dest(SPEC))
 

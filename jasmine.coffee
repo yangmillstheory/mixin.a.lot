@@ -12,11 +12,5 @@ j.loadConfig
   ]
 
 
-j.onComplete (passed) ->
-  if passed
-    console.info  '\nAll good.'
-  else
-    console.error '\nTrouble and strife.'
-
 j.addReporter new SpecReporter
 j.execute()
