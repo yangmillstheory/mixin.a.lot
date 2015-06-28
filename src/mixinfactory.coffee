@@ -1,6 +1,7 @@
 UTIL = require './util'
 _ = require 'underscore'
 
+
 class Mixin
 
   constructor: (@name) ->
@@ -26,4 +27,4 @@ class Mixin
     mixin
 
 
-module.exports = Mixin.make_mixin
+module.exports = Mixin
