@@ -1,4 +1,5 @@
 UTIL = require './util'
+_ = require 'underscore'
 
 class Mixin
 
@@ -8,8 +9,8 @@ class Mixin
     "Mixin(#{@name})"
 
   @make_mixin: (obj) ->
-    unless _.isObject obj && !_.isEmpty(obj)
-      throw new UTIL.ArgumentError "Expected non-empty mixin object"
+    unless _.isObject obj && !_.isArray(obj) && !_.isEmpty(obj)
+      throw new TypeError "Expected non-empty mixin object"
     unless _.isString obj.name && obj.name
       throw new UTIL.ArgumentError "Expected String name in options argument"
 
