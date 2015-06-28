@@ -38,3 +38,4 @@ Pull requests are welcome; pull requests with tests are even more welcome.
 * mixins should be immutable
 * don't mess with existing class hierarchies (see [1](https://github.com/dentafrice/coffeescript-mixins/issues/1), [2](https://github.com/dentafrice/coffeescript-mixins/issues/2))
 * [ensure bindings are always correct](https://github.com/dentafrice/coffeescript-mixins/issues/3)
+* concatenate sources
