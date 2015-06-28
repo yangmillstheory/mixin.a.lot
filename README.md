@@ -34,6 +34,7 @@ Pull requests are welcome; pull requests with tests are even more welcome.
 * pre/post hooks for mixin methods
 * option to omit certain methods entirely (more useful when mixin in classes, and not object literals)
 * blended mixins
-* mixin classes
+* mixin classes (or should they just be object literals)
+* mixins should be immutable
 * don't mess with existing class hierarchies (see [1](https://github.com/dentafrice/coffeescript-mixins/issues/1), [2](https://github.com/dentafrice/coffeescript-mixins/issues/2))
 * [ensure bindings are always correct](https://github.com/dentafrice/coffeescript-mixins/issues/3)
