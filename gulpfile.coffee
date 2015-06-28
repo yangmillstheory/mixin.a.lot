@@ -17,6 +17,7 @@ SPEC_SRC = [
 gulp.task 'clean', (postDelete) ->
   del([DIST, SPEC], force: true, postDelete?())
 
+
 gulp.task 'coffee:src', ->
   # TODO: concatenate
   gulp
@@ -25,6 +26,7 @@ gulp.task 'coffee:src', ->
     ].concat ("!#{glob}" for glob in SPEC_SRC))
     .pipe(coffee(bare: true))
     .pipe(gulp.dest(DIST))
+
 
 gulp.task 'coffee:spec', ->
   gulp
