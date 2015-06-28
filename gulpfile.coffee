@@ -1,6 +1,7 @@
 gulp = require 'gulp'
 
 coffee = require 'gulp-coffee'
+symlink = require 'gulp-symlink'
 del = require 'del'
 
 SRC = 'src'
@@ -8,7 +9,7 @@ DIST = 'dist'
 SPEC = 'spec'
 
 SPEC_SRC = [
-  "#{SRC}/util/spec/**/*.coffee"
+  "#{SRC}/util/spec.coffee"
   "#{SRC}/**/*.spec.coffee"
 ]
 
@@ -30,6 +31,14 @@ gulp.task 'coffee:spec', ->
     .src(SPEC_SRC, base: SRC)
     .pipe(coffee(bare: true))
     .pipe(gulp.dest(SPEC))
+
+
+gulp.task 'symlink', ->
+  gulp
+    .src("#{DIST}/**/*.js")
+    .pipe(symlink (file) ->
+      "#{file.path.replace "#{DIST}", SPEC}"
+    )
 
 gulp.task 'coffee', gulp.parallel('coffee:src', 'coffee:spec')
 gulp.task 'build', gulp.series('clean', 'coffee')

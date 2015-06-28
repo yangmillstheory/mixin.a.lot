@@ -7,10 +7,6 @@ j.loadConfig
   spec_files: [
     "**/*.spec.js"
   ]
-  helpers: [
-    "helpers/**/*.js"
-  ]
-
 
 j.addReporter new SpecReporter
 j.execute()
