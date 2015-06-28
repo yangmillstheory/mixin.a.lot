@@ -1,10 +1,10 @@
 fdescribe 'mixinfactory', ->
 
   make_mixin = require './mixinfactory'
-  util = require './util'
+  UTIL = require './util'
 
   it 'should reject bad mixin types', ->
-    invalid_mixins = [
+    invalid_mixin_args = [
       []
       'string'
       1
@@ -12,10 +12,12 @@ fdescribe 'mixinfactory', ->
       undefined
     ]
 
-    for invalid_mixin in invalid_mixins
+    for invalid_mixin_arg in invalid_mixin_args
       expect(->
-        make_mixin invalid_mixin
-      ).toThrow(new TypeError "Expected non-empty mixin object")
-
+        make_mixin invalid_mixin_arg
+      ).toThrow new TypeError "Expected non-empty mixin object"
 
   it 'should reject objects with no name property', ->
+    expect(->
+      make_mixin quack: -> console.log 'Quack!'
+    ).toThrow new UTIL.ArgumentError "Expected String name in options argument"
