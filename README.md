@@ -2,9 +2,9 @@
 
 CoffeeScript/JavaScript mix-in utilities. Patches `Function.prototype` with methods:
 
-* `mixinto_proto(mixin)`
-* `mixinto_class(mixin)`
-* `mixin_blended(classmixin: classmixin, protomixin: protomixin)`
+* `mixinto_proto(mixin, options)`
+* `mixinto_class(mixin, options)`
+* `mixin_blended(blend, options)`
 
 ## Getting Started ##
 
@@ -27,3 +27,11 @@ To run tests:
     $ ./node_modules/.bin/coffee jasmine.coffee
     
 Pull requests are welcome; pull requests with tests are even more welcome.
+
+
+### TODO ###
+
+* mixin options; hooks for mixin methods
+* blended mixins
+* define and test MRO
+* mixin classes? 
