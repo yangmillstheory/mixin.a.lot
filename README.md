@@ -1,6 +1,6 @@
 # mix.it
 
-CoffeeScript/JavaScript mix-in utilities. Patches `Function.prototype` with methods:
+CoffeeScript/JavaScript mix-in.
 
 * `mixinto_proto(mixin, options)`
 * `mixinto_class(mixin, options)`
@@ -31,7 +31,11 @@ Pull requests are welcome; pull requests with tests are even more welcome.
 
 ### TODO ###
 
-* mixin options; hooks for mixin methods
+####Customization#### 
+* pre/post hooks for mixin methods
+* option to omit certain methods entirely (more useful when mixin in classes, and not object literals)
+
 * blended mixins
-* define and test MRO
-* mixin classes? 
+* mixin classes
+* don't mess with existing class hierarchies (see [1](https://github.com/dentafrice/coffeescript-mixins/issues/1), [2](https://github.com/dentafrice/coffeescript-mixins/issues/2))
+* [ensure bindings are always correct](https://github.com/dentafrice/coffeescript-mixins/issues/3)
