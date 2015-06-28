@@ -40,7 +40,7 @@ gulp.task 'symlink', ->
       "#{file.path.replace "#{DIST}", SPEC}"
     )
 
-gulp.task 'coffee', gulp.parallel('coffee:src', 'coffee:spec')
-gulp.task 'build', gulp.series('clean', 'coffee')
+gulp.task 'coffee', gulp.series('coffee:src', 'coffee:spec')
+gulp.task 'build', gulp.series('clean', 'coffee', 'symlink')
 
 gulp.task 'unittest', ->
