@@ -9,6 +9,8 @@ class Mixin
     The philosophy, more or less, is like:
 
       - https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
+
+    The instance property .mixin_keys contains the properties to mix in.
   ###
 
   @MutabilityError: class MutabilityError extends Error
