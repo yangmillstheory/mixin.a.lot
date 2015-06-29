@@ -5,12 +5,5 @@ UTIL =
       return Array::slice.call arguments, 1
     return []
 
-  ArgumentError: class ArgumentError extends Error
-
-  postmixin_hooks: [
-    'post_classmixin'
-    'post_protomixin'
-  ]
-
 
 module.exports = UTIL
