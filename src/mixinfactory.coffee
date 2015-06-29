@@ -27,7 +27,10 @@ class Mixin
       throw new @ArgumentError "Expected String name in options argument"
 
     mixin = new Mixin(obj.name)
-    mkeys = _.without(Object.keys(obj).sort(), 'name')
+    mkeys = Object.keys(_.omit(obj, 'name')).sort()
+
+    if _.isEmpty(mkeys)
+      throw new @ArgumentError "Found nothing to mix in!"
 
     for key, value of _.extend(obj, mixin_keys: mkeys)
       do (key, value) =>

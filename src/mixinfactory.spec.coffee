@@ -25,6 +25,11 @@ fdescribe 'mixinfactory', ->
         Mixin.from_obj quack: -> console.log 'Quack!'
       ).toThrow new Mixin.ArgumentError "Expected String name in options argument"
 
+    it 'should reject objects with only a name property', ->
+      expect(->
+        Mixin.from_obj name: 'Example Mixin'
+      ).toThrow new Mixin.ArgumentError "Found nothing to mix in!"
+
     it 'should validate a proposed Mixin', ->
       for invalid_mixin in @invalid_mixin_types
         expect(->
