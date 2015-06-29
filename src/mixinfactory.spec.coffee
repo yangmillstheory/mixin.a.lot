@@ -42,19 +42,24 @@ fdescribe 'mixinfactory', ->
         shout: ->
           @speak().toUpperCase()
         whisper: ->
-          "...#{@speak().toLowerCase()}...!"
+          "...#{@speak().toLowerCase().replace('!', '')}...!"
 
-    it 'should have a sorted mixin_keys property', ->
+    it 'should have a sorted mixin_keys and the mixin attributes', ->
       expect(@mixin.mixin_keys).toEqual ['name', 'shout', 'speak', 'whisper']
+
+      expect(@mixin.name).toBe('Speaker')
+      expect(@mixin.speak()).toBe('Hello, my name is Speaker!')
+      expect(@mixin.shout()).toBe('HELLO, MY NAME IS SPEAKER!')
+      expect(@mixin.whisper()).toBe('...hello, my name is speaker...!')
+
+    it 'should have enumerate properties in toString()', ->
+      expect(@mixin.toString()).toEqual 'Mixin(Speaker: shout, speak, whisper)'
 
     it 'should be immutable with loud failures on change attempts', ->
       for key in @mixin.mixin_keys
         expect(=>
           @mixin[key] = null
         ).toThrow new Mixin.MutabilityError "Cannot change #{key} on #{@mixin}"
-
-    it 'should have a meaningful toString()', ->
-      expect(@mixin.toString()).toEqual 'Mixin(Speaker, shout, speak, whisper)'
 
     it 'should have a frozen prototype with silent failures on change attempts', ->
       old_keys = Object.keys Mixin::

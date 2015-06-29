@@ -18,9 +18,7 @@ class Mixin
 
   toString: ->
     string_keys = _.without(@mixin_keys, 'name')
-    string_keys.splice(0, 0, @name)
-
-    "Mixin(#{string_keys.join(', ')})"
+    "Mixin(#{@name}: #{string_keys.join(', ')})"
 
   @make_mixin: (obj) ->
     unless _.isObject(obj) && !_.isArray(obj)
