@@ -1,4 +1,4 @@
-describe 'mixinfactory', ->
+fdescribe 'mixinfactory', ->
 
   Mixin = require './mixinfactory'
 
@@ -36,13 +36,13 @@ describe 'mixinfactory', ->
 
     beforeEach ->
       @mixin = Mixin.make_mixin
+        name: 'Speaker'
         speak: ->
           "Hello, my name is #{@name}!"
         shout: ->
-          "HELLO, MY NAME IS #{@name}!"
+          @speak().toUpperCase()
         whisper: ->
-          "Shh, my name is #{@name}!"
-        name: 'Speaker'
+          "...#{@speak().toLowerCase()}...!"
 
     it 'should have a sorted mixin_keys property', ->
       expect(@mixin.mixin_keys).toEqual ['name', 'shout', 'speak', 'whisper']
@@ -51,7 +51,10 @@ describe 'mixinfactory', ->
       for key in @mixin.mixin_keys
         expect(=>
           @mixin[key] = null
-        ).toThrow new Mixin.MutabilityError "Cannot change #{key} on Mixin(Speaker)"
+        ).toThrow new Mixin.MutabilityError "Cannot change #{key} on #{@mixin}"
+
+    it 'should have a meaningful toString()', ->
+      expect(@mixin.toString()).toEqual 'Mixin(Speaker, shout, speak, whisper)'
 
     it 'should have a frozen prototype with silent failures on change attempts', ->
       old_keys = Object.keys Mixin::
