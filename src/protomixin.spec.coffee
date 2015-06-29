@@ -42,10 +42,10 @@ fdescribe 'mix.it.protomixin', ->
     This is also a good example of post-mixin hook usage;
     to validate that the caller satisfies a certain schema.
   ###
-  it 'should invoke a post-mixin hook with the prototype context', ->
+  it 'should invoke a pre-mixin hook with the prototype context', ->
     mixin = MIXINS.schematized_protomixin()
 
-    spyOn(mixin, 'post_protomixin').and.callThrough()
+    spyOn(mixin, 'premixin_hook').and.callThrough()
 
     expect(->
       class Example
@@ -57,8 +57,8 @@ fdescribe 'mix.it.protomixin', ->
 
       @mixinto_proto mixin, null, ['arg1', 'arg2']
 
-    expect(mixin.post_protomixin).toHaveBeenCalledWith(['arg1', 'arg2'])
-    expect(mixin.post_protomixin.calls.count()).toBe 2
+    expect(mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+    expect(mixin.premixin_hook.calls.count()).toBe 2
 
   describe 'protomixing options', ->
 
@@ -96,3 +96,9 @@ fdescribe 'mix.it.protomixin', ->
           class Example
             @mixinto_proto mixin, omit: ['bar', 'baz']
         ).toThrow new UTIL.ArgumentError "Found nothing to mix in!"
+
+    it 'should support pre-mixin hooks', ->
+      throw new Error 'Write me!'
+
+    it 'should support post-mixin hooks', ->
+      throw new Error 'Write me!'

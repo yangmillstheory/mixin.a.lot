@@ -20,8 +20,8 @@ MIXINS =
       name: 'Schematized Example Mixin'
       foo: 'bar'
 
-  # attach this to either post_protomixin or post_classmixin
-  _postmixin_hook: (schema = ['special_key']) ->
+  # attach this to either pre_protomixin or pre_classmixin
+  _premixin_hook: (schema = ['special_key']) ->
     schema = ['special_key']
 
     for key in schema
@@ -30,7 +30,7 @@ MIXINS =
 
   schematized_protomixin: ->
     mixin = @_schematized()
-    mixin.post_protomixin = @_postmixin_hook
+    mixin.premixin_hook = @_premixin_hook
     mixin
 
   default_protomixin: ->
