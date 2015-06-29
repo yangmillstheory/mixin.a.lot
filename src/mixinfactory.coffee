@@ -14,21 +14,6 @@ class Mixin
   @MutabilityError: class MutabilityError extends Error
   @ArgumentError: class ArgumentError extends Error
 
-  constructor: (@name) ->
-
-  toString: ->
-    string_keys = _.without(@mixin_keys, 'name')
-    "Mixin(#{@name}: #{string_keys.join(', ')})"
-
-  Object.defineProperty @, 'postmixin_hooks',
-    enumerable: true
-    configurable: false
-    writable: false
-    value: [
-      'post_protomixin'
-      'post_classmixin'
-    ]
-
   @validate_mixin: (mixin) ->
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
@@ -51,6 +36,12 @@ class Mixin
           set: =>
             throw new @MutabilityError "Cannot change #{key} on #{mixin}"
     mixin
+
+  constructor: (@name) ->
+
+  toString: ->
+    string_keys = _.without(@mixin_keys, 'name')
+    "Mixin(#{@name}: #{string_keys.join(', ')})"
 
 
 Object.freeze(Mixin)
