@@ -21,3 +21,16 @@ fdescribe 'mixinfactory', ->
     expect(->
       Mixin.make_mixin quack: -> console.log 'Quack!'
     ).toThrow new UTIL.ArgumentError "Expected String name in options argument"
+
+  it 'should return an immutable Mixin', ->
+    mixin = Mixin.make_mixin
+      speak: ->
+        'Hello, World!'
+      name: 'Speaker'
+
+    expect(mixin instanceof Mixin).toBe true
+
+    for key in ['speak', 'name']
+      expect(->
+        mixin[key] = null
+      ).toThrow new Error "Cannot change #{key} on Mixin(Speaker); Mixins are immutable"
