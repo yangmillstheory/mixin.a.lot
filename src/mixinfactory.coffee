@@ -21,8 +21,8 @@ class Mixin
     "Mixin(#{@name}: #{string_keys.join(', ')})"
 
   @postmixin_hooks = [
-    'post_mixinproto'
-    'post_mixinclass'
+    'post_protomixin'
+    'post_classmixin'
   ]
 
   @validate_mixin: (mixin) ->
