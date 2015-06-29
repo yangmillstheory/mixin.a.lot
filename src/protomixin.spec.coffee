@@ -2,6 +2,7 @@ fdescribe 'mix.it.protomixin', ->
 
   mixit = require './index'
   Mixin = require './mixinfactory'
+  UTIL = require './util'
   {beforeOnce, _, MIXINS} = require './util/spec'
 
   beforeOnce ->
@@ -59,13 +60,21 @@ fdescribe 'mix.it.protomixin', ->
     expect(mixin.post_protomixin).toHaveBeenCalledWith(['arg1', 'arg2'])
     expect(mixin.post_protomixin.calls.count()).toBe 2
 
-    it 'should omit mixin keys', ->
+  it 'should omit mixin keys', ->
       mixin = MIXINS.default_protomixin()
 
       class Example
-        @mixinto_proto mixin, omit: ['bar', 'baz']
+        @mixinto_proto mixin, omit: ['bar']
 
       e = new Example
 
       expect(e.bar).toBeUndefined()
-      expect(e.baz).toBeUndefined()
+      expect(e.baz).toBeDefined()
+
+  it 'should not omit all mixin keys', ->
+      mixin = MIXINS.default_protomixin()
+
+      expect(->
+        class Example
+          @mixinto_proto mixin, omit: ['bar', 'baz']
+      ).toThrow new UTIL.ArgumentError "Found nothing to mix in!"
