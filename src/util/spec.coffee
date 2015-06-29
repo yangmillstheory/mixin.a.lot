@@ -8,28 +8,32 @@ beforeOnce = (fn) ->
 
 MIXINS =
 
-  default: ->
+
+  _default: ->
     Mixin.from_obj
       name: 'Default Test Mixin'
-      foo: 'bar'
       bar: 1
       baz: ->
         [@foo]
 
-  schematized: ->
+  _schematized: ->
     Mixin.from_obj
       name: 'Schematized Test Mixin'
-      schema: ['special_key']
 
-      # ...
-      # mixin methods that act on @special_key
-      # ..
+  # attach this to either post_protomixin or post_classmixin
+  _postmixin_hook: (schema = ['special_key']) ->
+    schema = ['special_key']
 
-      # attach this to either post_protomixin or post_classmixin
-      postmixin_hook: ->
-        for key in @schema
-          unless @[key]?
-            throw new TypeError("Wanted schema key #{key}")
+    for key in schema
+      unless @[key]?
+        throw new TypeError("Wanted schema key #{key}")
 
+  schematized_protomixin: ->
+    mixin = @_schematized()
+    mixin.post_protomixin = @_postmixin_hook
+    mixin
+
+  default_protomixin: ->
+    @_default()
 
 module.exports = {beforeOnce, _, MIXINS}
