@@ -53,9 +53,8 @@ fdescribe 'mixinfactory', ->
           "...#{@speak().toLowerCase().replace('!', '')}...!"
 
     it 'should have a sorted mixin_keys and the mixin attributes', ->
-      expect(@mixin.mixin_keys).toEqual ['name', 'shout', 'speak', 'whisper']
+      expect(@mixin.mixin_keys).toEqual ['shout', 'speak', 'whisper']
 
-      expect(@mixin.name).toBe('Speaker')
       expect(@mixin.speak()).toBe('Hello, my name is Speaker!')
       expect(@mixin.shout()).toBe('HELLO, MY NAME IS SPEAKER!')
       expect(@mixin.whisper()).toBe('...hello, my name is speaker...!')
