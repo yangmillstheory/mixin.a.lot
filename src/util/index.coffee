@@ -1,8 +1,8 @@
 UTIL =
 
   rest_of: ->
-    if arguments.length > 1
-      return Array::slice.call arguments, 1
+    if arguments.length > 2
+      return Array::slice.call arguments, 2
     return []
 
   ArgumentError: class ArgumentError extends Error
