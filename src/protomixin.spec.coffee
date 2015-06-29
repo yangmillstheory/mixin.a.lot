@@ -1,7 +1,7 @@
 fdescribe 'mix.it.protomixin', ->
 
   mixit = require './index'
-  {beforeOnce, _} = require './util/spec'
+  {beforeOnce, _, MIXINS} = require './util/spec'
 
   it 'should allow protomixins', ->
     expect(_.isFunction mixit.enable_protomixin).toBe true
@@ -18,18 +18,18 @@ fdescribe 'mix.it.protomixin', ->
             @mixinto_proto non_Mixin
         ).toThrow new TypeError 'Expected a Mixin instance'
 
+    it 'should mix into the prototype', ->
+      class Foo
+        @mixinto_proto MIXINS.default()
 
-#    it 'should mix into the prototype', ->
-#      class Foo
-#        @mixinto_proto MIXINS.default()
-#
-#      expect(Foo::foo).toBe 'bar'
-#      expect(Foo::bar).toBe 1
-#      expect(Foo::baz()).toEqual ['bar']
-#
-#      expect(Foo.foo).toBeUndefined()
-#      expect(Foo.bar).toBeUndefined()
-#      expect(Foo.baz).toBeUndefined()
+        constructor: (@foo) ->
+
+      expect(Foo::foo).toBe 'bar'
+      expect(Foo::bar).toBe 1
+      expect(Foo::baz()).toEqual ['bar']
+
+      expect(new Foo('instance_foo').baz()).toEqual ['instance_foo']
+
 #
 #    it 'should be order-dependent', ->
 #      class Foo
