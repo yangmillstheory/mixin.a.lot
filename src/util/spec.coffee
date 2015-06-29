@@ -8,7 +8,6 @@ beforeOnce = (fn) ->
 
 MIXINS =
 
-
   _default: ->
     Mixin.from_obj
       name: 'Default Example Mixin'
