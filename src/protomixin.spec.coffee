@@ -60,37 +60,39 @@ fdescribe 'mix.it.protomixin', ->
     expect(mixin.post_protomixin).toHaveBeenCalledWith(['arg1', 'arg2'])
     expect(mixin.post_protomixin.calls.count()).toBe 2
 
-  it 'should omit mixin keys', ->
+  describe 'protomixing options', ->
+
+    it 'should omit mixin keys', ->
+        mixin = MIXINS.default_protomixin()
+
+        class Example
+          @mixinto_proto mixin, omit: ['bar']
+
+        e = new Example
+
+        expect(e.bar).toBeUndefined()
+        expect(e.baz).toBeDefined()
+
+    it 'should not mangle the hierarchy when omitting keys', ->
       mixin = MIXINS.default_protomixin()
 
-      class Example
+      class Super
+
+        bar: ->
+          'bar'
+
+      class Example extends Super
         @mixinto_proto mixin, omit: ['bar']
 
       e = new Example
 
-      expect(e.bar).toBeUndefined()
-      expect(e.baz).toBeDefined()
+      expect(e.bar).toBeDefined()
+      expect(e.bar()).toBe('bar')
 
-  it 'should not mangle the hierarchy when omitting keys', ->
-    mixin = MIXINS.default_protomixin()
+    it 'should not omit all mixin keys', ->
+        mixin = MIXINS.default_protomixin()
 
-    class Super
-
-      bar: ->
-        'bar'
-
-    class Example extends Super
-      @mixinto_proto mixin, omit: ['bar']
-
-    e = new Example
-
-    expect(e.bar).toBeDefined()
-    expect(e.bar()).toBe('bar')
-
-  it 'should not omit all mixin keys', ->
-      mixin = MIXINS.default_protomixin()
-
-      expect(->
-        class Example
-          @mixinto_proto mixin, omit: ['bar', 'baz']
-      ).toThrow new UTIL.ArgumentError "Found nothing to mix in!"
+        expect(->
+          class Example
+            @mixinto_proto mixin, omit: ['bar', 'baz']
+        ).toThrow new UTIL.ArgumentError "Found nothing to mix in!"
