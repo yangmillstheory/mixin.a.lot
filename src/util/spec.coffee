@@ -11,14 +11,15 @@ MIXINS =
 
   _default: ->
     Mixin.from_obj
-      name: 'Default Test Mixin'
+      name: 'Default Example Mixin'
       bar: 1
       baz: ->
         [@foo]
 
   _schematized: ->
     Mixin.from_obj
-      name: 'Schematized Test Mixin'
+      name: 'Schematized Example Mixin'
+      foo: 'bar'
 
   # attach this to either post_protomixin or post_classmixin
   _postmixin_hook: (schema = ['special_key']) ->
