@@ -20,9 +20,18 @@ class Mixin
     string_keys = _.without(@mixin_keys, 'name')
     "Mixin(#{@name}: #{string_keys.join(', ')})"
 
-  @make_mixin: (obj) ->
+  @postmixin_hooks = [
+    'post_mixinproto'
+    'post_mixinclass'
+  ]
+
+  @validate_mixin: (mixin) ->
+    unless mixin instanceof @
+      throw new TypeError "Expected a Mixin instance"
+
+  @from_obj: (obj) ->
     unless _.isObject(obj) && !_.isArray(obj)
-      throw new TypeError "Expected non-empty mixin object"
+      throw new TypeError "Expected non-empty object"
     unless _.isString(obj.name) && obj.name
       throw new @ArgumentError "Expected String name in options argument"
 
