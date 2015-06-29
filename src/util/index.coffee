@@ -8,6 +8,10 @@ UTIL =
       return Array::slice.call arguments, 2
     return []
 
+  maybe_call_mixin_hook: (mixin_hook, ctx, mixin_hook_args) ->
+    if _.isFunction mixin_hook
+      mixin_hook.call(ctx::, mixin_hook_args...)
+
   ArgumentError: class ArgumentError extends Error
 
   validate_mixin_opts: (mixin, options) ->
