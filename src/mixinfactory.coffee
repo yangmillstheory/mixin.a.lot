@@ -16,8 +16,9 @@ class Mixin
       throw new UTIL.ArgumentError "Expected String name in options argument"
 
     mixin = new Mixin(obj.name)
+    mkeys = Object.keys(obj).sort()
 
-    for key, value of obj
+    for key, value of _.extend(obj, mixin_keys: mkeys)
       do (key, value) ->
         Object.defineProperty mixin, key,
           enumerable: true

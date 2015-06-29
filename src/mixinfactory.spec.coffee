@@ -29,8 +29,9 @@ fdescribe 'mixinfactory', ->
       name: 'Speaker'
 
     expect(mixin instanceof Mixin).toBe true
+    expect(mixin.mixin_keys).toEqual ['name', 'speak']
 
-    for key in ['speak', 'name']
+    for key in mixin.mixin_keys
       expect(->
         mixin[key] = null
       ).toThrow new Error "Cannot change #{key} on Mixin(Speaker); Mixins are immutable"
