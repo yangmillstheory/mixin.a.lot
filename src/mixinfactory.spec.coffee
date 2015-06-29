@@ -1,4 +1,4 @@
-fdescribe 'mixinfactory', ->
+fdescribe 'mix.it.mixinfactory', ->
 
   Mixin = require './mixinfactory'
 
