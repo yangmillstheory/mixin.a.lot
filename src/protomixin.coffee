@@ -4,7 +4,7 @@ _ = require 'underscore'
 
 
 enable_protomixin = ->
-  maybe_call_mixin_hook = (mixin_hook, ctx, mixin_hook_args...) ->
+  maybe_call_mixin_hook = (mixin_hook, ctx, mixin_hook_args) ->
     if _.isFunction mixin_hook
       mixin_hook.call(ctx::, mixin_hook_args...)
 
@@ -15,7 +15,7 @@ enable_protomixin = ->
     {premixin_hook, postmixin_hook} = mixin
     mixin_hook_args = UTIL.rest_of.apply @, arguments
 
-    maybe_call_mixin_hook(premixin_hook, @, mixin_hook_args...)
+    maybe_call_mixin_hook(premixin_hook, @, mixin_hook_args)
 
     to_omit = (options.omit?.length && options.omit) || []
     to_mixin = _.object ([k, v] for k, v of mixin when k not in to_omit)
@@ -26,7 +26,7 @@ enable_protomixin = ->
 
     for key, value of to_mixin
       @::[key] = value
-    maybe_call_mixin_hook(postmixin_hook, @, mixin_hook_args...)
+    maybe_call_mixin_hook(postmixin_hook, @, mixin_hook_args)
 
 
 module.exports = enable_protomixin
