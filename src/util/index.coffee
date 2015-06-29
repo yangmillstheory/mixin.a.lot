@@ -3,15 +3,6 @@ _ = require 'underscore'
 
 UTIL =
 
-  rest_of: ->
-    if arguments.length > 2
-      return Array::slice.call arguments, 2
-    return []
-
-  maybe_invoke: (mixin_hook, ctx, mixin_hook_args) ->
-    if _.isFunction mixin_hook
-      mixin_hook.call(ctx::, mixin_hook_args...)
-
   ArgumentError: class ArgumentError extends Error
 
   validate_mixin_opts: (mixin, options) ->
