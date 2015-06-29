@@ -71,6 +71,22 @@ fdescribe 'mix.it.protomixin', ->
       expect(e.bar).toBeUndefined()
       expect(e.baz).toBeDefined()
 
+  it 'should not mangle the hierarchy when omitting keys', ->
+    mixin = MIXINS.default_protomixin()
+
+    class Super
+
+      bar: ->
+        'bar'
+
+    class Example extends Super
+      @mixinto_proto mixin, omit: ['bar']
+
+    e = new Example
+
+    expect(e.bar).toBeDefined()
+    expect(e.bar()).toBe('bar')
+
   it 'should not omit all mixin keys', ->
       mixin = MIXINS.default_protomixin()
 
