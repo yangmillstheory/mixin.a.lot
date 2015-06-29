@@ -1,6 +1,7 @@
 fdescribe 'mix.it.protomixin', ->
 
   mixit = require './index'
+  Mixin = require './mixinfactory'
   {beforeOnce, _, MIXINS} = require './util/spec'
 
   it 'should allow protomixins', ->
@@ -30,15 +31,17 @@ fdescribe 'mix.it.protomixin', ->
 
       expect(new Foo('instance_foo').baz()).toEqual ['instance_foo']
 
-#
-#    it 'should be order-dependent', ->
-#      class Foo
-#        @mixinto_proto foo: 'bar', baz: 'qux'
-#        @mixinto_proto foo: 'baz', qux: 'baz'
-#
-#      expect(Foo::foo).toBe 'baz'
-#      expect(Foo::baz).toBe 'qux'
-#      expect(Foo::qux).toBe 'baz'
+    it 'should be order-dependent', ->
+      mixin_1 = Mixin.from_obj name: 'mixin_1', foo: 'bar1', baz: 'qux'
+      mixin_2 = Mixin.from_obj name: 'mixin_2', foo: 'bar2', qux: 'baz'
+
+      class Foo
+        @mixinto_proto mixin_1
+        @mixinto_proto mixin_2
+
+      expect(Foo::foo).toBe 'bar2'
+      expect(Foo::baz).toBe 'qux'
+      expect(Foo::qux).toBe 'baz'
 #
 #    it 'should throw an error when mixing bogus mixins', ->
 #      expect(->
