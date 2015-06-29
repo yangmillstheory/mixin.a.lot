@@ -5,8 +5,8 @@ fdescribe 'mixinfactory', ->
 
   describe 'factory', ->
 
-    it 'should reject bad mixin types', ->
-      invalid_mixin_args = [
+    beforeEach ->
+      @invalid_mixin_types = [
         []
         'string'
         1
@@ -14,28 +14,36 @@ fdescribe 'mixinfactory', ->
         undefined
       ]
 
-      for invalid_mixin_arg in invalid_mixin_args
+    it 'should reject bad mixin types', ->
+      for invalid_mixin in @invalid_mixin_types
         expect(->
-          Mixin.make_mixin invalid_mixin_arg
-        ).toThrow new TypeError "Expected non-empty mixin object"
+          Mixin.from_obj invalid_mixin
+        ).toThrow new TypeError "Expected non-empty object"
 
     it 'should reject objects with no name property', ->
       expect(->
-        Mixin.make_mixin quack: -> console.log 'Quack!'
+        Mixin.from_obj quack: -> console.log 'Quack!'
       ).toThrow new Mixin.ArgumentError "Expected String name in options argument"
 
+    it 'should validate a proposed Mixin', ->
+      for invalid_mixin in @invalid_mixin_types
+        expect(->
+          Mixin.validate_mixin(invalid_mixin)
+        ).toThrow new TypeError "Expected a Mixin instance"
+
     it 'should return a Mixin', ->
-      mixin = Mixin.make_mixin
+      mixin = Mixin.from_obj
         speak: ->
           'Hello, World!'
         name: 'Speaker'
 
       expect(mixin instanceof Mixin).toBe true
 
+
   describe 'Mixin', ->
 
     beforeEach ->
-      @mixin = Mixin.make_mixin
+      @mixin = Mixin.from_obj
         name: 'Speaker'
         speak: ->
           "Hello, my name is #{@name}!"
