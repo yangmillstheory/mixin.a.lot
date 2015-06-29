@@ -11,7 +11,7 @@ enable_protomixin = ->
     {premixin_hook, postmixin_hook} = mixin
     mixin_hook_args = UTIL.rest_of.apply @, arguments
 
-    UTIL.maybe_call_mixin_hook(premixin_hook, @, mixin_hook_args)
+    UTIL.maybe_invoke(premixin_hook, @, mixin_hook_args)
 
     to_omit = (options.omit?.length && options.omit) || []
     to_mixin = _.object ([k, v] for k, v of mixin when k not in to_omit)
@@ -22,7 +22,7 @@ enable_protomixin = ->
 
     for key, value of to_mixin
       @::[key] = value
-    UTIL.maybe_call_mixin_hook(postmixin_hook, @, mixin_hook_args)
+    UTIL.maybe_invoke(postmixin_hook, @, mixin_hook_args)
 
 
 module.exports = enable_protomixin
