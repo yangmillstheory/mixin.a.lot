@@ -20,10 +20,14 @@ class Mixin
     string_keys = _.without(@mixin_keys, 'name')
     "Mixin(#{@name}: #{string_keys.join(', ')})"
 
-  @postmixin_hooks = [
-    'post_protomixin'
-    'post_classmixin'
-  ]
+  Object.defineProperty @, 'postmixin_hooks',
+    enumerable: true
+    configurable: false
+    writable: false
+    value: [
+      'post_protomixin'
+      'post_classmixin'
+    ]
 
   @validate_mixin: (mixin) ->
     unless mixin instanceof @
