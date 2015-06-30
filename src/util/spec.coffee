@@ -14,14 +14,15 @@ MIXINS =
       bar: 1
       baz: ->
         [@foo]
+      postmixin_hook: ->
+
 
   _schematized: ->
     Mixin.from_obj
       name: 'Schematized Example Mixin'
       foo: 'bar'
 
-  # attach this to either pre_protomixin or pre_classmixin
-  _premixin_hook: (schema) ->
+  _schemacheck_hook: (schema) ->
     schema = ['special_key']
 
     for key in schema
@@ -30,7 +31,7 @@ MIXINS =
 
   schematized_protomixin: (schema = ['special_key']) ->
     mixin = @_schematized(schema)
-    mixin.premixin_hook = @_premixin_hook
+    mixin.premixin_hook = @_schemacheck_hook
     mixin
 
   default_protomixin: ->
