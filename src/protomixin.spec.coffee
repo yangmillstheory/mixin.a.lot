@@ -143,7 +143,7 @@ fdescribe 'mix.it.protomixin', ->
 
     it 'should omit mixin keys', ->
         class Example
-        Example.mixinto_proto @mixin, omit: ['bar']
+        Example.mixinto_proto @mixin, omits: ['bar']
 
         e = new Example
 
@@ -153,7 +153,7 @@ fdescribe 'mix.it.protomixin', ->
     it 'should throw an error when omitting a non-existing mixin key', ->
       expect(=>
         class Example
-        Example.mixinto_proto @mixin, omit: ['non_mixin_key']
+        Example.mixinto_proto @mixin, omits: ['non_mixin_key']
       ).toThrow new MixinUtils.ArgumentError "Some omit keys aren't in mixin object: non_mixin_key"
 
     it 'should not mangle the class hierarchy when omitting keys', ->
@@ -162,7 +162,7 @@ fdescribe 'mix.it.protomixin', ->
           'bar'
 
       class Example extends Super
-      Example.mixinto_proto @mixin, omit: ['bar']
+      Example.mixinto_proto @mixin, omits: ['bar']
 
       e = new Example
 
@@ -172,7 +172,7 @@ fdescribe 'mix.it.protomixin', ->
     it 'should not omit all mixin keys', ->
       expect(=>
         class Example
-        Example.mixinto_proto @mixin, omit: ['bar', 'baz']
+        Example.mixinto_proto @mixin, omits: ['bar', 'baz']
       ).toThrow new MixinUtils.ArgumentError "Found nothing to mix in!"
 
     it 'should support pre-mixin hooks', ->

@@ -12,7 +12,7 @@ mixinto_proto = (mixin, options = {}) ->
 
   premixing_hook?.call(@::, mixinhook_args)
 
-  omitting = (options.omit?.length && options.omit) || []
+  omitting = (options.omits?.length && options.omits) || []
   mixing = _.object ([k, v] for k, v of mixin when k not in omitting)
   mixing = _.object ([k, v] for k, v of mixing when k in mixin.mixin_keys)
 

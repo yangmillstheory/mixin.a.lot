@@ -22,8 +22,8 @@ class Mixin
   ]
 
   @mixedmethodhook_keys: [
-    'premixinmethod_hook'
-    'postmixinmethod_hook'
+    'pre_mixinmethod_hook'
+    'post_mixinmethod_hook'
   ]
 
   @validate_mixin: (mixin) ->
