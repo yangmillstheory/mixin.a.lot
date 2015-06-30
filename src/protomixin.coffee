@@ -5,7 +5,7 @@ _ = require 'underscore'
 
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate_mixin(mixin)
-  MixinUtils.validate_mixin_opts(mixin, options)
+  MixinUtils.check_mix(mixin, options)
 
   {premixin_hook, postmixin_hook} = mixin
   [__, __, mixinhook_args] = arguments
