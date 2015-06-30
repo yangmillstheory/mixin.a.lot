@@ -194,7 +194,7 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin, omits: ['bar', 'baz']
       ).toThrow new MixinUtils.ArgumentError "Found nothing to mix in!"
 
-    it 'should throw an error when supplying a non object-literal hooks option', ->
+    xit 'should throw an error when supplying a non object-literal hooks option', ->
       non_obj_literals = [
         []
         1
@@ -206,11 +206,38 @@ fdescribe 'mix.it.protomixin', ->
       for non_obj_literal in non_obj_literals
         expect(=>
           class Example
-          Example.mixinto_proto @mixin, hooks: non_obj_literal
+          Example.mixinto_proto @mixin, pre_mixinmethod_hooks: non_obj_literal
         ).toThrow new MixinUtils.ArgumentError "Expected object literal for hooks option"
 
-    xit 'should support pre-mixin hooks', ->
-      throw new Error 'Write me!'
+    xit 'should throw an error when the hook configuration is not an Array of Strings', ->
+      expect(=>
+        class Example
+        Example.mixinto_proto @mixin,
+          hook_before: [
+            'non_existent_method'
+          ]
+      )
 
-    xit 'should support post-mixin hooks', ->
-      throw new Error 'Write me!'
+    xit 'should throw an error when hooking into a non-string', ->
+      expect(=>
+        class Example
+        Example.mixinto_proto @mixin,
+          hook_before: [
+            'non_existent_method'
+          ]
+      )
+
+    xit 'should throw an error when hooking into a non-existent mixin method', ->
+      expect(=>
+        class Example
+        Example.mixinto_proto @mixin,
+          hook_before: [
+            'non_existent_method'
+          ]
+      )
+
+    it 'should hook before a mixin method', ->
+      expect(true).toBe true
+
+    it 'should hook after a mixin method', ->
+      expect(true).toBe true
