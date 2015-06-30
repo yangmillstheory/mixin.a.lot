@@ -54,8 +54,8 @@ fdescribe 'mix.it.protomixin', ->
       @mixin = MIXINS.schematized_protomixin()
 
     ###
-      This is also a good example of post-mixin hook usage;
-      to validate that the caller satisfies a certain schema.
+      This is also a good example of pre-mixin hook usage;
+      to validate that the mixing class satisfies a certain schema.
     ###
     it 'should invoke a pre-mixin hook with the prototype context', ->
       spyOn(@mixin, 'premixin_hook').and.callThrough()
