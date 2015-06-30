@@ -12,13 +12,11 @@ fdescribe 'mix.it.protomixin', ->
     expect(_.isFunction Function::mixinto_proto).toBe true
     expect(Object.keys Function::).not.toContain 'mixinto_proto'
 
-    mixinto_proto = Function::mixinto_proto
-
     delete Function::mixinto_proto
-    expect(Function::mixinto_proto).toBe mixinto_proto
+    expect(_.isFunction Function::mixinto_proto).toBe true
 
     Function::mixinto_proto = 'bar'
-    expect(Function::mixinto_proto).toBe mixinto_proto
+    expect(_.isFunction Function::mixinto_proto).toBe true
 
   it 'should raise an error when mixing non-Mixins', ->
     for non_Mixin in [1, 'String', [], {}]
