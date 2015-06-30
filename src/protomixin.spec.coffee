@@ -40,49 +40,48 @@ fdescribe 'mix.it.protomixin', ->
 
   describe 'pre/post mixinhooks', ->
 
-    mixin = null
-
     beforeEach ->
-      mixin = MIXINS.schematized_protomixin()
+      @mixin = MIXINS.schematized_protomixin()
 
     ###
       This is also a good example of post-mixin hook usage;
       to validate that the caller satisfies a certain schema.
     ###
     it 'should invoke a pre-mixin hook with the prototype context', ->
-      spyOn(mixin, 'premixin_hook').and.callThrough()
+      spyOn(@mixin, 'premixin_hook').and.callThrough()
 
-      expect(->
+      expect(=>
         class Example
           # special_key is not on the prototype
           @special_key = 1
 
-          @mixinto_proto mixin, null, ['arg1', 'arg2']
+        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
       ).toThrow new TypeError('Wanted schema key special_key')
 
       expect(=>
         class Example
           # special_key is on the prototype
           special_key: 1
-          @mixinto_proto mixin, null, ['arg1', 'arg2']
+
+        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
       ).not.toThrow()
 
-      expect(mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
-      expect(mixin.premixin_hook.calls.count()).toBe 2
+      expect(@mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+      expect(@mixin.premixin_hook.calls.count()).toBe 2
 
     it 'should invoke the pre-mixin hook before mixing in properties', ->
       error = new Error
 
-      spyOn(mixin, 'premixin_hook').and.throwError(error)
-      expect(mixin.foo).toBeDefined()
+      spyOn(@mixin, 'premixin_hook').and.throwError(error)
+      expect(@mixin.foo).toBeDefined()
 
       class Example
 
       try
-          Example.mixinto_proto mixin, null, ['arg1', 'arg2']
+          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
       catch error
         expect(Example::foo).toBeUndefined()  # wasn't mixed in!
-        expect(mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+        expect(@mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
   describe 'protomixing options', ->
 
