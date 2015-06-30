@@ -209,14 +209,20 @@ fdescribe 'mix.it.protomixin', ->
           Example.mixinto_proto @mixin, pre_mixinmethod_hooks: non_obj_literal
         ).toThrow new Mixin.ArgumentError "Expected object literal for hooks option"
 
-    xit 'should throw an error when the hook configuration is not an Array of Strings', ->
-      expect(=>
-        class Example
-        Example.mixinto_proto @mixin,
-          hook_before: [
-            'non_existent_method'
-          ]
-      )
+    it 'should throw an error when the hook configuration is not an Array of Strings', ->
+      bad_hook_values = [
+        'String'
+        1
+        null
+        {}
+        true
+      ]
+
+      for bad_hook_value in bad_hook_values
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin, hook_before: bad_hook_value
+        ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
 
     xit 'should throw an error when hooking into a non-string', ->
       expect(=>

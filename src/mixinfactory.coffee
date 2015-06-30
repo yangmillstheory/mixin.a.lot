@@ -26,13 +26,11 @@ class Mixin
     'post_mixinmethod_hook'
   ]
 
-#  _check_hooks: (mixin_keys, hooks) ->
-#    {pre_mixinmethod_hooks, post_mixinmethod_hooks} = hooks
-#
-#    for hooknames in [pre_mixinmethod_hooks, post_mixinmethod_hooks]
-#      if hooknames != undefined
-#        unless Arrays.isArray(hooknames)
-#          throw new @ArgumentError "Expected Array of method names for hooks option"
+  @_check_hooks: (mixin_keys, hooks) ->
+    for own hook_key, mixinmethods of hooks
+      if mixinmethods != undefined
+        unless Array.isArray(mixinmethods)
+          throw new @ArgumentError "#{hook_key}: expected an Array of mixin method names"
 #        methods_to_hook = _.values(hookconfig)[0]
 #        diff = _.difference(methods_to_hook, mixin_keys)
 #        if diff.length
@@ -47,10 +45,11 @@ class Mixin
         throw new @ArgumentError "Some omit keys aren't in mixin object: #{diff}"
 
   @check_mix_opts: (mixin, options) ->
-    {omits, pre_mixinmethod_hooks, post_mixinmethod_hooks} = options
+    {omits, hook_before, hook_after} = options
     mixin_keys = mixin.mixin_keys
 
     @_check_omits(mixin_keys, omits)
+    @_check_hooks(mixin_keys, {hook_before, hook_after})
 
   @validate_mixin: (mixin) ->
     unless mixin instanceof @
