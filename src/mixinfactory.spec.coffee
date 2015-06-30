@@ -1,6 +1,7 @@
 fdescribe 'mix.it.mixinfactory', ->
 
   Mixin = require './mixinfactory'
+  _ = require 'underscore'
 
 
   describe 'factory', ->
@@ -40,16 +41,40 @@ fdescribe 'mix.it.mixinfactory', ->
       mixin = Mixin.from_obj
         speak: ->
           'Hello, World!'
-        name: 'Speaker'
+        name: 'Example Mixin'
 
       expect(mixin instanceof Mixin).toBe true
 
+    it 'should not allow adding or modifying properties', ->
+      mixin = Mixin.from_obj
+        speak: ->
+          'Hello, World!'
+        name: 'Example Mixin'
+
+      mixin.foo = 'bar'
+      delete mixin.name
+      delete mixin.speak
+
+      expect(mixin.foo).toBeUndefined()
+      expect(mixin.name).toBe('Example Mixin')
+      expect(mixin.speak()).toBe('Hello, World!')
+
+    it 'should allow adding properties but not modifying existing if freeze = false', ->
+      mixin = Mixin.from_obj({name: 'Example Mixin', foo: ->}, false)
+      delete mixin.name
+      delete mixin.foo
+
+      mixin.bar = ->
+
+      expect(mixin.name).toBe('Example Mixin')
+      expect(_.isFunction mixin.foo).toBe true
+      expect(_.isFunction mixin.bar).toBe true
 
   describe 'Mixin', ->
 
     beforeEach ->
       @mixin = Mixin.from_obj
-        name: 'Speaker'
+        name: 'Example Mixin'
         speak: ->
           "Hello, my name is #{@name}!"
         shout: ->
@@ -61,26 +86,13 @@ fdescribe 'mix.it.mixinfactory', ->
     it 'should have a sorted mixin_keys and the mixin attributes', ->
       expect(@mixin.mixin_keys).toEqual ['shout', 'speak', 'whisper']
 
-      expect(@mixin.name).toBe('Speaker')
-      expect(@mixin.speak()).toBe('Hello, my name is Speaker!')
-      expect(@mixin.shout()).toBe('HELLO, MY NAME IS SPEAKER!')
-      expect(@mixin.whisper()).toBe('...hello, my name is speaker...!')
-
-    it 'should not allow adding or modifying properties', ->
-      @mixin.foo = 'bar'
-      delete @mixin.name
-      delete @mixin.speak
-      delete @mixin.shout
-      delete @mixin.whisper
-
-      expect(@mixin.foo).toBeUndefined()
-      expect(@mixin.name).toBe('Speaker')
-      expect(@mixin.speak()).toBe('Hello, my name is Speaker!')
-      expect(@mixin.shout()).toBe('HELLO, MY NAME IS SPEAKER!')
-      expect(@mixin.whisper()).toBe('...hello, my name is speaker...!')
+      expect(@mixin.name).toBe('Example Mixin')
+      expect(@mixin.speak()).toBe('Hello, my name is Example Mixin!')
+      expect(@mixin.shout()).toBe('HELLO, MY NAME IS EXAMPLE MIXIN!')
+      expect(@mixin.whisper()).toBe('...hello, my name is example mixin...!')
 
     it 'should have enumerate properties in toString()', ->
-      expect(@mixin.toString()).toEqual 'Mixin(Speaker: shout, speak, whisper)'
+      expect(@mixin.toString()).toEqual 'Mixin(Example Mixin: shout, speak, whisper)'
 
     it 'should be immutable with loud failures on change attempts', ->
       for key in @mixin.mixin_keys
