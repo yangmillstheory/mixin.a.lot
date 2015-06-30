@@ -26,7 +26,6 @@ mixinto_proto = (mixin, options = {}) ->
   @
 
 enable_protomixin = ->
-
   Object.defineProperty Function::, 'mixinto_proto',
     enumerable: false
     value: mixinto_proto
