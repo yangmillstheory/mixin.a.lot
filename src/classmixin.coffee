@@ -1,7 +1,7 @@
 HELPERS = require './helpers'
 
 
-enable_classmixin = ->
+enable_classmixing = ->
   Function::mixinto_class = (mixin, options) ->
     HELPERS.validate_mixin(mixin)
 
@@ -13,4 +13,4 @@ enable_classmixin = ->
     @
 
 
-module.exports = enable_classmixin
+module.exports = enable_classmixing

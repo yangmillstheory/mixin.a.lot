@@ -4,10 +4,10 @@
 #  {beforeOnce, _, MIXINS} = require './helpers'
 #
 #  it 'should allow classmixins', ->
-#    expect(_.isFunction mixit.enable_classmixin).toBe true
+#    expect(_.isFunction mixit.enable_classmixing).toBe true
 #
 #  beforeOnce ->
-#    mixit.enable_classmixin()
+#    mixit.enable_classmixing()
 #
 #  it 'should mix into the class', ->
 #    class Foo

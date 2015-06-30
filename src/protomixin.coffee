@@ -25,9 +25,9 @@ mixinto_proto = (mixin, options = {}) ->
   postmixin_hook?.call(@::, mixinhook_args)
   @
 
-enable_protomixin = ->
+enable_protomixing = ->
   Object.defineProperty Function::, 'mixinto_proto',
     enumerable: false
     value: mixinto_proto
 
-module.exports = enable_protomixin
+module.exports = enable_protomixing

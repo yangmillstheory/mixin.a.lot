@@ -1,12 +1,12 @@
 fdescribe 'mix.it.protomixin', ->
 
-  {enable_protomixin, Mixin} = require './index'
+  {enable_protomixing, Mixin} = require './index'
   {beforeOnce, _, MIXINS} = require './util/spec'
 
   MixinUtils = require './util'
 
   beforeOnce ->
-    enable_protomixin()
+    enable_protomixing()
 
   it 'should attach a non-enumerable, immutable .mixinto_proto to Function.prototype', ->
     expect(_.isFunction Function::mixinto_proto).toBe true

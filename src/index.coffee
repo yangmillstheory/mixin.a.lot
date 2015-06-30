@@ -1,12 +1,12 @@
-enable_blendmixin = require './blendmixin'
-enable_protomixin = require './protomixin'
-enable_classmixin = require './classmixin'
+enable_blendmixing = require './blendmixin'
+enable_protomixing = require './protomixin'
+enable_classmixing = require './classmixin'
 Mixin = require './mixinfactory'
 
 
 module.exports = {
-  enable_classmixin
-  enable_protomixin
-  enable_blendmixin
+  enable_classmixing
+  enable_protomixing
+  enable_blendmixing
   Mixin
 }

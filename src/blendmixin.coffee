@@ -2,14 +2,14 @@ HELPERS = require './helpers'
 _ = require 'underscore'
 
 
-enable_blendmixin = ->
+enable_blendmixing = ->
   f_proto = Function::
 
   ensure_can_blend = ->
     unless _.has(f_proto, 'mixinto_class')
-      throw new TypeError 'class mixins disabled; call mixit.enable_classmixin()'
+      throw new TypeError 'class mixins disabled; call mixit.enable_classmixing()'
     unless _.has(f_proto, 'mixinto_proto')
-      throw new TypeError 'proto mixins disabled; call mixit.enable_protomixin()'
+      throw new TypeError 'proto mixins disabled; call mixit.enable_protomixing()'
     f_proto.__can_blend = true
 
   ensure_blend = (blend) ->
@@ -30,4 +30,4 @@ enable_blendmixin = ->
     @mixinto_class(classmixin)
 
 
-module.exports = enable_blendmixin
+module.exports = enable_blendmixing
