@@ -21,7 +21,7 @@ class Mixin
     'postmixing_hook'
   ]
 
-  @mixedmethod_hooks: [
+  @mixinmethod_hooks: [
     'pre_mixinmethod_hook'
     'post_mixinmethod_hook'
   ]
