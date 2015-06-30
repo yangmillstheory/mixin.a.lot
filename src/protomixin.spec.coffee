@@ -156,6 +156,21 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin, omits: ['non_mixin_key']
       ).toThrow new MixinUtils.ArgumentError "Some omit keys aren't in mixin object: non_mixin_key"
 
+    it 'should throw an error when omitting a non-Array or empty Array', ->
+      bad_omits_values = [
+        []
+        {}
+        null
+        1
+        'String'
+      ]
+
+      for bad_omits_value in bad_omits_values
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin, omits: bad_omits_value
+        ).toThrow new MixinUtils.ArgumentError "Expected omits option to be a nonempty Array"
+
     it 'should not mangle the class hierarchy when omitting keys', ->
       class Super
         bar: ->
@@ -175,10 +190,23 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin, omits: ['bar', 'baz']
       ).toThrow new MixinUtils.ArgumentError "Found nothing to mix in!"
 
-    it 'should throw an error when supplying a mixin-method hook'
+    it 'should throw an error when supplying a non object-literal hooks option', ->
+      non_obj_literals = [
+        []
+        1
+        'String'
+        false
+        null
+      ]
 
-    it 'should support pre-mixin hooks', ->
+      for non_obj_literal in non_obj_literals
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin, hooks: non_obj_literal
+        ).toThrow new MixinUtils.ArgumentError "Expected object literal for hooks option"
+
+    xit 'should support pre-mixin hooks', ->
       throw new Error 'Write me!'
 
-    it 'should support post-mixin hooks', ->
+    xit 'should support post-mixin hooks', ->
       throw new Error 'Write me!'
