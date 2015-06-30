@@ -18,7 +18,7 @@ fdescribe 'mix.it.protomixin', ->
     Function::mixinto_proto = 'bar'
     expect(_.isFunction Function::mixinto_proto).toBe true
 
-  it 'should raise an error when mixing non-Mixins', ->
+  it 'should throw an error when mixing non-Mixins', ->
     for non_Mixin in [1, 'String', [], {}]
       expect(->
         class Example
@@ -53,7 +53,7 @@ fdescribe 'mix.it.protomixin', ->
     beforeEach ->
       @mixin = MIXINS.schematized_protomixin()
 
-    it 'should raise an error when mixing in Mixins with non-function hooks', ->
+    it 'should throw an error when mixing in Mixins with non-function hooks', ->
       @mixin.premixing_hook = 1
 
       expect(=>
@@ -174,6 +174,8 @@ fdescribe 'mix.it.protomixin', ->
         class Example
         Example.mixinto_proto @mixin, omits: ['bar', 'baz']
       ).toThrow new MixinUtils.ArgumentError "Found nothing to mix in!"
+
+    it 'should throw an error when supplying a mixin-method hook'
 
     it 'should support pre-mixin hooks', ->
       throw new Error 'Write me!'
