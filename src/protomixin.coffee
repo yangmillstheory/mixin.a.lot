@@ -1,12 +1,12 @@
 Mixin = require './mixinfactory'
-UTIL = require './util'
+MixinUtils = require './util'
 _ = require 'underscore'
 
 
 enable_protomixin = ->
   Function::mixinto_proto = (mixin, options = {}) ->
     Mixin.validate_mixin(mixin)
-    UTIL.validate_mixin_opts(mixin, options)
+    MixinUtils.validate_mixin_opts(mixin, options)
 
     {premixin_hook, postmixin_hook} = mixin
     [__, __, mixinhook_args] = arguments
@@ -18,7 +18,7 @@ enable_protomixin = ->
     to_mixin = _.object ([k, v] for k, v of to_mixin when k in mixin.mixin_keys)
 
     if _.isEmpty to_mixin
-      throw new UTIL.ArgumentError "Found nothing to mix in!"
+      throw new MixinUtils.ArgumentError "Found nothing to mix in!"
 
     for key, value of to_mixin
       @::[key] = value

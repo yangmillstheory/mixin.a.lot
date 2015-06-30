@@ -1,9 +1,9 @@
 fdescribe 'mix.it.protomixin', ->
 
   {enable_protomixin, Mixin} = require './index'
-  UTIL = require './util'
-
   {beforeOnce, _, MIXINS} = require './util/spec'
+
+  MixinUtils = require './util'
 
   beforeOnce ->
     enable_protomixin()
@@ -115,7 +115,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(->
           class Example
             @mixinto_proto mixin, omit: ['bar', 'baz']
-        ).toThrow new UTIL.ArgumentError "Found nothing to mix in!"
+        ).toThrow new MixinUtils.ArgumentError "Found nothing to mix in!"
 
     it 'should support pre-mixin hooks', ->
       throw new Error 'Write me!'
