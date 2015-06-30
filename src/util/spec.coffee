@@ -21,15 +21,15 @@ MIXINS =
       foo: 'bar'
 
   # attach this to either pre_protomixin or pre_classmixin
-  _premixin_hook: (schema = ['special_key']) ->
+  _premixin_hook: (schema) ->
     schema = ['special_key']
 
     for key in schema
       unless @[key]?
         throw new TypeError("Wanted schema key #{key}")
 
-  schematized_protomixin: ->
-    mixin = @_schematized()
+  schematized_protomixin: (schema = ['special_key']) ->
+    mixin = @_schematized(schema)
     mixin.premixin_hook = @_premixin_hook
     mixin
 
