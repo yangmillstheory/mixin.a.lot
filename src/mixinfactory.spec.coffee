@@ -57,9 +57,24 @@ fdescribe 'mix.it.mixinfactory', ->
         whisper: ->
           "...#{@speak().toLowerCase().replace('!', '')}...!"
 
+
     it 'should have a sorted mixin_keys and the mixin attributes', ->
       expect(@mixin.mixin_keys).toEqual ['shout', 'speak', 'whisper']
 
+      expect(@mixin.name).toBe('Speaker')
+      expect(@mixin.speak()).toBe('Hello, my name is Speaker!')
+      expect(@mixin.shout()).toBe('HELLO, MY NAME IS SPEAKER!')
+      expect(@mixin.whisper()).toBe('...hello, my name is speaker...!')
+
+    it 'should not allow adding or modifying properties', ->
+      @mixin.foo = 'bar'
+      delete @mixin.name
+      delete @mixin.speak
+      delete @mixin.shout
+      delete @mixin.whisper
+
+      expect(@mixin.foo).toBeUndefined()
+      expect(@mixin.name).toBe('Speaker')
       expect(@mixin.speak()).toBe('Hello, my name is Speaker!')
       expect(@mixin.shout()).toBe('HELLO, MY NAME IS SPEAKER!')
       expect(@mixin.whisper()).toBe('...hello, my name is speaker...!')

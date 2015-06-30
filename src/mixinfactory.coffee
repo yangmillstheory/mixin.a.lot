@@ -49,7 +49,7 @@ class Mixin
             value
           set: =>
             throw new @MutabilityError "Cannot change #{key} on #{mixin}"
-    mixin
+    Object.freeze mixin
 
   constructor: (@name) ->
 
