@@ -53,6 +53,22 @@ fdescribe 'mix.it.protomixin', ->
     beforeEach ->
       @mixin = MIXINS.schematized_protomixin()
 
+    it 'should raise an error when mixing in Mixins with non-function hooks', ->
+      @mixin.premixin_hook = 1
+
+      expect(=>
+        class Example
+        Example.mixinto_proto @mixin
+      ).toThrow(new Error('Expected a function for premixin_hook'))
+
+      @mixin = MIXINS.schematized_protomixin()
+      @mixin.postmixin_hook = []
+
+      expect(=>
+        class Example
+        Example.mixinto_proto @mixin
+      ).toThrow(new Error('Expected a function for postmixin_hook'))
+
     ###
       This is also a good example of pre-mixin hook usage;
       to validate that the mixing class satisfies a certain schema.
