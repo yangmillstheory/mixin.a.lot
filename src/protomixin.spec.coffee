@@ -95,6 +95,7 @@ fdescribe 'mix.it.protomixin', ->
 
     it 'should invoke the pre-mixin hook before mixing in properties', ->
       error = new Error
+      threw = false
 
       spyOn(@mixin, 'premixing_hook').and.throwError(error)
       expect(@mixin.foo).toBeDefined()
@@ -102,8 +103,11 @@ fdescribe 'mix.it.protomixin', ->
       class Example
 
       try
-          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
       catch error
+        threw = true
+      finally
+        expect(threw).toBe true
         expect(Example::modified_proto).toBeUndefined()
         expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
