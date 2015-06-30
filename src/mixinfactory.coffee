@@ -29,13 +29,13 @@ class Mixin
       if hook? && !_.isFunction hook
         throw new TypeError "Expected a function for #{mixinhook_key}"
 
-  @from_obj: (obj) ->
+  @from_obj: (obj, freeze = true) ->
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"
     unless _.isString(obj.name) && obj.name
       throw new @ArgumentError "Expected String name in options argument"
 
-    mixin = new Mixin(obj.name)
+    mixin = new Mixin
     mkeys = Object.keys(_.omit(obj, 'name')).sort()
 
     if _.isEmpty(mkeys)
@@ -49,9 +49,7 @@ class Mixin
             value
           set: =>
             throw new @MutabilityError "Cannot change #{key} on #{mixin}"
-    Object.freeze mixin
-
-  constructor: (@name) ->
+    (freeze && Object.freeze mixin) || mixin
 
   toString: ->
     string_keys = _.without(@mixin_keys, 'name')
