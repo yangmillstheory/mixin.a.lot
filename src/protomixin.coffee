@@ -7,10 +7,10 @@ mixinto_proto = (mixin, options = {}) ->
   Mixin.validate_mixin(mixin)
   MixinUtils.check_mix(mixin, options)
 
-  {premixin_hook, postmixin_hook} = mixin
+  {premixing_hook, postmixing_hook} = mixin
   [__, __, mixinhook_args] = arguments
 
-  premixin_hook?.call(@::, mixinhook_args)
+  premixing_hook?.call(@::, mixinhook_args)
 
   omitting = (options.omit?.length && options.omit) || []
   mixing = _.object ([k, v] for k, v of mixin when k not in omitting)
@@ -22,7 +22,7 @@ mixinto_proto = (mixin, options = {}) ->
   for key, value of mixing
     @::[key] = value
 
-  postmixin_hook?.call(@::, mixinhook_args)
+  postmixing_hook?.call(@::, mixinhook_args)
   @
 
 enable_protomixing = ->

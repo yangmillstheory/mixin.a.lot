@@ -16,15 +16,20 @@ class Mixin
   @MutabilityError: class MutabilityError extends Error
   @ArgumentError: class ArgumentError extends Error
 
-  @mixinhook_keys: [
-    'premixin_hook'
-    'postmixin_hook'
+  @mixinghook_keys: [
+    'premixing_hook'
+    'postmixing_hook'
+  ]
+
+  @mixedmethodhook_keys: [
+    'premixinmethod_hook'
+    'postmixinmethod_hook'
   ]
 
   @validate_mixin: (mixin) ->
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
-    for mixinhook_key in @mixinhook_keys
+    for mixinhook_key in @mixinghook_keys
       supplied_hook = mixin[mixinhook_key]
       if supplied_hook? && !_.isFunction supplied_hook
         throw new TypeError "Expected a function for #{mixinhook_key}"

@@ -51,7 +51,7 @@
 #
 #    it 'should allow mixin method customization', ->
 #      mixin = MIXINS.schematized()
-#      mixin.post_classmixin = mixin.postmixin_hook
+#      mixin.post_classmixin = mixin.postmixing_hook
 #
 #      spyOn(mixin, 'post_classmixin').and.callThrough()
 #

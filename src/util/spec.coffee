@@ -19,7 +19,7 @@ MIXINS =
       name: 'Schematized Example Mixin'
       foo: 'bar'
       , @DEFAULT_FREEZE
-    mixin.premixin_hook = ->
+    mixin.premixing_hook = ->
       for key in schema || ['special_key';]
         unless @[key]?
           throw new TypeError("Wanted schema key #{key}")
@@ -33,7 +33,7 @@ MIXINS =
       baz: ->
         [@foo]
       , @DEFAULT_FREEZE
-    mixin.postmixin_hook = ->
+    mixin.postmixing_hook = ->
       @modified_proto = true
     mixin
 
