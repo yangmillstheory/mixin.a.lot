@@ -29,7 +29,7 @@ class Mixin
   @_check_hooks: (mixin_keys, hooks) ->
     for own hook_key, mixinmethods of hooks
       if mixinmethods != undefined
-        unless Array.isArray(mixinmethods)
+        unless Array.isArray(mixinmethods) && _.all(mixinmethods, _.isString)
           throw new @ArgumentError "#{hook_key}: expected an Array of mixin method names"
 #        methods_to_hook = _.values(hookconfig)[0]
 #        diff = _.difference(methods_to_hook, mixin_keys)
