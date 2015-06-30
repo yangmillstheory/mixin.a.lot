@@ -9,22 +9,22 @@ MixinUtils =
   is_obj_literal: (thing) ->
     # This might be wrong in some cases -
     # the implementation is guided by http://underscorejs.org/#isObject
-    !_.isObject(thing) || Array.isArray(thing) || _.isFunction(thing)
+    _.isObject(thing) && !Array.isArray(thing) && !_.isFunction(thing)
 
   _check_hooks: (mixin_keys, hooks) ->
-    if hooks?
+    if hooks != undefined
       unless @is_obj_literal(hooks)
         throw new MixinUtils.ArgumentError "Expected object literal for hooks option"
       diff = _.difference(Object.keys(hooks), mixin_keys)
       if diff.length
         throw new MixinUtils.ArgumentError "Some hooks keys aren't in mixin object: #{diff}"
       for own _, value of hooks
-        unless @is_obj_literal(value) && _.contains(Mixin.mixedmethodhook_keys, Object.keys(value))
+        unless @is_obj_literal(value) && _.contains(Mixin.mixinmethod_hooks, Object.keys(value))
           throw new MixinUtils.ArgumentError "Some hooks keys aren't in mixin object: #{diff}"
 
   _check_omits: (mixin_keys, omits) ->
-    if omits?
-      if !Array.isArray(omits) || !omits
+    if omits != undefined
+      unless Array.isArray(omits) && omits.length
         throw new MixinUtils.ArgumentError "Expected omits option to be a nonempty Array"
       diff = _.difference(omits, mixin_keys)
       if diff.length
