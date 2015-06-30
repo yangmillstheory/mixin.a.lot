@@ -29,7 +29,6 @@ class Mixin
       if hook? && !_.isFunction hook
         throw new TypeError "Expected a function for #{mixinhook_key}"
 
-
   @from_obj: (obj) ->
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"

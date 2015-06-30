@@ -1,12 +1,12 @@
 fdescribe 'mix.it.protomixin', ->
 
-  mixit = require './index'
-  Mixin = require './mixinfactory'
+  {enable_protomixin, Mixin} = require './index'
   UTIL = require './util'
+
   {beforeOnce, _, MIXINS} = require './util/spec'
 
   beforeOnce ->
-    mixit.enable_protomixin()
+    enable_protomixin()
 
   it 'should raise an error when mixing non-Mixins', ->
     for non_Mixin in [1, 'String', [], {}]
