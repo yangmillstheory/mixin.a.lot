@@ -12,14 +12,14 @@ mixinto_proto = (mixin, options = {}) ->
 
   premixin_hook?.call(@::, mixinhook_args)
 
-  to_omit = (options.omit?.length && options.omit) || []
-  to_mixin = _.object ([k, v] for k, v of mixin when k not in to_omit)
-  to_mixin = _.object ([k, v] for k, v of to_mixin when k in mixin.mixin_keys)
+  omitting = (options.omit?.length && options.omit) || []
+  mixing = _.object ([k, v] for k, v of mixin when k not in omitting)
+  mixing = _.object ([k, v] for k, v of mixing when k in mixin.mixin_keys)
 
-  if _.isEmpty to_mixin
+  if _.isEmpty mixing
     throw new MixinUtils.ArgumentError "Found nothing to mix in!"
 
-  for key, value of to_mixin
+  for key, value of mixing
     @::[key] = value
 
   postmixin_hook?.call(@::, mixinhook_args)
