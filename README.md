@@ -1,5 +1,7 @@
 # mix.it
 
+[![Build Status](https://travis-ci.org/yangmillstheory/mix.it.svg?branch=master)](https://travis-ci.org/yangmillstheory/mix.it)
+
 CoffeeScript/JavaScript mix-in.
 
 * `mixinto_proto(mixin, options)`
