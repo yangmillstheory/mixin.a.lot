@@ -158,7 +158,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-      ).toThrow new MixinUtils.ArgumentError "Some omit keys aren't in mixin object: non_mixin_key"
+      ).toThrow new Mixin.ArgumentError "Some omit keys aren't in mixin object: non_mixin_key"
 
     it 'should throw an error when omitting a non-Array or empty Array', ->
       bad_omits_values = [
@@ -173,7 +173,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, omits: bad_omits_value
-        ).toThrow new MixinUtils.ArgumentError "Expected omits option to be a nonempty Array"
+        ).toThrow new Mixin.ArgumentError "Expected omits option to be a nonempty Array"
 
     it 'should not mangle the class hierarchy when omitting keys', ->
       class Super
@@ -192,7 +192,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['bar', 'baz']
-      ).toThrow new MixinUtils.ArgumentError "Found nothing to mix in!"
+      ).toThrow new Mixin.ArgumentError "Found nothing to mix in!"
 
     xit 'should throw an error when supplying a non object-literal hooks option', ->
       non_obj_literals = [
@@ -207,7 +207,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, pre_mixinmethod_hooks: non_obj_literal
-        ).toThrow new MixinUtils.ArgumentError "Expected object literal for hooks option"
+        ).toThrow new Mixin.ArgumentError "Expected object literal for hooks option"
 
     xit 'should throw an error when the hook configuration is not an Array of Strings', ->
       expect(=>

@@ -1,11 +1,10 @@
 Mixin = require './mixinfactory'
-MixinUtils = require './util'
 _ = require 'underscore'
 
 
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate_mixin(mixin)
-  MixinUtils.check_mix(mixin, options)
+  Mixin.check_mix_opts(mixin, options)
 
   {premixing_hook, postmixing_hook} = mixin
   [__, __, mixinhook_args] = arguments
@@ -17,7 +16,7 @@ mixinto_proto = (mixin, options = {}) ->
   mixing = _.object ([k, v] for k, v of mixing when k in mixin.mixin_keys)
 
   if _.isEmpty mixing
-    throw new MixinUtils.ArgumentError "Found nothing to mix in!"
+    throw new Mixin.ArgumentError "Found nothing to mix in!"
 
   for key, value of mixing
     @::[key] = value
