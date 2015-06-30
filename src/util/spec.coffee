@@ -6,35 +6,33 @@ beforeOnce = (fn) ->
   beforeEach _.once(fn)
 
 
+###
+  Mixin factory for tests. Note that anything spied on should be added
+  after the Mixin.from_obj, since they need to be modified by jasmine.
+###
 MIXINS =
 
-  _default: ->
-    Mixin.from_obj
+  schematized_protomixin: (schema = ['special_key']) ->
+    mixin = Mixin.from_obj
+      name: 'Schematized Example Mixin'
+      foo: 'bar'
+      , false
+    mixin.premixin_hook = ->
+      for key in schema || ['special_key';]
+        unless @[key]?
+          throw new TypeError("Wanted schema key #{key}")
+      @modified_proto = true
+    mixin
+
+  default_protomixin: ->
+    mixin = Mixin.from_obj
       name: 'Default Example Mixin'
       bar: 1
       baz: ->
         [@foo]
-      postmixin_hook: ->
-
-
-  _schematized: ->
-    Mixin.from_obj
-      name: 'Schematized Example Mixin'
-      foo: 'bar'
-
-  _schemacheck_hook: (schema) ->
-    schema = ['special_key']
-
-    for key in schema
-      unless @[key]?
-        throw new TypeError("Wanted schema key #{key}")
-
-  schematized_protomixin: (schema = ['special_key']) ->
-    mixin = @_schematized(schema)
-    mixin.premixin_hook = @_schemacheck_hook
+      , false
+    mixin.postmixin_hook = ->
+      @modified_proto = true
     mixin
-
-  default_protomixin: ->
-    @_default()
 
 module.exports = {beforeOnce, _, MIXINS}

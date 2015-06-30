@@ -48,7 +48,7 @@ fdescribe 'mix.it.protomixin', ->
     expect(Example::baz).toBe 'qux'
     expect(Example::qux).toBe 'baz'
 
-  describe 'pre/post mixinhooks', ->
+  describe 'premixin hooks', ->
 
     beforeEach ->
       @mixin = MIXINS.schematized_protomixin()
@@ -68,16 +68,14 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
       ).toThrow new TypeError('Wanted schema key special_key')
 
-      expect(=>
-        class Example
-          # special_key is on the prototype
-          special_key: 1
-
-        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
-      ).not.toThrow()
+      class Example
+        # special_key is on the prototype
+        special_key: 1
+      Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
 
       expect(@mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
       expect(@mixin.premixin_hook.calls.count()).toBe 2
+      expect(Example::modified_proto).toBe true
 
     it 'should invoke the pre-mixin hook before mixing in properties', ->
       error = new Error
@@ -90,8 +88,37 @@ fdescribe 'mix.it.protomixin', ->
       try
           Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
       catch error
-        expect(Example::foo).toBeUndefined()  # wasn't mixed in!
+        expect(Example::modified_proto).toBeUndefined()
         expect(@mixin.premixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+
+  describe 'postmixin hooks', ->
+
+    beforeEach ->
+      @mixin = MIXINS.default_protomixin()
+
+    it 'should invoke a post-mixin hook with the prototype context', ->
+      spyOn(@mixin, 'postmixin_hook').and.callThrough()
+
+      class Example
+      Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+
+      expect(Example::modified_proto).toBe true
+      expect(@mixin.postmixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+
+    it 'should invoke the post-mixin hook after mixing in properties', ->
+      error = new Error
+
+      spyOn(@mixin, 'postmixin_hook').and.throwError(error)
+      expect(@mixin.bar).toBe 1
+
+      class Example
+
+      try
+        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+      catch error
+        expect(Example::bar).toBe 1 # was mixed in!
+        expect(Example::modified_proto).toBeUndefined()
+        expect(@mixin.postmixin_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
   describe 'protomixing options', ->
 
@@ -106,7 +133,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(e.bar).toBeUndefined()
         expect(e.baz).toBeDefined()
 
-    it 'should not mangle the hierarchy when omitting keys', ->
+    it 'should not mangle the class hierarchy when omitting keys', ->
       mixin = MIXINS.default_protomixin()
 
       class Super
