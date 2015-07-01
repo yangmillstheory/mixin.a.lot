@@ -84,7 +84,7 @@ mixinto_proto = (mixin, options = {}) ->
     else
       MIX.with_hook mixcontent, (mixinprop in methodhooks.before)
 
-  methodhooks.postmix?.call(@::, mixinhook_args)
+  mixinghooks.postmix?.call(@::, mixinhook_args)
   @
 
 enable_protomixing = ->
