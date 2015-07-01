@@ -24,15 +24,16 @@ fdescribe 'mix.it.protomixin', ->
       ).toThrow new TypeError 'Expected a Mixin instance'
 
   it 'should mix into the prototype', ->
+    mixin = MIXINS.default_protomixin()
+    spyOn(mixin, 'baz').and.returnValue ['baz']
+
     class Example
-      @mixinto_proto MIXINS.default_protomixin()
+      @mixinto_proto mixin
 
-      constructor: (@foo) ->
-
-    e = new Example 'example'
+    e = new Example
 
     expect(e.bar).toBe 1
-    expect(e.baz()).toEqual ['example']
+    expect(e.baz()).toEqual ['baz']
 
   it 'should be order-dependent', ->
     mixin_1 = Mixin.from_obj name: 'mixin_1', foo: 'bar1', baz: 'qux'
@@ -302,27 +303,22 @@ fdescribe 'mix.it.protomixin', ->
         ).not.toThrow()
 
       it 'should call the before_hook before the mixin method and pass the return value', ->
+        spyOn(@mixin, 'baz').and.callFake (before_value) ->
+          [before_value]
+
         class Example
           before_baz: ->
             'before_baz'
         Example.mixinto_proto @mixin, hook_before: ['baz']
 
-        e = new Example()
-
-        spyOn(e, 'baz').and.callThrough()
-        spyOn(e, 'before_baz').and.callThrough()
-
-        expect(e.baz()).toEqual(['before_baz'])
+        expect((new Example).baz()).toEqual(['before_baz'])
 
       it 'should call the after_hook after the mixin method and take the return value', ->
+        spyOn(@mixin, 'baz').and.returnValue ['baz']
+
         class Example
           after_baz: (baz) ->
             baz.concat ['after_baz']
         Example.mixinto_proto @mixin, hook_after: ['baz']
 
-        e = new Example()
-
-        spyOn(e, 'baz').and.callThrough()
-        spyOn(e, 'after_baz').and.callThrough()
-
-        expect(e.baz()).toEqual(['foo', 'after_baz'])
+        expect((new Example).baz()).toEqual(['baz', 'after_baz'])
