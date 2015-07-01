@@ -59,7 +59,7 @@ MIX =
       hooked_mixinfunc = _.compose context[hookname], mixinvalue
     context[mixinprop] = hooked_mixinfunc
 
-  standard: ({context, mixinprop, mixinvalue}) ->
+  without_hook: ({context, mixinprop, mixinvalue}) ->
     context[mixinprop] = mixinvalue
 
 
@@ -80,7 +80,7 @@ mixinto_proto = (mixin, options = {}) ->
     mixcontent = {context: @::, mixinprop, mixinvalue}
 
     if not (mixinprop in _.union(methodhooks.before, methodhooks.after))
-      MIX.standard mixcontent
+      MIX.without_hook mixcontent
     else
       MIX.with_hook mixcontent, (mixinprop in methodhooks.before)
 
