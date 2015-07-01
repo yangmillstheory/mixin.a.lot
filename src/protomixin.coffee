@@ -68,14 +68,12 @@ mixinto_proto = (mixin, options = {}) ->
   if _.isEmpty mixing_in
     throw new errors.ValueError "Found nothing to mix in!"
   for mixinprop, mixinvalue of mixing_in
-    mix = {context: @::, mixinprop, mixinvalue}
+    mixcontent = {context: @::, mixinprop, mixinvalue}
 
-    if mixinprop in methodhooks.before
-      MIX.with_hook mix, true
-    else if mixinprop in methodhooks.after
-      MIX.with_hook mix
+    if not (mixinprop in methodhooks.before.concat methodhooks.after)
+      MIX.standard mixcontent
     else
-      MIX.standard mix
+      MIX.with_hook mixcontent, (mixinprop in methodhooks.before)
 
   postmixing_hook?.call(@::, mixinhook_args)
   @
