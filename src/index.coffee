@@ -1,6 +1,6 @@
-enable_protomixing = require './protomixin'
-enable_classmixing = require './classmixin'
-{Mixin, errors} = require './mixinfactory'
+enable_protomixing = require './protomixing'
+enable_classmixing = require './classmixing'
+{Mixin, errors} = require './mixin'
 
 
 module.exports = {

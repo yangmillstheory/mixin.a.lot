@@ -1,6 +1,6 @@
 fdescribe 'mix.it.mixinfactory', ->
 
-  {Mixin, errors} = require './mixinfactory'
+  {Mixin, errors} = require './index'
   _ = require 'underscore'
 
 

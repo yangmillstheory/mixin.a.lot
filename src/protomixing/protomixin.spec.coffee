@@ -1,7 +1,7 @@
 fdescribe 'mix.it.protomixin', ->
 
-  {enable_protomixing, Mixin, errors} = require './index'
-  {beforeOnce, _, MIXINS} = require './util/spec'
+  {enable_protomixing, Mixin, errors} = require '../index'
+  {beforeOnce, _, MIXINS} = require '../util/spec'
 
   beforeOnce ->
     enable_protomixing()

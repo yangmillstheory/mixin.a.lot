@@ -1,5 +1,5 @@
-{Mixin, errors} = require './mixinfactory'
-{__, MIX, PARSE} = require './util'
+{Mixin, errors} = require '../mixin'
+{__, MIX, PARSE} = require '../util'
 _ = require 'underscore'
 
 
