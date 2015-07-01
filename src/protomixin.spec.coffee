@@ -104,22 +104,23 @@ fdescribe 'mix.it.protomixin', ->
         expect(args...).toEqual(['arg1', 'arg2'])
 
       it 'should invoke the pre-mixing hook before mixing in properties', ->
+        mix_opts = {premixing_hook: ->}
         error = new Error
         threw = false
 
-        spyOn(@mixin, 'premixing_hook').and.throwError(error)
+        spyOn(mix_opts, 'premixing_hook').and.throwError(error)
         expect(@mixin.foo).toBeDefined()
 
         class Example
 
         try
-          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+          Example.mixinto_proto @mixin, mix_opts, ['arg1', 'arg2']
         catch error
           threw = true
         finally
           expect(threw).toBe true
           expect(Example::foo).toBeUndefined() # wasn't mixed in!
-          expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+          expect(mix_opts.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
     describe 'post-mixing hooks', ->
 
@@ -127,30 +128,32 @@ fdescribe 'mix.it.protomixin', ->
         @mixin = MIXINS.default_protomixin()
 
       it 'should invoke a post-mixing hook with the prototype context', ->
-        spyOn(@mixin, 'postmixing_hook').and.callThrough()
+        mix_opts = {postmixing_hook: ->}
+        spyOn(mix_opts, 'postmixing_hook').and.callThrough()
 
         class Example
-        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        Example.mixinto_proto @mixin, mix_opts, ['arg1', 'arg2']
 
-        expect(@mixin.postmixing_hook.calls.count()).toBe 1
+        expect(mix_opts.postmixing_hook.calls.count()).toBe 1
 
-        {object, args} = @mixin.postmixing_hook.calls.first()
+        {object, args} = mix_opts.postmixing_hook.calls.first()
 
         # test that the right context was used
         expect(object).toBe(Example::)
         expect(args...).toEqual(['arg1', 'arg2'])
 
       it 'should invoke the post-mixing hook after mixing in properties', ->
+        mix_opts = {postmixing_hook: ->}
         error = new Error
         threw = false
 
-        spyOn(@mixin, 'postmixing_hook').and.throwError(error)
+        spyOn(mix_opts, 'postmixing_hook').and.throwError(error)
         expect(@mixin.bar).toBe 1
 
         class Example
 
         try
-          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+          Example.mixinto_proto @mixin, mix_opts, ['arg1', 'arg2']
         catch error
           threw = true
         finally
