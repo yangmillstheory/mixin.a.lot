@@ -3,21 +3,9 @@ Util = require './util'
 _ = require 'underscore'
 
 
-mix_with_hook = ({context, mixinprop, mixinfunc}, before = false) ->
-  hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
-
-  unless _.isFunction(context[hookname])
-    throw errors.NotImplemented "Unimplemented hook: #{hookname}"
-  if before
-    hooked_mixinfunc = _.compose mixinfunc, context[hookname]
-  else
-    hooked_mixinfunc = _.compose context[hookname], mixinfunc
-  context[mixinprop] = hooked_mixinfunc
-
-
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate_mixin(mixin)
-  {omits, hooks} = Mixin.parse_mix_opts(mixin, options)
+  {omits, methodhooks} = Mixin.parse_mix_opts(mixin, options)
 
   {premixing_hook, postmixing_hook} = mixin
   [__, __, mixinhook_args] = arguments
@@ -30,12 +18,14 @@ mixinto_proto = (mixin, options = {}) ->
   if _.isEmpty mixing_in
     throw new errors.ValueError "Found nothing to mix in!"
   for mixinprop, mixinvalue of mixing_in
-    if mixinprop in hooks.hook_before
-      mix_with_hook {context: @::, mixinprop, mixinfunc: mixinvalue}, true
-    else if mixinprop in hooks.hook_after
-      mix_with_hook {context: @::, mixinprop, mixinfunc: mixinvalue}
+    mix = {context: @::, mixinprop, mixinfunc: mixinvalue}
+
+    if mixinprop in methodhooks.before
+      Mixin.attach_before_hook mix
+    else if mixinprop in methodhooks.after
+      Mixin.attach_after_hook mix
     else
-      @::[mixinprop] = mixinvalue
+      mix.context[mixinprop] = mixinvalue
 
   postmixing_hook?.call(@::, mixinhook_args)
   @

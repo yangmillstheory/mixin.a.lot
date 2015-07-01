@@ -13,25 +13,25 @@ errors =
 
 class Mixin
   ###
-    Don't make your own Mixin instances; use the factory method @make_mixin,
-    which creates immutable instances for use with mixin methods on Function.prototype.
+    An immutable class wrapping an immutable mixin instances that wrap simple
+    object literals.
 
-    The philosophy, more or less, is like:
+    Mixins have no special behavior or data other than
 
-      - https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
+      - name
+      - toString()
+      - mixin_keys (Array of property names that to mix in)
 
-    The instance property .mixin_keys contains the properties to mix in.
+    and immutability.
+
+    The augmentation logic is in the factory method .from_obj, which is
+    the only meaningful way to create instances.
   ###
 
 
-  @mixing_hooks: [
+  @_mixing_hooks: [
     'premixing_hook'
     'postmixing_hook'
-  ]
-
-  @mixinmethod_hooks: [
-    'pre_mixinmethod_hook'
-    'post_mixinmethod_hook'
   ]
 
   @_parse_hooks: (mixin, hooks) ->
@@ -44,7 +44,9 @@ class Mixin
             throw new ValueError "#{methodname} isn't a method on #{mixin}"
       else
         hooks[hook_key] = []
-    hooks
+
+    before: hooks.hook_before
+    after: hooks.hook_after
 
   @_parse_omits: (mixin, omits) ->
     if omits != undefined
@@ -55,18 +57,35 @@ class Mixin
         throw new ValueError "Some omit keys aren't in mixin: #{diff}"
     (omits?.length && omits) || []
 
+  @_attach_hook = ({context, mixinprop, mixinfunc}, before = false) ->
+    hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
+
+    unless _.isFunction(context[hookname])
+      throw errors.NotImplemented "Unimplemented hook: #{hookname}"
+    if before
+      hooked_mixinfunc = _.compose mixinfunc, context[hookname]
+    else
+      hooked_mixinfunc = _.compose context[hookname], mixinfunc
+    context[mixinprop] = hooked_mixinfunc
+
+  @attach_before_hook = ->
+    @_attach_hook(arguments..., true)
+
+  @attach_after_hook = ->
+    @_attach_hook(arguments...)
+
   @parse_mix_opts: (mixin, options) ->
     {omits, hook_before, hook_after} = options
 
     omits = @_parse_omits(mixin, omits)
-    hooks = @_parse_hooks(mixin, {hook_before, hook_after})
+    {before, after} = @_parse_hooks(mixin, {hook_before, hook_after})
 
-    {omits, hooks}
+    {omits, methodhooks: {before, after}}
 
   @validate_mixin: (mixin) ->
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
-    for mixinhook_key in @mixing_hooks
+    for mixinhook_key in @_mixing_hooks
       supplied_hook = mixin[mixinhook_key]
       if supplied_hook? && !_.isFunction supplied_hook
         throw new TypeError "Expected a function for #{mixinhook_key}"
