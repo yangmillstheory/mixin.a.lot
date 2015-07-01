@@ -192,21 +192,6 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin, omits: ['bar', 'baz']
       ).toThrow new errors.ArgumentError "Found nothing to mix in!"
 
-    xit 'should throw an error when supplying a non object-literal hooks option', ->
-      non_obj_literals = [
-        []
-        1
-        'String'
-        false
-        null
-      ]
-
-      for non_obj_literal in non_obj_literals
-        expect(=>
-          class Example
-          Example.mixinto_proto @mixin, pre_mixinmethod_hooks: non_obj_literal
-        ).toThrow new errors.ArgumentError "Expected object literal for hooks option"
-
     it 'should throw an error when the hook configuration is not an Array of Strings', ->
       bad_hook_values = [
         'String'
