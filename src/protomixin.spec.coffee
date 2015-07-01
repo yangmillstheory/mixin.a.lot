@@ -189,7 +189,7 @@ fdescribe 'mix.it.protomixin', ->
     it 'should not omit all mixin keys', ->
       expect(=>
         class Example
-        Example.mixinto_proto @mixin, omits: ['bar', 'baz']
+        Example.mixinto_proto @mixin, omits: ['bar', 'baz', 'foo']
       ).toThrow new errors.ArgumentError "Found nothing to mix in!"
 
     it 'should throw an error when the hook configuration is not an Array of Strings', ->

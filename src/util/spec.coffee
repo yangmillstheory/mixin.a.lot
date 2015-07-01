@@ -29,6 +29,7 @@ MIXINS =
   default_protomixin: ->
     mixin = Mixin.from_obj
       name: 'Default Example Mixin'
+      foo: 'foo'
       bar: 1
       baz: ->
         [@foo]
