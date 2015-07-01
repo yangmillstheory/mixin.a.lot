@@ -34,10 +34,6 @@ MIXINS =
       name: 'Schematized Example Mixin'
       foo: 'foo'
       , @FREEZE
-    mixin.premixing_hook = ->
-      for key in schema
-        unless @[key]?
-          throw new errors.NotImplemented "Wanted schema key #{key}"
     mixin
 
   ###

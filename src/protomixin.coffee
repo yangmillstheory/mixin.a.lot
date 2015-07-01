@@ -4,7 +4,7 @@ _ = require 'underscore'
 
 PARSE =
 
-  _parse_hooks: (mixin, hooks) ->
+  _parse_methodhooks: (mixin, hooks) ->
     for own hook_key, methods of hooks
       if methods != undefined
         unless Array.isArray(methods) && _.all(methods, Util.is_nonempty_string)
@@ -17,6 +17,13 @@ PARSE =
 
     {before: hooks.hook_before, after: hooks.hook_after}
 
+  _parse_mixinghooks: (mixin, methodhooks) ->
+    for own mixinghook_key, hook of methodhooks
+      supplied_hook = mixin[mixinghook_key]
+      if supplied_hook? && !_.isFunction supplied_hook
+        throw new TypeError "Expected a function for #{mixinghook_key}"
+
+    {premix: methodhooks.premixing_hook, postmix: methodhooks.postmixing_hook}
 
   _parse_omits: (mixin, omits) ->
     if omits != undefined
@@ -28,12 +35,15 @@ PARSE =
     (omits?.length && omits) || []
 
   mix: (mixin, options) ->
-    {omits, hook_before, hook_after} = options
+    {omits} = options
+    {hook_before, hook_after} = options
+    {premixing_hook, postmixing_hook} = options
 
     omits = @_parse_omits(mixin, omits)
-    {before, after} = @_parse_hooks(mixin, {hook_before, hook_after})
+    {before, after} = @_parse_methodhooks(mixin, {hook_before, hook_after})
+    {premix, postmix} = @_parse_mixinghooks(mixin, {premixing_hook, postmixing_hook})
 
-    {omits, methodhooks: {before, after}}
+    {omits, methodhooks: {before, after}, mixinghooks: {premix, postmix}}
 
 
 MIX =
@@ -55,12 +65,11 @@ MIX =
 
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate(mixin)
-  {omits, methodhooks} = PARSE.mix(mixin, options)
+  {omits, methodhooks, mixinghooks} = PARSE.mix(mixin, options)
 
-  {premixing_hook, postmixing_hook} = mixin
   [__, __, mixinhook_args] = arguments
 
-  premixing_hook?.call(@::, mixinhook_args)
+  mixinghooks.premix?.call(@::, mixinhook_args)
 
   mixing_in = _.object(
     [k, v] for k, v of mixin when k in mixin.mixin_keys and k not in omits)
@@ -75,7 +84,7 @@ mixinto_proto = (mixin, options = {}) ->
     else
       MIX.with_hook mixcontent, (mixinprop in methodhooks.before)
 
-  postmixing_hook?.call(@::, mixinhook_args)
+  methodhooks.postmix?.call(@::, mixinhook_args)
   @
 
 enable_protomixing = ->

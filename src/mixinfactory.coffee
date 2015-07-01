@@ -37,10 +37,6 @@ class Mixin
   @validate: (mixin) ->
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
-    for mixinhook_key in @_mixing_hooks
-      supplied_hook = mixin[mixinhook_key]
-      if supplied_hook? && !_.isFunction supplied_hook
-        throw new TypeError "Expected a function for #{mixinhook_key}"
 
   @from_obj: (obj, freeze = true) ->
     unless _.isObject(obj) && !_.isArray(obj)

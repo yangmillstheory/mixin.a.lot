@@ -76,23 +76,28 @@ fdescribe 'mix.it.protomixin', ->
         to validate that the mixing class satisfies a certain schema.
       ###
       it 'should invoke a pre-mixing hook with the prototype context', ->
-        spyOn(@mixin, 'premixing_hook').and.callThrough()
+        premixing_hook = ->
+          unless @special_key?
+            throw new errors.NotImplemented "Wanted schema key special_key"
+        mix_opts = {premixing_hook}
+
+        spyOn(mix_opts, 'premixing_hook').and.callThrough()
 
         expect(=>
           class Example
             # special_key is not on the prototype; schema unsatisfied, hook will throw
-          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+          Example.mixinto_proto @mixin, mix_opts, ['arg1', 'arg2']
         ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
         class Example
           # special_key is on the prototype; schema satisfied, hook won't throw
           special_key: 1
-        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        Example.mixinto_proto @mixin, mix_opts, ['arg1', 'arg2']
 
-        expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
-        expect(@mixin.premixing_hook.calls.count()).toBe 2
+        expect(mix_opts.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+        expect(mix_opts.premixing_hook.calls.count()).toBe 2
 
-        {object, args} = @mixin.premixing_hook.calls.mostRecent()
+        {object, args} = mix_opts.premixing_hook.calls.mostRecent()
 
         # test that the right context was used
         expect(object).toBe(Example::)
