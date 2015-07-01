@@ -2,23 +2,19 @@
 
 [![Build Status](https://travis-ci.org/yangmillstheory/mix.it.svg?branch=master)](https://travis-ci.org/yangmillstheory/mix.it)
 
-CoffeeScript/JavaScript mix-in.
-
-* `mixinto_proto(mixin, options)`
-* `mixinto_class(mixin, options)`
-* `mixin_blended(blend, options)`
+A CoffeeScript/JavaScript mixin framework.
 
 ## Getting Started ##
 
 Install the package.
 
-    $ sudo npm install mix.it
+    $ sudo npm install mixin.a.lot
     
 Usage examples, edge cases.
     
 ## Development ##
 
-    $ cd mix.it
+    $ cd mixin.a.lot
 
 To compile CoffeeScripts:
 
@@ -33,9 +29,5 @@ Pull requests are welcome; pull requests with tests are even more welcome.
 
 ### TODO ###
 
-* pre/post hooks for mixin methods
-* option to omit certain mixin methods (done)
-* blended mixins
-* don't mess with existing class hierarchies (see [1](https://github.com/dentafrice/coffeescript-mixins/issues/1), [2](https://github.com/dentafrice/coffeescript-mixins/issues/2))
-* [ensure bindings are always correct](https://github.com/dentafrice/coffeescript-mixins/issues/3)
+* classmixing
 * build: concatenate sources
