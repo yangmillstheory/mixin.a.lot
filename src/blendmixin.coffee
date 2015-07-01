@@ -14,9 +14,9 @@ enable_blendmixing = ->
 
   ensure_blend = (blend) ->
     unless _.has(mixin_conf, 'classmixin')
-      throw new HELPERS.ArgumentError("Expected mixin_conf to have .classmixin")
+      throw new HELPERS.BadArgument("Expected mixin_conf to have .classmixin")
     unless _.has(mixin_conf, 'protomixin')
-      throw new HELPERS.ArgumentError("Expected mixin_conf to have .protomixin")
+      throw new HELPERS.BadArgument("Expected mixin_conf to have .protomixin")
 
   f_proto.blended_mixinto = (blend) ->
     if !f_proto.__can_blend

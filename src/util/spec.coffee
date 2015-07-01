@@ -22,7 +22,7 @@ MIXINS =
     mixin.premixing_hook = ->
       for key in schema || ['special_key';]
         unless @[key]?
-          throw new TypeError("Wanted schema key #{key}")
+          throw new errors.NotImplemented "Wanted schema key #{key}"
       @modified_proto = true
     mixin
 

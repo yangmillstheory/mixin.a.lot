@@ -6,9 +6,9 @@ errors =
 
   NotImplemented: class NotImplemented extends Error
 
-  MutabilityError: class MutabilityError extends Error
+  NotMutable: class NotMutable extends Error
 
-  ArgumentError: class ArgumentError extends Error
+  BadArgument: class BadArgument extends Error
 
 
 class Mixin
@@ -38,10 +38,10 @@ class Mixin
     for own hook_key, methods of hooks
       if methods != undefined
         unless Array.isArray(methods) && _.all(methods, Utils.is_nonempty_string)
-          throw new ArgumentError "#{hook_key}: expected an Array of mixin method names"
+          throw new BadArgument "#{hook_key}: expected an Array of mixin method names"
         for methodname in methods
           unless _.isFunction mixin[methodname]
-            throw new ArgumentError "#{methodname} isn't a method on #{mixin}"
+            throw new BadArgument "#{methodname} isn't a method on #{mixin}"
       else
         hooks[hook_key] = []
     hooks
@@ -49,10 +49,10 @@ class Mixin
   @_parse_omits: (mixin, omits) ->
     if omits != undefined
       unless Array.isArray(omits) && omits.length
-        throw new ArgumentError "Expected omits option to be a nonempty Array"
+        throw new BadArgument "Expected omits option to be a nonempty Array"
       diff = _.difference(omits, mixin.mixin_keys)
       if diff.length
-        throw new ArgumentError "Some omit keys aren't in mixin: #{diff}"
+        throw new BadArgument "Some omit keys aren't in mixin: #{diff}"
     (omits?.length && omits) || []
 
   @parse_mix_opts: (mixin, options) ->
@@ -75,13 +75,13 @@ class Mixin
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"
     unless _.isString(obj.name) && obj.name
-      throw new ArgumentError "Expected String name in options argument"
+      throw new BadArgument "Expected String name in options argument"
 
     mixin = new Mixin
     mkeys = Object.keys(_.omit(obj, 'name')).sort()
 
     if _.isEmpty(mkeys)
-      throw new ArgumentError "Found nothing to mix in!"
+      throw new BadArgument "Found nothing to mix in!"
 
     for key, value of _.extend(obj, mixin_keys: mkeys)
       do (key, value) =>
@@ -90,7 +90,7 @@ class Mixin
           get: ->
             value
           set: =>
-            throw new MutabilityError "Cannot change #{key} on #{mixin}"
+            throw new NotMutable "Cannot change #{key} on #{mixin}"
     (freeze && Object.freeze mixin) || mixin
 
   toString: ->

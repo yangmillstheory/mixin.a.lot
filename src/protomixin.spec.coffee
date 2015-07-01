@@ -80,7 +80,7 @@ fdescribe 'mix.it.protomixin', ->
           @special_key = 1
 
         Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
-      ).toThrow new TypeError('Wanted schema key special_key')
+      ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
       class Example
         # special_key is on the prototype
@@ -156,7 +156,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-      ).toThrow new errors.ArgumentError "Some omit keys aren't in mixin: non_mixin_key"
+      ).toThrow new errors.BadArgument "Some omit keys aren't in mixin: non_mixin_key"
 
     it 'should throw an error when omitting a non-Array or empty Array', ->
       bad_omits_values = [
@@ -171,7 +171,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, omits: bad_omits_value
-        ).toThrow new errors.ArgumentError "Expected omits option to be a nonempty Array"
+        ).toThrow new errors.BadArgument "Expected omits option to be a nonempty Array"
 
     it 'should not mangle the class hierarchy when omitting keys', ->
       class Super
@@ -190,7 +190,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['bar', 'baz', 'foo']
-      ).toThrow new errors.ArgumentError "Found nothing to mix in!"
+      ).toThrow new errors.BadArgument "Found nothing to mix in!"
 
     it 'should throw an error when the hook configuration is not an Array of Strings', ->
       bad_hook_values = [
@@ -247,10 +247,13 @@ fdescribe 'mix.it.protomixin', ->
             'non_existent_method_1' # invalid
             'non_existent_method_2' # invalid
           ]
-      ).toThrow new errors.ArgumentError "non_existent_method_1 isn't a method on #{@mixin}"
+      ).toThrow new errors.BadArgument "non_existent_method_1 isn't a method on #{@mixin}"
 
-    xit 'should provide a hook before a mixin method', ->
+    it 'should provide a hook meant to be implemented before a mixin method', ->
+      class Example
+      Example.mixinto_proto @mixin, hook_before: ['baz']
+
       expect(true).toBe true
 
-    xit 'should provide a hook after a mixin method', ->
+    xit 'should provide a hook meant to be implemented after a mixin method', ->
       expect(true).toBe true
