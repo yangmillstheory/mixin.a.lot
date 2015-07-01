@@ -1,5 +1,5 @@
 {Mixin, errors} = require './mixinfactory'
-Util = require './util'
+Utils = require './util'
 _ = require 'underscore'
 
 PARSE =
@@ -7,7 +7,7 @@ PARSE =
   _parse_methodhooks: (mixin, hooks) ->
     for own hook_key, methods of hooks
       if methods != undefined
-        unless Array.isArray(methods) && _.all(methods, Util.is_nonempty_string)
+        unless Array.isArray(methods) && _.all(methods, Utils.is_nonempty_string)
           throw new errors.ValueError "#{hook_key}: expected an Array of mixin method names"
         for methodname in methods
           unless _.isFunction mixin[methodname]
