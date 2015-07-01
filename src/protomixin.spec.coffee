@@ -239,15 +239,24 @@ fdescribe 'mix.it.protomixin', ->
         ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
 
     it 'should throw an error when hooking into a non-existent mixin method', ->
-      expect(=>
-        class Example
-        Example.mixinto_proto @mixin,
-          hook_before: [
-            'baz'                   # valid method name
-            'non_existent_method_1' # invalid
-            'non_existent_method_2' # invalid
-          ]
-      ).toThrow new errors.BadArgument "non_existent_method_1 isn't a method on #{@mixin}"
+      bad_hook_requests = [
+        hook_before: [
+          'baz'                   # valid method
+          'non_existent_method_1' # invalid
+          'non_existent_method_2' # invalid
+        ], bad_method: 'non_existent_method_1'
+        hook_before: [
+          'baz' # valid method
+          'foo' # non-method property
+        ], bad_method: 'foo'
+      ]
+
+      for {hook_before, bad_method} in bad_hook_requests
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin,
+            hook_before: hook_before
+        ).toThrow new errors.BadArgument "#{bad_method} isn't a method on #{@mixin}"
 
     it 'should provide a hook meant to be implemented before a mixin method', ->
       class Example
