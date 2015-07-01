@@ -1,4 +1,5 @@
-Mixin = require './mixinfactory'
+{Mixin, errors} = require './mixinfactory'
+Util = require './util'
 _ = require 'underscore'
 
 
@@ -11,14 +12,18 @@ mixinto_proto = (mixin, options = {}) ->
 
   premixing_hook?.call(@::, mixinhook_args)
 
-  mixing = _.object ([k, v] for k, v of mixin when k not in omits)
-  mixing = _.object ([k, v] for k, v of mixing when k in mixin.mixin_keys)
+  mixing_in = _.object(
+    [k, v] for k, v of mixin when k in mixin.mixin_keys and k not in omits)
 
-  if _.isEmpty mixing
-    throw new Mixin.ArgumentError "Found nothing to mix in!"
+  if _.isEmpty mixing_in
+    throw new errors.ArgumentError "Found nothing to mix in!"
 
-  for key, value of mixing
-    @::[key] = value
+  for mixinprop, mixinvalue of mixing_in
+    if mixinprop in hooks.hook_before
+      before_hook = "before_#{mixinprop}"
+      @::[before_hook] = ->
+        throw errors.NotImplemented "Unimplemented before_hook: #{before_hook}"
+    @::[mixinprop] = mixinvalue
 
   postmixing_hook?.call(@::, mixinhook_args)
   @

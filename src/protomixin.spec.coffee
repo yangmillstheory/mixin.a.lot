@@ -1,9 +1,7 @@
 fdescribe 'mix.it.protomixin', ->
 
-  {enable_protomixing, Mixin} = require './index'
+  {enable_protomixing, Mixin, errors} = require './index'
   {beforeOnce, _, MIXINS} = require './util/spec'
-
-  Utils = require './util'
 
   beforeOnce ->
     enable_protomixing()
@@ -59,7 +57,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin
-      ).toThrow(new Error('Expected a function for premixing_hook'))
+      ).toThrow(new TypeError('Expected a function for premixing_hook'))
 
       @mixin = MIXINS.schematized_protomixin()
       @mixin.postmixing_hook = []
@@ -67,7 +65,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin
-      ).toThrow(new Error('Expected a function for postmixing_hook'))
+      ).toThrow(new TypeError('Expected a function for postmixing_hook'))
 
     ###
       This is also a good example of pre-mixin hook usage;
@@ -158,7 +156,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-      ).toThrow new Mixin.ArgumentError "Some omit keys aren't in mixin: non_mixin_key"
+      ).toThrow new errors.ArgumentError "Some omit keys aren't in mixin: non_mixin_key"
 
     it 'should throw an error when omitting a non-Array or empty Array', ->
       bad_omits_values = [
@@ -173,7 +171,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, omits: bad_omits_value
-        ).toThrow new Mixin.ArgumentError "Expected omits option to be a nonempty Array"
+        ).toThrow new errors.ArgumentError "Expected omits option to be a nonempty Array"
 
     it 'should not mangle the class hierarchy when omitting keys', ->
       class Super
@@ -192,7 +190,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['bar', 'baz']
-      ).toThrow new Mixin.ArgumentError "Found nothing to mix in!"
+      ).toThrow new errors.ArgumentError "Found nothing to mix in!"
 
     xit 'should throw an error when supplying a non object-literal hooks option', ->
       non_obj_literals = [
@@ -207,7 +205,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, pre_mixinmethod_hooks: non_obj_literal
-        ).toThrow new Mixin.ArgumentError "Expected object literal for hooks option"
+        ).toThrow new errors.ArgumentError "Expected object literal for hooks option"
 
     it 'should throw an error when the hook configuration is not an Array of Strings', ->
       bad_hook_values = [
@@ -264,7 +262,7 @@ fdescribe 'mix.it.protomixin', ->
             'non_existent_method_1' # invalid
             'non_existent_method_2' # invalid
           ]
-      ).toThrow new Mixin.ArgumentError "non_existent_method_1 isn't a method on #{@mixin}"
+      ).toThrow new errors.ArgumentError "non_existent_method_1 isn't a method on #{@mixin}"
 
     xit 'should provide a hook before a mixin method', ->
       expect(true).toBe true

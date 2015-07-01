@@ -1,5 +1,5 @@
 _ = require 'underscore'
-Mixin = require '../mixinfactory'
+{Mixin, errors} = require '../mixinfactory'
 
 
 beforeOnce = (fn) ->

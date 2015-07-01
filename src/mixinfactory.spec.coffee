@@ -1,6 +1,6 @@
 fdescribe 'mix.it.mixinfactory', ->
 
-  Mixin = require './mixinfactory'
+  {Mixin, errors} = require './mixinfactory'
   _ = require 'underscore'
 
 
@@ -24,12 +24,12 @@ fdescribe 'mix.it.mixinfactory', ->
     it 'should reject objects with no name property', ->
       expect(->
         Mixin.from_obj quack: -> console.log 'Quack!'
-      ).toThrow new Mixin.ArgumentError "Expected String name in options argument"
+      ).toThrow new errors.ArgumentError "Expected String name in options argument"
 
     it 'should reject objects with only a name property', ->
       expect(->
         Mixin.from_obj name: 'Example Mixin'
-      ).toThrow new Mixin.ArgumentError "Found nothing to mix in!"
+      ).toThrow new errors.ArgumentError "Found nothing to mix in!"
 
     it 'should validate a proposed Mixin', ->
       for invalid_mixin in @invalid_mixin_types
@@ -98,7 +98,7 @@ fdescribe 'mix.it.mixinfactory', ->
       for key in @mixin.mixin_keys
         expect(=>
           @mixin[key] = null
-        ).toThrow new Mixin.MutabilityError "Cannot change #{key} on #{@mixin}"
+        ).toThrow new errors.MutabilityError "Cannot change #{key} on #{@mixin}"
 
     it 'should have a frozen prototype with silent failures on change attempts', ->
       old_keys = Object.keys Mixin::
