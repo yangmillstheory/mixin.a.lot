@@ -1,4 +1,5 @@
 _ = require 'underscore'
+MixinUtils = require './util'
 
 
 class Mixin
@@ -27,9 +28,9 @@ class Mixin
   ]
 
   @_check_hooks: (mixin_keys, hooks) ->
-    for own hook_key, mixinmethods of hooks
-      if mixinmethods != undefined
-        unless Array.isArray(mixinmethods) && _.all(mixinmethods, _.isString)
+    for own hook_key, methods of hooks
+      if methods != undefined
+        unless Array.isArray(methods) && _.all(methods, MixinUtils.is_nonempty_string)
           throw new @ArgumentError "#{hook_key}: expected an Array of mixin method names"
 #        methods_to_hook = _.values(hookconfig)[0]
 #        diff = _.difference(methods_to_hook, mixin_keys)
