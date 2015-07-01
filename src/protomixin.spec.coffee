@@ -80,7 +80,6 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
             # special_key is not on the prototype; schema unsatisfied, hook will throw
-            @special_key = 1
           Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
         ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
@@ -91,7 +90,12 @@ fdescribe 'mix.it.protomixin', ->
 
         expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.premixing_hook.calls.count()).toBe 2
-        expect(Example::modified_proto).toBe true
+
+        {object, args} = @mixin.premixing_hook.calls.mostRecent()
+
+        # test that the right context was used
+        expect(object).toBe(Example::)
+        expect(args...).toEqual(['arg1', 'arg2'])
 
       it 'should invoke the pre-mixing hook before mixing in properties', ->
         error = new Error
@@ -108,7 +112,7 @@ fdescribe 'mix.it.protomixin', ->
           threw = true
         finally
           expect(threw).toBe true
-          expect(Example::modified_proto).toBeUndefined()
+          expect(Example::foo).toBeUndefined() # wasn't mixed in!
           expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
     describe 'post-mixing hooks', ->
@@ -122,11 +126,17 @@ fdescribe 'mix.it.protomixin', ->
         class Example
         Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
 
-        expect(Example::modified_proto).toBe true
-        expect(@mixin.postmixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+        expect(@mixin.postmixing_hook.calls.count()).toBe 1
+
+        {object, args} = @mixin.postmixing_hook.calls.first()
+
+        # test that the right context was used
+        expect(object).toBe(Example::)
+        expect(args...).toEqual(['arg1', 'arg2'])
 
       it 'should invoke the post-mixing hook after mixing in properties', ->
         error = new Error
+        threw = false
 
         spyOn(@mixin, 'postmixing_hook').and.throwError(error)
         expect(@mixin.bar).toBe 1
@@ -136,9 +146,10 @@ fdescribe 'mix.it.protomixin', ->
         try
           Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
         catch error
+          threw = true
+        finally
+          expect(threw).toBe true
           expect(Example::bar).toBe 1 # was mixed in!
-          expect(Example::modified_proto).toBeUndefined()
-          expect(@mixin.postmixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
   describe 'protomixing options', ->
 

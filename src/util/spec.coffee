@@ -23,7 +23,6 @@ MIXINS =
       for key in schema || ['special_key';]
         unless @[key]?
           throw new errors.NotImplemented "Wanted schema key #{key}"
-      @modified_proto = true
     mixin
 
   default_protomixin: ->
