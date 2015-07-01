@@ -1,10 +1,10 @@
 {
-  "name": "mix.a.lot",
+  "name": "mixin.a.lot",
   "version": "1.0.0",
   "description": "CoffeeScript mixin module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yangmillstheory/mix.a.lot.git"
+    "url": "https://github.com/yangmillstheory/mixin.a.lot.git"
   },
   "keywords": [
     "coffeescript",
@@ -17,7 +17,7 @@
   "author": "Victor Alvarez",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yangmillstheory/mix.a.lot/issues"
+    "url": "https://github.com/yangmillstheory/mixin.a.lot/issues"
   },
   "devDependencies": {
     "coffee-script": "^1.9.2",
