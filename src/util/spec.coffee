@@ -12,13 +12,13 @@ beforeOnce = (fn) ->
 ###
 MIXINS =
 
-  DEFAULT_FREEZE: false
+  FREEZE: false
 
   schematized_protomixin: (schema = ['special_key']) ->
     mixin = Mixin.from_obj
       name: 'Schematized Example Mixin'
       foo: 'bar'
-      , @DEFAULT_FREEZE
+      , @FREEZE
     mixin.premixing_hook = ->
       for key in schema || ['special_key';]
         unless @[key]?
@@ -32,7 +32,7 @@ MIXINS =
       bar: 1
       baz: ->
         [@foo]
-      , @DEFAULT_FREEZE
+      , @FREEZE
     mixin.postmixing_hook = ->
       @modified_proto = true
     mixin
