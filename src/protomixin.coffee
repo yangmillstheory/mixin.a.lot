@@ -70,7 +70,7 @@ mixinto_proto = (mixin, options = {}) ->
   for mixinprop, mixinvalue of mixing_in
     mixcontent = {context: @::, mixinprop, mixinvalue}
 
-    if not (mixinprop in methodhooks.before.concat methodhooks.after)
+    if not (mixinprop in _.union(methodhooks.before, methodhooks.after))
       MIX.standard mixcontent
     else
       MIX.with_hook mixcontent, (mixinprop in methodhooks.before)
