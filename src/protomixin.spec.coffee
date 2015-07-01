@@ -181,13 +181,13 @@ fdescribe 'mix.it.protomixin', ->
           expect(=>
             class Example
             Example.mixinto_proto @mixin, omits: bad_omits_value
-          ).toThrow new errors.BadArgument "Expected omits option to be a nonempty Array"
+          ).toThrow new errors.ValueError "Expected omits option to be a nonempty Array"
 
       it 'should throw an error when omitting a non-existing mixin key', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-        ).toThrow new errors.BadArgument "Some omit keys aren't in mixin: non_mixin_key"
+        ).toThrow new errors.ValueError "Some omit keys aren't in mixin: non_mixin_key"
 
       it 'should not mangle the class hierarchy when omitting keys', ->
         class Super
@@ -206,7 +206,7 @@ fdescribe 'mix.it.protomixin', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, omits: ['bar', 'baz', 'foo']
-        ).toThrow new errors.BadArgument "Found nothing to mix in!"
+        ).toThrow new errors.ValueError "Found nothing to mix in!"
 
     describe 'requesting hooks', ->
 
@@ -274,7 +274,7 @@ fdescribe 'mix.it.protomixin', ->
             class Example
             Example.mixinto_proto @mixin,
               hook_before: hook_before
-          ).toThrow new errors.BadArgument "#{bad_method} isn't a method on #{@mixin}"
+          ).toThrow new errors.ValueError "#{bad_method} isn't a method on #{@mixin}"
 
       it 'should require that a before_hook be implemented when after_hooks are requested', ->
         expect(=>

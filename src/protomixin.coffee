@@ -28,7 +28,7 @@ mixinto_proto = (mixin, options = {}) ->
     [k, v] for k, v of mixin when k in mixin.mixin_keys and k not in omits)
 
   if _.isEmpty mixing_in
-    throw new errors.BadArgument "Found nothing to mix in!"
+    throw new errors.ValueError "Found nothing to mix in!"
   for mixinprop, mixinvalue of mixing_in
     if mixinprop in hooks.hook_before
       mix_with_hook {context: @::, mixinprop, mixinfunc: mixinvalue}, true

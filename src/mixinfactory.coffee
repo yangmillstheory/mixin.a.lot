@@ -8,7 +8,7 @@ errors =
 
   NotMutable: class NotMutable extends Error
 
-  BadArgument: class BadArgument extends Error
+  ValueError: class ValueError extends Error
 
 
 class Mixin
@@ -38,10 +38,10 @@ class Mixin
     for own hook_key, methods of hooks
       if methods != undefined
         unless Array.isArray(methods) && _.all(methods, Utils.is_nonempty_string)
-          throw new BadArgument "#{hook_key}: expected an Array of mixin method names"
+          throw new ValueError "#{hook_key}: expected an Array of mixin method names"
         for methodname in methods
           unless _.isFunction mixin[methodname]
-            throw new BadArgument "#{methodname} isn't a method on #{mixin}"
+            throw new ValueError "#{methodname} isn't a method on #{mixin}"
       else
         hooks[hook_key] = []
     hooks
@@ -49,10 +49,10 @@ class Mixin
   @_parse_omits: (mixin, omits) ->
     if omits != undefined
       unless Array.isArray(omits) && omits.length
-        throw new BadArgument "Expected omits option to be a nonempty Array"
+        throw new ValueError "Expected omits option to be a nonempty Array"
       diff = _.difference(omits, mixin.mixin_keys)
       if diff.length
-        throw new BadArgument "Some omit keys aren't in mixin: #{diff}"
+        throw new ValueError "Some omit keys aren't in mixin: #{diff}"
     (omits?.length && omits) || []
 
   @parse_mix_opts: (mixin, options) ->
@@ -75,13 +75,13 @@ class Mixin
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"
     unless _.isString(obj.name) && obj.name
-      throw new BadArgument "Expected String name in options argument"
+      throw new ValueError "Expected String name in options argument"
 
     mixin = new Mixin
     mkeys = Object.keys(_.omit(obj, 'name')).sort()
 
     if _.isEmpty(mkeys)
-      throw new BadArgument "Found nothing to mix in!"
+      throw new ValueError "Found nothing to mix in!"
 
     for key, value of _.extend(obj, mixin_keys: mkeys)
       do (key, value) =>
