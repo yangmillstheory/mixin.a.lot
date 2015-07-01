@@ -2,7 +2,7 @@ _ = require 'underscore'
 Mixin = require '../mixinfactory'
 
 
-MixinUtils =
+Utils =
 
   is_nonempty_string: (thing) ->
     _.isString(thing) && (thing.length > 0)
@@ -12,4 +12,4 @@ MixinUtils =
     # the implementation is guided by http://underscorejs.org/#isObject
     _.isObject(thing) && !Array.isArray(thing) && !_.isFunction(thing)
 
-module.exports = MixinUtils
+module.exports = Utils

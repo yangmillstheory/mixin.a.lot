@@ -3,7 +3,7 @@ fdescribe 'mix.it.protomixin', ->
   {enable_protomixing, Mixin} = require './index'
   {beforeOnce, _, MIXINS} = require './util/spec'
 
-  MixinUtils = require './util'
+  Utils = require './util'
 
   beforeOnce ->
     enable_protomixing()

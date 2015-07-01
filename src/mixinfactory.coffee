@@ -1,5 +1,5 @@
 _ = require 'underscore'
-MixinUtils = require './util'
+Utils = require './util'
 
 
 class Mixin
@@ -32,7 +32,7 @@ class Mixin
       if methods == undefined
         continue
 
-      unless Array.isArray(methods) && _.all(methods, MixinUtils.is_nonempty_string)
+      unless Array.isArray(methods) && _.all(methods, Utils.is_nonempty_string)
         throw new @ArgumentError "#{hook_key}: expected an Array of mixin method names"
       for methodname in methods
         if _.isFunction mixin[methodname]
