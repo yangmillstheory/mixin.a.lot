@@ -27,7 +27,7 @@ PARSE =
         throw new errors.ValueError "Some omit keys aren't in mixin: #{diff}"
     (omits?.length && omits) || []
 
-  mix_options: (mixin, options) ->
+  mix: (mixin, options) ->
     {omits, hook_before, hook_after} = options
 
     omits = @_parse_omits(mixin, omits)
@@ -55,7 +55,7 @@ MIX =
 
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate(mixin)
-  {omits, methodhooks} = PARSE.mix_options(mixin, options)
+  {omits, methodhooks} = PARSE.mix(mixin, options)
 
   {premixing_hook, postmixing_hook} = mixin
   [__, __, mixinhook_args] = arguments
