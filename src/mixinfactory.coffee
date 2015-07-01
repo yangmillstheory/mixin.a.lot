@@ -34,55 +34,7 @@ class Mixin
     'postmixing_hook'
   ]
 
-  @_parse_hooks: (mixin, hooks) ->
-    for own hook_key, methods of hooks
-      if methods != undefined
-        unless Array.isArray(methods) && _.all(methods, Utils.is_nonempty_string)
-          throw new ValueError "#{hook_key}: expected an Array of mixin method names"
-        for methodname in methods
-          unless _.isFunction mixin[methodname]
-            throw new ValueError "#{methodname} isn't a method on #{mixin}"
-      else
-        hooks[hook_key] = []
-
-    before: hooks.hook_before
-    after: hooks.hook_after
-
-  @_parse_omits: (mixin, omits) ->
-    if omits != undefined
-      unless Array.isArray(omits) && omits.length
-        throw new ValueError "Expected omits option to be a nonempty Array"
-      diff = _.difference(omits, mixin.mixin_keys)
-      if diff.length
-        throw new ValueError "Some omit keys aren't in mixin: #{diff}"
-    (omits?.length && omits) || []
-
-  @_attach_hook = ({context, mixinprop, mixinfunc}, before = false) ->
-    hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
-
-    unless _.isFunction(context[hookname])
-      throw errors.NotImplemented "Unimplemented hook: #{hookname}"
-    if before
-      hooked_mixinfunc = _.compose mixinfunc, context[hookname]
-    else
-      hooked_mixinfunc = _.compose context[hookname], mixinfunc
-    context[mixinprop] = hooked_mixinfunc
-
-  @attach_before_hook = ->
-    @_attach_hook(arguments..., true)
-
-  @attach_after_hook = ->
-    @_attach_hook(arguments...)
-
-  @parse_mix_opts: (mixin, options) ->
-    {omits, hook_before, hook_after} = options
-
-    omits = @_parse_omits(mixin, omits)
-    {before, after} = @_parse_hooks(mixin, {hook_before, hook_after})
-
-    {omits, methodhooks: {before, after}}
-
-  @validate_mixin: (mixin) ->
+  @validate: (mixin) ->
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
     for mixinhook_key in @_mixing_hooks

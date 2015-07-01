@@ -34,7 +34,7 @@ fdescribe 'mix.it.mixinfactory', ->
     it 'should validate a proposed Mixin', ->
       for invalid_mixin in @invalid_mixin_types
         expect(->
-          Mixin.validate_mixin(invalid_mixin)
+          Mixin.validate(invalid_mixin)
         ).toThrow new TypeError "Expected a Mixin instance"
 
     it 'should return a Mixin', ->
