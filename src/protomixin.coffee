@@ -3,6 +3,17 @@ Util = require './util'
 _ = require 'underscore'
 
 
+mix_with_hook = ({context, mixinprop, mixinfunc}, before = false) ->
+  hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
+
+  context[hookname] = ->
+    throw errors.NotImplemented "Unimplemented hook: #{hookname}"
+  if before
+    hooked_mixinfunc = _.compose mixinfunc, context[hookname]
+  else
+    hooked_mixinfunc = _.compose context[hookname], mixinfunc
+  context[mixinprop] = hooked_mixinfunc
+
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate_mixin(mixin)
   {omits, hooks} = Mixin.parse_mix_opts(mixin, options)
@@ -20,10 +31,11 @@ mixinto_proto = (mixin, options = {}) ->
 
   for mixinprop, mixinvalue of mixing_in
     if mixinprop in hooks.hook_before
-      before_hook = "before_#{mixinprop}"
-      @::[before_hook] = ->
-        throw errors.NotImplemented "Unimplemented before_hook: #{before_hook}"
-    @::[mixinprop] = mixinvalue
+      mix_with_hook {context: @::, mixinprop, mixinvalue}, true
+    else if mixinprop in hooks.hook_after
+      mix_with_hook {context: @::, mixinprop, mixinvalue}
+    else
+      @::[mixinprop] = mixinvalue
 
   postmixing_hook?.call(@::, mixinhook_args)
   @
