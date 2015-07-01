@@ -143,126 +143,173 @@ fdescribe 'mix.it.protomixin', ->
     beforeEach ->
       @mixin = MIXINS.default_protomixin()
 
-    it 'should omit mixin keys', ->
-        class Example
+    describe 'omitting mixin methods', ->
+
+      it 'should omit mixin keys', ->
+          class Example
+          Example.mixinto_proto @mixin, omits: ['bar']
+
+          e = new Example
+
+          expect(e.bar).toBeUndefined()
+          expect(e.baz).toBeDefined()
+
+      it 'should throw an error when omitting a non-existing mixin key', ->
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin, omits: ['non_mixin_key']
+        ).toThrow new errors.BadArgument "Some omit keys aren't in mixin: non_mixin_key"
+
+      it 'should throw an error when omitting a non-Array or empty Array', ->
+        bad_omits_values = [
+          []
+          {}
+          null
+          1
+          'String'
+        ]
+
+        for bad_omits_value in bad_omits_values
+          expect(=>
+            class Example
+            Example.mixinto_proto @mixin, omits: bad_omits_value
+          ).toThrow new errors.BadArgument "Expected omits option to be a nonempty Array"
+
+      it 'should not mangle the class hierarchy when omitting keys', ->
+        class Super
+          bar: ->
+            'bar'
+
+        class Example extends Super
         Example.mixinto_proto @mixin, omits: ['bar']
 
         e = new Example
 
-        expect(e.bar).toBeUndefined()
-        expect(e.baz).toBeDefined()
+        expect(e.bar).toBeDefined()
+        expect(e.bar()).toBe('bar')
 
-    it 'should throw an error when omitting a non-existing mixin key', ->
-      expect(=>
-        class Example
-        Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-      ).toThrow new errors.BadArgument "Some omit keys aren't in mixin: non_mixin_key"
-
-    it 'should throw an error when omitting a non-Array or empty Array', ->
-      bad_omits_values = [
-        []
-        {}
-        null
-        1
-        'String'
-      ]
-
-      for bad_omits_value in bad_omits_values
+      it 'should not omit all mixin keys', ->
         expect(=>
           class Example
-          Example.mixinto_proto @mixin, omits: bad_omits_value
-        ).toThrow new errors.BadArgument "Expected omits option to be a nonempty Array"
+          Example.mixinto_proto @mixin, omits: ['bar', 'baz', 'foo']
+        ).toThrow new errors.BadArgument "Found nothing to mix in!"
 
-    it 'should not mangle the class hierarchy when omitting keys', ->
-      class Super
-        bar: ->
-          'bar'
+    describe 'requesting hooks', ->
 
-      class Example extends Super
-      Example.mixinto_proto @mixin, omits: ['bar']
-
-      e = new Example
-
-      expect(e.bar).toBeDefined()
-      expect(e.bar()).toBe('bar')
-
-    it 'should not omit all mixin keys', ->
-      expect(=>
-        class Example
-        Example.mixinto_proto @mixin, omits: ['bar', 'baz', 'foo']
-      ).toThrow new errors.BadArgument "Found nothing to mix in!"
-
-    it 'should throw an error when the hook configuration is not an Array of Strings', ->
-      bad_hook_values = [
-        'String'
-        1
-        null
-        {}
-        true
-      ]
-
-      for bad_hook_value in bad_hook_values
-        expect(=>
-          class Example
-          Example.mixinto_proto @mixin, hook_before: bad_hook_value
-        ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
-
-    it 'should throw an error when hooking into a non-string or empty string', ->
-      bad_hook_requests = [
-        [
-          'mixinmethod_1'
-          false
-        ]
-        [
-          null
-          'mixinmethod_1'
-          'mixinmethod_2'
-        ]
-        [
-          {}
-          'mixinmethod_1'
-        ]
-        [
-          'mixinmethod_1'
+      it 'should throw an error when the hook configuration is not an Array of Strings', ->
+        bad_hook_values = [
+          'String'
           1
+          null
+          {}
+          true
         ]
-        [
-          'mixinmethod_1'
-          ''
-        ]
-      ]
 
-      for bad_hook_request in bad_hook_requests
+        for bad_hook_value in bad_hook_values
+          expect(=>
+            class Example
+            Example.mixinto_proto @mixin, hook_before: bad_hook_value
+          ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
+
+      it 'should throw an error when hooking into a non-string or empty string', ->
+        bad_hook_requests = [
+          [
+            'mixinmethod_1'
+            false
+          ]
+          [
+            null
+            'mixinmethod_1'
+            'mixinmethod_2'
+          ]
+          [
+            {}
+            'mixinmethod_1'
+          ]
+          [
+            'mixinmethod_1'
+            1
+          ]
+          [
+            'mixinmethod_1'
+            ''
+          ]
+        ]
+
+        for bad_hook_request in bad_hook_requests
+          expect(=>
+            class Example
+            Example.mixinto_proto @mixin, hook_before: bad_hook_request
+          ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
+
+      it 'should throw an error when hooking into a non-existent mixin method', ->
+        bad_hook_requests = [
+          hook_before: [
+            'baz'                   # valid method
+            'non_existent_method_1' # invalid
+            'non_existent_method_2' # invalid
+          ], bad_method: 'non_existent_method_1'
+          hook_before: [
+            'baz' # valid method
+            'foo' # non-method property
+          ], bad_method: 'foo'
+        ]
+
+        for {hook_before, bad_method} in bad_hook_requests
+          expect(=>
+            class Example
+            Example.mixinto_proto @mixin,
+              hook_before: hook_before
+          ).toThrow new errors.BadArgument "#{bad_method} isn't a method on #{@mixin}"
+
+      it 'should require that a before_hook be implemented when after_hooks are requested', ->
         expect(=>
           class Example
-          Example.mixinto_proto @mixin, hook_before: bad_hook_request
-        ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
+          Example.mixinto_proto @mixin, hook_before: ['baz']
+        ).toThrow new errors.NotImplemented "Unimplemented hook: before_baz"
 
-    it 'should throw an error when hooking into a non-existent mixin method', ->
-      bad_hook_requests = [
-        hook_before: [
-          'baz'                   # valid method
-          'non_existent_method_1' # invalid
-          'non_existent_method_2' # invalid
-        ], bad_method: 'non_existent_method_1'
-        hook_before: [
-          'baz' # valid method
-          'foo' # non-method property
-        ], bad_method: 'foo'
-      ]
-
-      for {hook_before, bad_method} in bad_hook_requests
         expect(=>
           class Example
-          Example.mixinto_proto @mixin,
-            hook_before: hook_before
-        ).toThrow new errors.BadArgument "#{bad_method} isn't a method on #{@mixin}"
+            before_baz: ->
 
-    it 'should provide a hook meant to be implemented before a mixin method', ->
-      class Example
-      Example.mixinto_proto @mixin, hook_before: ['baz']
+          Example.mixinto_proto @mixin, hook_before: ['baz']
+        ).not.toThrow()
 
-      expect(true).toBe true
+      it 'should require that an after_hook be implemented when before_hooks are requested', ->
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin, hook_after: ['baz']
+        ).toThrow new errors.NotImplemented "Unimplemented hook: after_baz"
+
+        expect(=>
+          class Example
+            after_baz: ->
+
+          Example.mixinto_proto @mixin, hook_after: ['baz']
+        ).not.toThrow()
+
+      xit 'should call the before_hook before the mixin method and pass the return value', ->
+        class Example
+        Example.mixinto_proto @mixin, hook_before: ['baz']
+
+        expect(_.isFunction Example::before_baz).toBe true
+        expect(_.isFunction Example::baz).toBe true
+
+        expect(->
+          (new Example).before_baz()
+        ).toThrow new errors.NotImplemented "Unimplemented hook: before_baz"
+
+      xit 'should call the after_hook after the mixin method and taking the value', ->
+        class Example
+        Example.mixinto_proto @mixin, hook_after: ['baz']
+        Example::after_baz = ->
+
+        e = new Example
+
+        spyOn(e, 'after_baz').and.callThrough()
+        e.baz()
+
+        expect(e.after_baz).toHaveBeenCalledWith([e.foo])
 
     xit 'should provide a hook meant to be implemented after a mixin method', ->
       expect(true).toBe true
