@@ -7,8 +7,9 @@ beforeOnce = (fn) ->
 
 
 ###
-  Mixin factory for tests. Instances aren't frozen, so that jasmine can
-  spy on methods and properties.
+  Mixin factory for tests.
+
+  Instances aren't frozen, so we can attach spyable (mutable) methods for testing.
 
   A bit implementation-aware; it knows how to add a spyable method (see
   @_make_spyable_method) that's not a pre/post-mixing hook.
@@ -40,10 +41,7 @@ MIXINS =
     mixin
 
   ###
-    Returns a Mixin with a premixing hook that validates the
-    existence of certain keys on the prototype, specified by schema.
-
-    .premixing_hook is spyable.
+    Returns a Mixin with a spyable postmixing hook, and spyable method 'baz'.
   ###
   default_protomixin: ->
     mixin = Mixin.from_obj
