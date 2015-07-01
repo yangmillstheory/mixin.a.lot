@@ -38,23 +38,28 @@ class Mixin
         if _.isFunction mixin[methodname]
           continue
         throw new @ArgumentError "#{methodname} isn't a method on #{mixin}"
+    hooks
 
 
   @_check_omits: (mixin, omits) ->
     if omits == undefined
-      return
-
+      return omits
     unless Array.isArray(omits) && omits.length
       throw new @ArgumentError "Expected omits option to be a nonempty Array"
     diff = _.difference(omits, mixin.mixin_keys)
     if diff.length
       throw new @ArgumentError "Some omit keys aren't in mixin: #{diff}"
+    omits
 
   @check_mix_opts: (mixin, options) ->
     {omits, hook_before, hook_after} = options
 
+    hooks = {hook_before, hook_after}
+
     @_check_omits(mixin, omits)
-    @_check_hooks(mixin, {hook_before, hook_after})
+    @_check_hooks(mixin, hooks)
+
+    {omits, hooks}
 
   @validate_mixin: (mixin) ->
     unless mixin instanceof @
