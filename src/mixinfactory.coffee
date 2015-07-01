@@ -27,30 +27,34 @@ class Mixin
     'post_mixinmethod_hook'
   ]
 
-  @_check_hooks: (mixin_keys, hooks) ->
+  @_check_hooks: (mixin, hooks) ->
     for own hook_key, methods of hooks
-      if methods != undefined
-        unless Array.isArray(methods) && _.all(methods, MixinUtils.is_nonempty_string)
-          throw new @ArgumentError "#{hook_key}: expected an Array of mixin method names"
-#        methods_to_hook = _.values(hookconfig)[0]
-#        diff = _.difference(methods_to_hook, mixin_keys)
-#        if diff.length
-#          throw new @ArgumentError "Some omit keys aren't in mixin object: #{diff}"
+      if methods == undefined
+        continue
 
-  @_check_omits: (mixin_keys, omits) ->
-    if omits != undefined
-      unless Array.isArray(omits) && omits.length
-        throw new @ArgumentError "Expected omits option to be a nonempty Array"
-      diff = _.difference(omits, mixin_keys)
-      if diff.length
-        throw new @ArgumentError "Some omit keys aren't in mixin object: #{diff}"
+      unless Array.isArray(methods) && _.all(methods, MixinUtils.is_nonempty_string)
+        throw new @ArgumentError "#{hook_key}: expected an Array of mixin method names"
+      for methodname in methods
+        if _.isFunction mixin[methodname]
+          continue
+        throw new @ArgumentError "#{methodname} isn't a method on #{mixin}"
+
+
+  @_check_omits: (mixin, omits) ->
+    if omits == undefined
+      return
+
+    unless Array.isArray(omits) && omits.length
+      throw new @ArgumentError "Expected omits option to be a nonempty Array"
+    diff = _.difference(omits, mixin.mixin_keys)
+    if diff.length
+      throw new @ArgumentError "Some omit keys aren't in mixin: #{diff}"
 
   @check_mix_opts: (mixin, options) ->
     {omits, hook_before, hook_after} = options
-    mixin_keys = mixin.mixin_keys
 
-    @_check_omits(mixin_keys, omits)
-    @_check_hooks(mixin_keys, {hook_before, hook_after})
+    @_check_omits(mixin, omits)
+    @_check_hooks(mixin, {hook_before, hook_after})
 
   @validate_mixin: (mixin) ->
     unless mixin instanceof @

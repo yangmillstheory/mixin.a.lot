@@ -158,7 +158,7 @@ fdescribe 'mix.it.protomixin', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-      ).toThrow new Mixin.ArgumentError "Some omit keys aren't in mixin object: non_mixin_key"
+      ).toThrow new Mixin.ArgumentError "Some omit keys aren't in mixin: non_mixin_key"
 
     it 'should throw an error when omitting a non-Array or empty Array', ->
       bad_omits_values = [
@@ -239,14 +239,16 @@ fdescribe 'mix.it.protomixin', ->
           Example.mixinto_proto @mixin, hook_before: bad_hook_request
         ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
 
-    xit 'should throw an error when hooking into a non-existent mixin method', ->
+    it 'should throw an error when hooking into a non-existent mixin method', ->
       expect(=>
         class Example
         Example.mixinto_proto @mixin,
           hook_before: [
-            'non_existent_method'
+            'baz'                   # valid method name
+            'non_existent_method_1' # invalid
+            'non_existent_method_2' # invalid
           ]
-      )
+      ).toThrow new Mixin.ArgumentError "non_existent_method_1 isn't a method on #{@mixin}"
 
     xit 'should hook before a mixin method', ->
       expect(true).toBe true
