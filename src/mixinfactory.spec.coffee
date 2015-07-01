@@ -59,7 +59,7 @@ fdescribe 'mix.it.mixinfactory', ->
       expect(mixin.name).toBe('Example Mixin')
       expect(mixin.speak()).toBe('Hello, World!')
 
-    it 'should allow adding properties but not modifying existing if freeze = false', ->
+    it 'should allow adding but not modifying existing properties if freeze = false', ->
       mixin = Mixin.from_obj({name: 'Example Mixin', foo: ->}, false)
       delete mixin.name
       delete mixin.foo
@@ -83,7 +83,7 @@ fdescribe 'mix.it.mixinfactory', ->
           "...#{@speak().toLowerCase().replace('!', '')}...!"
 
 
-    it 'should have a sorted mixin_keys and the mixin attributes', ->
+    it 'should have a sorted mixin_keys property and the mixin attributes', ->
       expect(@mixin.mixin_keys).toEqual ['shout', 'speak', 'whisper']
 
       expect(@mixin.name).toBe('Example Mixin')
@@ -91,7 +91,7 @@ fdescribe 'mix.it.mixinfactory', ->
       expect(@mixin.shout()).toBe('HELLO, MY NAME IS EXAMPLE MIXIN!')
       expect(@mixin.whisper()).toBe('...hello, my name is example mixin...!')
 
-    it 'should have enumerate properties in toString()', ->
+    it 'should enumerate properties in toString()', ->
       expect(@mixin.toString()).toEqual 'Mixin(Example Mixin: shout, speak, whisper)'
 
     it 'should be immutable with loud failures on change attempts', ->

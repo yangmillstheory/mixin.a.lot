@@ -46,12 +46,10 @@ fdescribe 'mix.it.protomixin', ->
     expect(Example::baz).toBe 'qux'
     expect(Example::qux).toBe 'baz'
 
-  describe 'premixin hooks', ->
+  describe 'mixing hooks', ->
 
-    beforeEach ->
+    it 'should throw an error when supplying non-Function mixing hooks', ->
       @mixin = MIXINS.schematized_protomixin()
-
-    it 'should throw an error when mixing in Mixins with non-function hooks', ->
       @mixin.premixing_hook = 1
 
       expect(=>
@@ -67,76 +65,80 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin
       ).toThrow(new TypeError('Expected a function for postmixing_hook'))
 
-    ###
-      This is also a good example of pre-mixin hook usage;
-      to validate that the mixing class satisfies a certain schema.
-    ###
-    it 'should invoke a pre-mixin hook with the prototype context', ->
-      spyOn(@mixin, 'premixing_hook').and.callThrough()
+    describe 'pre-mixing hooks', ->
 
-      expect(=>
+      beforeEach ->
+        @mixin = MIXINS.schematized_protomixin()
+
+      ###
+        This is also a good example of pre-mixin hook usage;
+        to validate that the mixing class satisfies a certain schema.
+      ###
+      it 'should invoke a pre-mixing hook with the prototype context', ->
+        spyOn(@mixin, 'premixing_hook').and.callThrough()
+
+        expect(=>
+          class Example
+            # special_key is not on the prototype; schema unsatisfied, hook will throw
+            @special_key = 1
+          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        ).toThrow new errors.NotImplemented('Wanted schema key special_key')
+
         class Example
-          # special_key is not on the prototype
-          @special_key = 1
-
+          # special_key is on the prototype; schema satisfied, hook won't throw
+          special_key: 1
         Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
-      ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
-      class Example
-        # special_key is on the prototype
-        special_key: 1
-      Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
-
-      expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
-      expect(@mixin.premixing_hook.calls.count()).toBe 2
-      expect(Example::modified_proto).toBe true
-
-    it 'should invoke the pre-mixin hook before mixing in properties', ->
-      error = new Error
-      threw = false
-
-      spyOn(@mixin, 'premixing_hook').and.throwError(error)
-      expect(@mixin.foo).toBeDefined()
-
-      class Example
-
-      try
-        Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
-      catch error
-        threw = true
-      finally
-        expect(threw).toBe true
-        expect(Example::modified_proto).toBeUndefined()
         expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+        expect(@mixin.premixing_hook.calls.count()).toBe 2
+        expect(Example::modified_proto).toBe true
 
-  describe 'postmixin hooks', ->
+      it 'should invoke the pre-mixing hook before mixing in properties', ->
+        error = new Error
+        threw = false
 
-    beforeEach ->
-      @mixin = MIXINS.default_protomixin()
+        spyOn(@mixin, 'premixing_hook').and.throwError(error)
+        expect(@mixin.foo).toBeDefined()
 
-    it 'should invoke a post-mixin hook with the prototype context', ->
-      spyOn(@mixin, 'postmixing_hook').and.callThrough()
+        class Example
 
-      class Example
-      Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        try
+          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        catch error
+          threw = true
+        finally
+          expect(threw).toBe true
+          expect(Example::modified_proto).toBeUndefined()
+          expect(@mixin.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
-      expect(Example::modified_proto).toBe true
-      expect(@mixin.postmixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+    describe 'post-mixing hooks', ->
 
-    it 'should invoke the post-mixin hook after mixing in properties', ->
-      error = new Error
+      beforeEach ->
+        @mixin = MIXINS.default_protomixin()
 
-      spyOn(@mixin, 'postmixing_hook').and.throwError(error)
-      expect(@mixin.bar).toBe 1
+      it 'should invoke a post-mixing hook with the prototype context', ->
+        spyOn(@mixin, 'postmixing_hook').and.callThrough()
 
-      class Example
-
-      try
+        class Example
         Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
-      catch error
-        expect(Example::bar).toBe 1 # was mixed in!
-        expect(Example::modified_proto).toBeUndefined()
+
+        expect(Example::modified_proto).toBe true
         expect(@mixin.postmixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
+
+      it 'should invoke the post-mixing hook after mixing in properties', ->
+        error = new Error
+
+        spyOn(@mixin, 'postmixing_hook').and.throwError(error)
+        expect(@mixin.bar).toBe 1
+
+        class Example
+
+        try
+          Example.mixinto_proto @mixin, null, ['arg1', 'arg2']
+        catch error
+          expect(Example::bar).toBe 1 # was mixed in!
+          expect(Example::modified_proto).toBeUndefined()
+          expect(@mixin.postmixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
   describe 'protomixing options', ->
 
@@ -145,7 +147,7 @@ fdescribe 'mix.it.protomixin', ->
 
     describe 'omitting mixin methods', ->
 
-      it 'should omit mixin keys', ->
+      it 'should omit some mixin keys', ->
           class Example
           Example.mixinto_proto @mixin, omits: ['bar']
 
@@ -154,13 +156,7 @@ fdescribe 'mix.it.protomixin', ->
           expect(e.bar).toBeUndefined()
           expect(e.baz).toBeDefined()
 
-      it 'should throw an error when omitting a non-existing mixin key', ->
-        expect(=>
-          class Example
-          Example.mixinto_proto @mixin, omits: ['non_mixin_key']
-        ).toThrow new errors.BadArgument "Some omit keys aren't in mixin: non_mixin_key"
-
-      it 'should throw an error when omitting a non-Array or empty Array', ->
+      it 'should throw an error when the omit request is a non-Array or empty Array', ->
         bad_omits_values = [
           []
           {}
@@ -174,6 +170,12 @@ fdescribe 'mix.it.protomixin', ->
             class Example
             Example.mixinto_proto @mixin, omits: bad_omits_value
           ).toThrow new errors.BadArgument "Expected omits option to be a nonempty Array"
+
+      it 'should throw an error when omitting a non-existing mixin key', ->
+        expect(=>
+          class Example
+          Example.mixinto_proto @mixin, omits: ['non_mixin_key']
+        ).toThrow new errors.BadArgument "Some omit keys aren't in mixin: non_mixin_key"
 
       it 'should not mangle the class hierarchy when omitting keys', ->
         class Super
@@ -196,7 +198,7 @@ fdescribe 'mix.it.protomixin', ->
 
     describe 'requesting hooks', ->
 
-      it 'should throw an error when the hook configuration is not an Array of Strings', ->
+      it 'should throw an error when the hook request is not an Array of Strings', ->
         bad_hook_values = [
           'String'
           1
@@ -211,7 +213,7 @@ fdescribe 'mix.it.protomixin', ->
             Example.mixinto_proto @mixin, hook_before: bad_hook_value
           ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
 
-      it 'should throw an error when hooking into a non-string or empty string', ->
+      it 'should throw an error when the hook request contains a non-string or empty string', ->
         bad_hook_requests = [
           [
             'mixinmethod_1'
@@ -242,7 +244,7 @@ fdescribe 'mix.it.protomixin', ->
             Example.mixinto_proto @mixin, hook_before: bad_hook_request
           ).toThrow new TypeError "hook_before: expected an Array of mixin method names"
 
-      it 'should throw an error when hooking into a non-existent mixin method', ->
+      it 'should throw an error when the hook request contains a non-existent mixin method', ->
         bad_hook_requests = [
           hook_before: [
             'baz'                   # valid method
@@ -301,7 +303,7 @@ fdescribe 'mix.it.protomixin', ->
 
         expect(e.baz()).toEqual(['before_baz'])
 
-      it 'should call the after_hook after the mixin method and taking the value', ->
+      it 'should call the after_hook after the mixin method and take the return value', ->
         class Example
           after_baz: (baz) ->
             baz.concat ['after_baz']
