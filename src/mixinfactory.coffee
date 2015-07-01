@@ -28,12 +28,6 @@ class Mixin
     the only meaningful way to create instances.
   ###
 
-
-  @_mixing_hooks: [
-    'premixing_hook'
-    'postmixing_hook'
-  ]
-
   @validate: (mixin) ->
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
