@@ -288,28 +288,28 @@ fdescribe 'mix.it.protomixin', ->
           Example.mixinto_proto @mixin, hook_after: ['baz']
         ).not.toThrow()
 
-      xit 'should call the before_hook before the mixin method and pass the return value', ->
+      it 'should call the before_hook before the mixin method and pass the return value', ->
         class Example
+          before_baz: ->
+            'before_baz'
         Example.mixinto_proto @mixin, hook_before: ['baz']
 
-        expect(_.isFunction Example::before_baz).toBe true
-        expect(_.isFunction Example::baz).toBe true
+        e = new Example()
 
-        expect(->
-          (new Example).before_baz()
-        ).toThrow new errors.NotImplemented "Unimplemented hook: before_baz"
+        spyOn(e, 'baz').and.callThrough()
+        spyOn(e, 'before_baz').and.callThrough()
 
-      xit 'should call the after_hook after the mixin method and taking the value', ->
+        expect(e.baz()).toEqual(['before_baz'])
+
+      it 'should call the after_hook after the mixin method and taking the value', ->
         class Example
+          after_baz: (baz) ->
+            baz.concat ['after_baz']
         Example.mixinto_proto @mixin, hook_after: ['baz']
-        Example::after_baz = ->
 
-        e = new Example
+        e = new Example()
 
+        spyOn(e, 'baz').and.callThrough()
         spyOn(e, 'after_baz').and.callThrough()
-        e.baz()
 
-        expect(e.after_baz).toHaveBeenCalledWith([e.foo])
-
-    xit 'should provide a hook meant to be implemented after a mixin method', ->
-      expect(true).toBe true
+        expect(e.baz()).toEqual(['foo', 'after_baz'])

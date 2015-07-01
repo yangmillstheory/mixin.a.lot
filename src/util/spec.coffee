@@ -31,8 +31,11 @@ MIXINS =
       name: 'Default Example Mixin'
       foo: 'foo'
       bar: 1
-      baz: ->
-        [@foo]
+      baz: (baz) ->
+        if baz?
+          [baz]
+        else
+          [@foo]
       , @FREEZE
     mixin.postmixing_hook = ->
       @modified_proto = true
