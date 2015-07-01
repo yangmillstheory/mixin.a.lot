@@ -226,11 +226,27 @@ fdescribe 'mix.it.protomixin', ->
 
     it 'should throw an error when hooking into a non-string or empty string', ->
       bad_hook_requests = [
-        ['mixinmethod_1', false]
-        [null, 'mixinmethod_1', 'mixinmethod_2']
-        [{}, 'mixinmethod_1']
-        ['mixinmethod_1', 1]
-        ['mixinmethod_1', '']
+        [
+          'mixinmethod_1'
+          false
+        ]
+        [
+          null
+          'mixinmethod_1'
+          'mixinmethod_2'
+        ]
+        [
+          {}
+          'mixinmethod_1'
+        ]
+        [
+          'mixinmethod_1'
+          1
+        ]
+        [
+          'mixinmethod_1'
+          ''
+        ]
       ]
 
       for bad_hook_request in bad_hook_requests
@@ -250,8 +266,8 @@ fdescribe 'mix.it.protomixin', ->
           ]
       ).toThrow new Mixin.ArgumentError "non_existent_method_1 isn't a method on #{@mixin}"
 
-    xit 'should hook before a mixin method', ->
+    xit 'should provide a hook before a mixin method', ->
       expect(true).toBe true
 
-    xit 'should hook after a mixin method', ->
+    xit 'should provide a hook after a mixin method', ->
       expect(true).toBe true
