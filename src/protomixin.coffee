@@ -4,15 +4,14 @@ _ = require 'underscore'
 
 mixinto_proto = (mixin, options = {}) ->
   Mixin.validate_mixin(mixin)
-  Mixin.check_mix_opts(mixin, options)
+  {omits, hooks} = Mixin.parse_mix_opts(mixin, options)
 
   {premixing_hook, postmixing_hook} = mixin
   [__, __, mixinhook_args] = arguments
 
   premixing_hook?.call(@::, mixinhook_args)
 
-  omitting = (options.omits?.length && options.omits) || []
-  mixing = _.object ([k, v] for k, v of mixin when k not in omitting)
+  mixing = _.object ([k, v] for k, v of mixin when k not in omits)
   mixing = _.object ([k, v] for k, v of mixing when k in mixin.mixin_keys)
 
   if _.isEmpty mixing
