@@ -30,6 +30,6 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "test": "gulp build && coffee jasmine.coffee"
+    "test": "gulp clean && gulp build && coffee jasmine.coffee"
   }
 }
