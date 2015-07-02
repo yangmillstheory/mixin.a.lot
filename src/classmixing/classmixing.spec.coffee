@@ -52,7 +52,23 @@ describe 'mix.it.classmixin', ->
 
   describe 'mixing hooks', ->
 
-    it 'should throw an error when supplying non-Function mixing hooks', ->
+    it 'should throw an error with options-supplied non-Function mixing hooks', ->
+      @mixin = MIXINS.default_mixin()
+      mix_opts = {premixing_hook: 1}
+
+      expect(=>
+        class Example
+        Example.mixinto_class @mixin, mix_opts
+      ).toThrow(new TypeError('Expected a function for premixing_hook'))
+
+      mix_opts = {postmixing_hook: []}
+
+      expect(=>
+        class Example
+        Example.mixinto_class @mixin, mix_opts
+      ).toThrow(new TypeError('Expected a function for postmixing_hook'))
+
+    it 'should throw an error with mixin-supplied non-Function mixing hooks', ->
       @mixin = MIXINS.default_mixin()
       @mixin.premixing_hook = 1
 
@@ -315,7 +331,7 @@ describe 'mix.it.classmixin', ->
           Example.mixinto_class @mixin, omits: ['bar', 'baz', 'foo']
         ).toThrow new errors.ValueError "Found nothing to mix in!"
 
-    describe 'requesting hooks', ->
+    describe 'mixin method hooks', ->
 
       it 'should throw an error when the hook request is not an Array of Strings', ->
         bad_hook_values = [

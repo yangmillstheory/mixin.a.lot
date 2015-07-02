@@ -15,8 +15,8 @@ UTILS =
 
 PARSER =
 
-  _parse_methodhooks: (mixin, hooks) ->
-    for own hook_key, methods of hooks
+  _parse_methodhooks: (mixin, methodhooks) ->
+    for own hook_key, methods of methodhooks
       if methods != undefined
         unless Array.isArray(methods) && _.all(methods, UTILS.is_nonempty_string)
           throw new errors.ValueError "#{hook_key}: expected an Array of mixin method names"
@@ -24,17 +24,16 @@ PARSER =
           unless _.isFunction mixin[methodname]
             throw new errors.ValueError "#{methodname} isn't a method on #{mixin}"
       else
-        hooks[hook_key] = []
+        methodhooks[hook_key] = []
 
-    {before: hooks.hook_before, after: hooks.hook_after}
+    {before: methodhooks.hook_before, after: methodhooks.hook_after}
 
-  _parse_mixinghooks: (mixin, methodhooks) ->
-    for own mixinghook_key, hook of methodhooks
-      supplied_hook = mixin[mixinghook_key]
-      if supplied_hook? && !_.isFunction supplied_hook
+  _parse_mixinghooks: (mixin, mixinghooks) ->
+    for own mixinghook_key, hook of mixinghooks
+      if hook? && !_.isFunction hook
         throw new TypeError "Expected a function for #{mixinghook_key}"
 
-    {premix: methodhooks.premixing_hook, postmix: methodhooks.postmixing_hook}
+    {premix: mixinghooks.premixing_hook, postmix: mixinghooks.postmixing_hook}
 
   _parse_omits: (mixin, omits) ->
     if omits != undefined
@@ -54,7 +53,7 @@ PARSER =
     {before, after} = @_parse_methodhooks(mixin, {hook_before, hook_after})
     {premix, postmix} = @_parse_mixinghooks(mixin, {premixing_hook, postmixing_hook})
 
-    {omits, methodhooks: {before, after}, options_mixinghooks: {premix, postmix}}
+    {omits, methodhooks: {before, after}, mixinghooks: {premix, postmix}}
 
 
 MIXER =
@@ -76,11 +75,11 @@ MIXER =
   mix: (mixtarget, mixin, options = {}) ->
     Mixin.validate(mixin)
 
-    {omits, methodhooks, options_mixinghooks} = PARSER.parse_mix(mixin, options)
+    {omits, methodhooks, mixinghooks} = PARSER.parse_mix(mixin, options)
     {premixing_hook, postmixing_hook} = mixin
     [__, __, __, mixinghook_args] = arguments
 
-    options_mixinghooks.premix?.call(mixtarget, mixinghook_args)
+    mixinghooks.premix?.call(mixtarget, mixinghook_args)
     premixing_hook?.call(mixtarget, mixinghook_args)
 
     mixing_in = _.object(
@@ -96,7 +95,7 @@ MIXER =
       else
         @_with_hook mixcontent, (mixinprop in methodhooks.before)
 
-    options_mixinghooks.postmix?.call(mixtarget, mixinghook_args)
+    mixinghooks.postmix?.call(mixtarget, mixinghook_args)
     postmixing_hook?.call(mixtarget, mixinghook_args)
 
     mixtarget
