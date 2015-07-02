@@ -30,10 +30,13 @@ PARSER =
 
   _parse_mixinghooks: (mixin, mixinghooks) ->
     for own mixinghook_key, hook of mixinghooks
-      if hook? && !_.isFunction hook
-        throw new TypeError "Expected a function for #{mixinghook_key}"
+      if hook?
+        unless _.isFunction hook
+          throw new TypeError "Expected a function for #{mixinghook_key}"
+      else
+        mixinghooks[mixinghook_key] = null
 
-    {premix: mixinghooks.premixing_hook, postmix: mixinghooks.postmixing_hook}
+    {pre: mixinghooks.premixing_hook, post: mixinghooks.postmixing_hook}
 
   _parse_omits: (mixin, omits) ->
     if omits != undefined
@@ -51,14 +54,14 @@ PARSER =
 
     omits = @_parse_omits(mixin, omits)
     {before, after} = @_parse_methodhooks(mixin, {hook_before, hook_after})
-    {premix, postmix} = @_parse_mixinghooks(mixin, {premixing_hook, postmixing_hook})
+    {pre, post} = @_parse_mixinghooks(mixin, {premixing_hook, postmixing_hook})
 
-    {omits, methodhooks: {before, after}, mixinghooks: {premix, postmix}}
+    {omits, methodhooks: {before, after}, mixinghooks: {pre, post}}
 
 
 MIXER =
 
-  _with_hook: ({mixtarget, mixinprop, mixinvalue}, before = false) ->
+  _mix_with_hook: ({mixtarget, mixinprop, mixinvalue}, before = false) ->
     hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
 
     unless _.isFunction(mixtarget[hookname])
@@ -69,7 +72,7 @@ MIXER =
       hooked_mixinfunc = _.compose mixtarget[hookname], mixinvalue
     mixtarget[mixinprop] = hooked_mixinfunc
 
-  _without_hook: ({mixtarget, mixinprop, mixinvalue}) ->
+  _mix_without_hook: ({mixtarget, mixinprop, mixinvalue}) ->
     mixtarget[mixinprop] = mixinvalue
 
   mix: (mixtarget, mixin, options = {}) ->
@@ -79,7 +82,7 @@ MIXER =
     {premixing_hook, postmixing_hook} = mixin
     [__, __, __, mixinghook_args] = arguments
 
-    mixinghooks.premix?.call(mixtarget, mixinghook_args)
+    mixinghooks.pre?.call(mixtarget, mixinghook_args)
     premixing_hook?.call(mixtarget, mixinghook_args)
 
     mixing_in = _.object(
@@ -91,11 +94,11 @@ MIXER =
       mixcontent = {mixtarget, mixinprop, mixinvalue}
 
       if not (mixinprop in _.union(methodhooks.before, methodhooks.after))
-        @_without_hook mixcontent
+        @_mix_without_hook mixcontent
       else
-        @_with_hook mixcontent, (mixinprop in methodhooks.before)
+        @_mix_with_hook mixcontent, (mixinprop in methodhooks.before)
 
-    mixinghooks.postmix?.call(mixtarget, mixinghook_args)
+    mixinghooks.post?.call(mixtarget, mixinghook_args)
     postmixing_hook?.call(mixtarget, mixinghook_args)
 
     mixtarget
