@@ -76,11 +76,7 @@ describe 'mix.it.protomixin', ->
       beforeEach ->
         @mixin = MIXINS.default_mixin()
 
-      ###
-        This is also a good example of pre-mixin hook usage;
-        to validate that the mixing class satisfies a certain schema.
-      ###
-      it 'should invoke a pre-mixing hook with the prototype context', ->
+      it 'should invoke an options pre-mixing hook with the prototype context', ->
         premixing_hook = ->
           unless @special_key?
             throw new errors.NotImplemented "Wanted schema key special_key"
@@ -108,7 +104,13 @@ describe 'mix.it.protomixin', ->
         expect(object).toBe(Example::)
         expect(args...).toEqual(['arg1', 'arg2'])
 
-      it 'should invoke the pre-mixing hook before mixing in properties', ->
+      ###
+        This is also a good example of pre-mixin hook usage;
+        to validate that the mixing class satisfies a certain schema.
+      ###
+      it 'should invoke a mixin pre-mixing hook with the prototype context', ->
+
+      it 'should invoke an options pre-mixing hook before mixing in', ->
         mix_opts = {premixing_hook: ->}
         error = new Error
         threw = false
@@ -127,12 +129,16 @@ describe 'mix.it.protomixin', ->
           expect(Example::foo).toBeUndefined() # wasn't mixed in!
           expect(mix_opts.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
 
+      it 'should invoke a mixin pre-mixing hook before mixing in', ->
+
+      it 'should invoke an options pre-mixing hook before a mixin pre-mixing hook', ->
+
     describe 'post-mixing hooks', ->
 
       beforeEach ->
         @mixin = MIXINS.default_mixin()
 
-      it 'should invoke a post-mixing hook with the prototype context', ->
+      it 'should invoke an options post-mixing hook with the prototype context', ->
         mix_opts = {postmixing_hook: ->}
         spyOn(mix_opts, 'postmixing_hook').and.callThrough()
 
@@ -147,7 +153,9 @@ describe 'mix.it.protomixin', ->
         expect(object).toBe(Example::)
         expect(args...).toEqual(['arg1', 'arg2'])
 
-      it 'should invoke the post-mixing hook after mixing in properties', ->
+      it 'should invoke a mixin post-mixing hook with the prototype context', ->
+
+      it 'should invoke an options post-mixing hook after mixing in', ->
         mix_opts = {postmixing_hook: ->}
         error = new Error
         threw = false
@@ -164,6 +172,10 @@ describe 'mix.it.protomixin', ->
         finally
           expect(threw).toBe true
           expect(Example::bar).toBe 1 # was mixed in!
+
+      it 'should invoke a mixin post-mixing hook after mixing in', ->
+
+      it 'should invoke an options post-mixing hook before a mixin post-mixing hook', ->
 
   describe 'protomixing options', ->
 
