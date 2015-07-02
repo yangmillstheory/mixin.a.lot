@@ -1,5 +1,5 @@
 {Mixin, errors} = require '../mixin'
-{get_protomixer} = require '../util'
+{get_protomixer} = require '../mixer'
 _ = require 'underscore'
 
 

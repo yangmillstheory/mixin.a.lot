@@ -96,9 +96,11 @@ MIXER =
     mixinghooks.postmix?.call(mixtarget, mixinhook_args)
     mixtarget
 
+
 get_protomixer = ->
   ->
     MIXER.mix(@::, arguments...)
+
 
 get_classmixer = ->
   ->
