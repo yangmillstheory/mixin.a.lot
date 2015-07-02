@@ -4,8 +4,6 @@
 
 A CoffeeScript/JavaScript mixin framework.
 
-![mixin.a.lot logo](images/icon.jpg)
-
 ## Getting Started ##
 
 Install the package.
