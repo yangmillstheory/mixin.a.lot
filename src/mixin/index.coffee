@@ -31,6 +31,13 @@ class Mixin
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
 
+    {premixing_hook, postmixing_hook} = mixin
+
+    for own hook_name, hook of {premixing_hook, postmixing_hook}
+      if hook? && !_.isFunction hook
+        throw new TypeError "Expected a function for #{hook_name}"
+
+
   @from_obj: (obj, freeze = true) ->
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"

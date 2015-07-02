@@ -75,10 +75,13 @@ MIXER =
 
   mix: (mixtarget, mixin, options = {}) ->
     Mixin.validate(mixin)
-    {omits, methodhooks, mixinghooks} = PARSER.parse_mix(mixin, options)
-    [__, __, __, mixinhook_args] = arguments
 
-    mixinghooks.premix?.call(mixtarget, mixinhook_args)
+    {omits, methodhooks, mixinghooks} = PARSER.parse_mix(mixin, options)
+    {premixing_hook, postmixing_hook} = mixin
+    [__, __, __, mixinghook_args] = arguments
+
+    premixing_hook?.call(mixtarget, mixinghook_args)
+    mixinghooks.premix?.call(mixtarget, mixinghook_args)
 
     mixing_in = _.object(
       [k, v] for k, v of mixin when k in mixin.mixin_keys and k not in omits)
@@ -93,7 +96,8 @@ MIXER =
       else
         @_with_hook mixcontent, (mixinprop in methodhooks.before)
 
-    mixinghooks.postmix?.call(mixtarget, mixinhook_args)
+    postmixing_hook?.call(mixtarget, mixinghook_args)
+    mixinghooks.postmix?.call(mixtarget, mixinghook_args)
     mixtarget
 
 
