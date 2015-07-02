@@ -1,6 +1,6 @@
 # mixin.a.lot
 
-[![Build Status](https://travis-ci.org/yangmillstheory/mix.it.svg?branch=master)](https://travis-ci.org/yangmillstheory/mix.it)
+[![Build Status](https://travis-ci.org/yangmillstheory/mixin.a.lot.svg?branch=master)](https://travis-ci.org/yangmillstheory/mixin.a.lot)
 
 A CoffeeScript/JavaScript mixin framework.
 
