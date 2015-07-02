@@ -19,7 +19,10 @@ class Mixin
 
       - name
       - toString()
-      - mixin_keys (Array of property names that to mix in)
+      - mixin_keys
+          (Array of property names that to mix in)
+      - pre/post mixinghooks
+          (functions invoked with the mixtarget context before/after mixing)
 
     and immutability.
 
