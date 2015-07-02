@@ -289,7 +289,7 @@ describe 'mix.it.protomixin', ->
               hook_before: hook_before
           ).toThrow new errors.ValueError "#{bad_method} isn't a method on #{@mixin}"
 
-      it 'should require that a before_hook be implemented when after_hooks are requested', ->
+      it 'should require that a before_hook be implemented when before_hooks are requested', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, hook_before: ['baz']
@@ -302,7 +302,7 @@ describe 'mix.it.protomixin', ->
           Example.mixinto_proto @mixin, hook_before: ['baz']
         ).not.toThrow()
 
-      it 'should require that an after_hook be implemented when before_hooks are requested', ->
+      it 'should require that an after_hook be implemented when after_hooks are requested', ->
         expect(=>
           class Example
           Example.mixinto_proto @mixin, hook_after: ['baz']

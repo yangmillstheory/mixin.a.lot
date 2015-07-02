@@ -35,10 +35,8 @@ describe 'mix.it.classmixin', ->
     class Example
       @mixinto_class mixin
 
-    e = new Example
-
-    expect(e.bar).toBe 1
-    expect(e.baz()).toEqual ['baz']
+    expect(Example.bar).toBe 1
+    expect(Example.baz()).toEqual ['baz']
 
   it 'should be order-dependent', ->
     mixin_1 = Mixin.from_obj name: 'mixin_1', foo: 'bar1', baz: 'qux'
@@ -48,9 +46,9 @@ describe 'mix.it.classmixin', ->
       @mixinto_class mixin_1
       @mixinto_class mixin_2
 
-    expect(Example::foo).toBe 'bar2'
-    expect(Example::baz).toBe 'qux'
-    expect(Example::qux).toBe 'baz'
+    expect(Example.foo).toBe 'bar2'
+    expect(Example.baz).toBe 'qux'
+    expect(Example.qux).toBe 'baz'
 
   describe 'mixing hooks', ->
 
@@ -80,7 +78,7 @@ describe 'mix.it.classmixin', ->
         This is also a good example of pre-mixin hook usage;
         to validate that the mixing class satisfies a certain schema.
       ###
-      it 'should invoke a pre-mixing hook with the prototype context', ->
+      it 'should invoke a pre-mixing hook with the class context', ->
         premixing_hook = ->
           unless @special_key?
             throw new errors.NotImplemented "Wanted schema key special_key"
@@ -90,13 +88,13 @@ describe 'mix.it.classmixin', ->
 
         expect(=>
           class Example
-            # special_key is not on the prototype; schema unsatisfied, hook will throw
+            # special_key is not on the class; schema unsatisfied, hook will throw
           Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
         ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
         class Example
-          # special_key is on the prototype; schema satisfied, hook won't throw
-          special_key: 1
+          # special_key is on the class; schema satisfied, hook won't throw
+          @special_key: 1
         Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.premixing_hook).toHaveBeenCalledWith(['arg1', 'arg2'])
@@ -105,7 +103,7 @@ describe 'mix.it.classmixin', ->
         {object, args} = mix_opts.premixing_hook.calls.mostRecent()
 
         # test that the right context was used
-        expect(object).toBe(Example::)
+#        expect(object).toBe(Example)
         expect(args...).toEqual(['arg1', 'arg2'])
 
       it 'should invoke the pre-mixing hook before mixing in properties', ->
@@ -132,7 +130,7 @@ describe 'mix.it.classmixin', ->
       beforeEach ->
         @mixin = MIXINS.default_mixin()
 
-      it 'should invoke a post-mixing hook with the prototype context', ->
+      it 'should invoke a post-mixing hook with the class  context', ->
         mix_opts = {postmixing_hook: ->}
         spyOn(mix_opts, 'postmixing_hook').and.callThrough()
 
@@ -144,7 +142,7 @@ describe 'mix.it.classmixin', ->
         {object, args} = mix_opts.postmixing_hook.calls.first()
 
         # test that the right context was used
-        expect(object).toBe(Example::)
+        expect(object).toBe(Example)
         expect(args...).toEqual(['arg1', 'arg2'])
 
       it 'should invoke the post-mixing hook after mixing in properties', ->
@@ -163,7 +161,7 @@ describe 'mix.it.classmixin', ->
           threw = true
         finally
           expect(threw).toBe true
-          expect(Example::bar).toBe 1 # was mixed in!
+          expect(Example.bar).toBe 1 # was mixed in!
 
   describe 'classmixing options', ->
 
@@ -176,10 +174,8 @@ describe 'mix.it.classmixin', ->
         class Example
         Example.mixinto_class @mixin, omits: ['bar']
 
-        e = new Example
-
-        expect(e.bar).toBeUndefined()
-        expect(e.baz).toBeDefined()
+        expect(Example.bar).toBeUndefined()
+        expect(Example.baz).toBeDefined()
 
       it 'should throw an error when the omit request is a non-Array or empty Array', ->
         bad_omits_values = [
@@ -289,7 +285,7 @@ describe 'mix.it.classmixin', ->
               hook_before: hook_before
           ).toThrow new errors.ValueError "#{bad_method} isn't a method on #{@mixin}"
 
-      it 'should require that a before_hook be implemented when after_hooks are requested', ->
+      it 'should require that a before_hook be implemented when before_hooks are requested', ->
         expect(=>
           class Example
           Example.mixinto_class @mixin, hook_before: ['baz']
@@ -297,12 +293,12 @@ describe 'mix.it.classmixin', ->
 
         expect(=>
           class Example
-            before_baz: ->
+            @before_baz: ->
 
           Example.mixinto_class @mixin, hook_before: ['baz']
         ).not.toThrow()
 
-      it 'should require that an after_hook be implemented when before_hooks are requested', ->
+      it 'should require that an after_hook be implemented when after_hooks are requested', ->
         expect(=>
           class Example
           Example.mixinto_class @mixin, hook_after: ['baz']
@@ -310,7 +306,7 @@ describe 'mix.it.classmixin', ->
 
         expect(=>
           class Example
-            after_baz: ->
+            @after_baz: ->
 
           Example.mixinto_class @mixin, hook_after: ['baz']
         ).not.toThrow()
@@ -320,18 +316,18 @@ describe 'mix.it.classmixin', ->
           [before_value]
 
         class Example
-          before_baz: ->
+          @before_baz: ->
             'before_baz'
         Example.mixinto_class @mixin, hook_before: ['baz']
 
-        expect((new Example).baz()).toEqual(['before_baz'])
+        expect(Example.baz()).toEqual(['before_baz'])
 
       it 'should call the after_hook after the mixin method and take the return value', ->
         spyOn(@mixin, 'baz').and.returnValue ['baz']
 
         class Example
-          after_baz: (baz) ->
+          @after_baz: (baz) ->
             baz.concat ['after_baz']
         Example.mixinto_class @mixin, hook_after: ['baz']
 
-        expect((new Example).baz()).toEqual(['baz', 'after_baz'])
+        expect(Example.baz()).toEqual(['baz', 'after_baz'])
