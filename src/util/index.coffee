@@ -105,4 +105,4 @@ get_classmixer = ->
     MIXER.mix(@, arguments...)
 
 
-module.exports = {UTILS, get_protomixer, get_classmixer}
+module.exports = {get_protomixer, get_classmixer}
