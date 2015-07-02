@@ -29,7 +29,7 @@ describe 'mix.it.protomixin', ->
       ).toThrow new TypeError 'Expected a Mixin instance'
 
   it 'should mix into the prototype', ->
-    mixin = MIXINS.default_protomixin()
+    mixin = MIXINS.default_mixin()
     spyOn(mixin, 'baz').and.returnValue ['baz']
 
     class Example
@@ -55,7 +55,7 @@ describe 'mix.it.protomixin', ->
   describe 'mixing hooks', ->
 
     it 'should throw an error when supplying non-Function mixing hooks', ->
-      @mixin = MIXINS.default_protomixin()
+      @mixin = MIXINS.default_mixin()
       @mixin.premixing_hook = 1
 
       expect(=>
@@ -63,7 +63,7 @@ describe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin
       ).toThrow(new TypeError('Expected a function for premixing_hook'))
 
-      @mixin = MIXINS.default_protomixin()
+      @mixin = MIXINS.default_mixin()
       @mixin.postmixing_hook = []
 
       expect(=>
@@ -74,7 +74,7 @@ describe 'mix.it.protomixin', ->
     describe 'pre-mixing hooks', ->
 
       beforeEach ->
-        @mixin = MIXINS.default_protomixin()
+        @mixin = MIXINS.default_mixin()
 
       ###
         This is also a good example of pre-mixin hook usage;
@@ -130,7 +130,7 @@ describe 'mix.it.protomixin', ->
     describe 'post-mixing hooks', ->
 
       beforeEach ->
-        @mixin = MIXINS.default_protomixin()
+        @mixin = MIXINS.default_mixin()
 
       it 'should invoke a post-mixing hook with the prototype context', ->
         mix_opts = {postmixing_hook: ->}
@@ -168,7 +168,7 @@ describe 'mix.it.protomixin', ->
   describe 'protomixing options', ->
 
     beforeEach ->
-      @mixin = MIXINS.default_protomixin()
+      @mixin = MIXINS.default_mixin()
 
     describe 'omitting mixin methods', ->
 

@@ -23,7 +23,7 @@ MIXINS =
     mixin[methodname] = ->
     mixin
 
-  default_protomixin: ->
+  default_mixin: ->
     mixin = Mixin.from_obj
       name: 'Default Example Mixin'
       foo: 'foo'
