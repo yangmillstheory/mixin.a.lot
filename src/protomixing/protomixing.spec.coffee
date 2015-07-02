@@ -6,6 +6,11 @@ describe 'mix.it.protomixin', ->
   beforeOnce ->
     enable_protomixing()
 
+  it 'should raise an error when protomixing is enabled more than once', ->
+    expect(->
+      enable_protomixing()
+    ).toThrow(new Error "Function.prototype.mixinto_proto is already defined!")
+
   it 'should attach a non-enumerable, immutable .mixinto_proto to Function.prototype', ->
     expect(_.isFunction Function::mixinto_proto).toBe true
     expect(Object.keys Function::).not.toContain 'mixinto_proto'
