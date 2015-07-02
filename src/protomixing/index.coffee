@@ -1,4 +1,3 @@
-{Mixin, errors} = require '../mixin'
 {get_protomixer} = require '../mixer'
 _ = require 'underscore'
 
@@ -10,4 +9,4 @@ enable_protomixing = ->
     enumerable: false
     value: get_protomixer()
 
-module.exports = enable_protomixing
+module.exports = {enable_protomixing}

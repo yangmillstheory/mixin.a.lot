@@ -1,5 +1,5 @@
-enable_protomixing = require './protomixing'
-enable_classmixing = require './classmixing'
+{enable_protomixing} = require './protomixing'
+{enable_classmixing} = require './classmixing'
 {Mixin, errors} = require './mixin'
 
 

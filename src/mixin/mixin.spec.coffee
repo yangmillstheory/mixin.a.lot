@@ -1,4 +1,4 @@
-fdescribe 'mix.it.mixinfactory', ->
+describe 'mix.it.mixinfactory', ->
 
   {Mixin, errors} = require './index'
   _ = require 'underscore'

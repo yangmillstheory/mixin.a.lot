@@ -1,4 +1,4 @@
-fdescribe 'mix.it.protomixin', ->
+describe 'mix.it.protomixin', ->
 
   {enable_protomixing, Mixin, errors} = require '../index'
   {beforeOnce, _, MIXINS} = require '../spec-utils'
