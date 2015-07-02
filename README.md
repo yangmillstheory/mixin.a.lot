@@ -2,8 +2,9 @@
 
 [![Build Status](https://travis-ci.org/yangmillstheory/mix.it.svg?branch=master)](https://travis-ci.org/yangmillstheory/mix.it)
 
-
 A CoffeeScript/JavaScript mixin framework.
+
+![mixin.a.lot logo](images/icon.jpg)
 
 ## Getting Started ##
 
