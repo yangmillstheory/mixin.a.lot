@@ -23,22 +23,6 @@ MIXINS =
     mixin[methodname] = ->
     mixin
 
-  ###
-    Returns a Mixin with a premixing hook that validates the
-    existence of certain keys on the prototype, specified by schema.
-
-    .premixing_hook is spyable.
-  ###
-  schematized_protomixin: (schema = ['special_key']) ->
-    mixin = Mixin.from_obj
-      name: 'Schematized Example Mixin'
-      foo: 'foo'
-      , @FREEZE
-    mixin
-
-  ###
-    Returns a Mixin with a spyable postmixing hook, and spyable method 'baz'.
-  ###
   default_protomixin: ->
     mixin = Mixin.from_obj
       name: 'Default Example Mixin'
@@ -46,7 +30,6 @@ MIXINS =
       bar: 1
       , @FREEZE
     mixin = @_make_spyable_method({mixin, methodname: 'baz'})
-    mixin.postmixing_hook = ->
     mixin
 
 module.exports = {beforeOnce, _, MIXINS}

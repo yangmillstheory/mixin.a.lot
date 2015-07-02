@@ -50,7 +50,7 @@ fdescribe 'mix.it.protomixin', ->
   describe 'mixing hooks', ->
 
     it 'should throw an error when supplying non-Function mixing hooks', ->
-      @mixin = MIXINS.schematized_protomixin()
+      @mixin = MIXINS.default_protomixin()
       @mixin.premixing_hook = 1
 
       expect(=>
@@ -58,7 +58,7 @@ fdescribe 'mix.it.protomixin', ->
         Example.mixinto_proto @mixin
       ).toThrow(new TypeError('Expected a function for premixing_hook'))
 
-      @mixin = MIXINS.schematized_protomixin()
+      @mixin = MIXINS.default_protomixin()
       @mixin.postmixing_hook = []
 
       expect(=>
@@ -69,7 +69,7 @@ fdescribe 'mix.it.protomixin', ->
     describe 'pre-mixing hooks', ->
 
       beforeEach ->
-        @mixin = MIXINS.schematized_protomixin()
+        @mixin = MIXINS.default_protomixin()
 
       ###
         This is also a good example of pre-mixin hook usage;

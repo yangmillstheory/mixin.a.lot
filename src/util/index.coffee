@@ -13,7 +13,7 @@ UTILS =
     _.isObject(thing) && !Array.isArray(thing) && !_.isFunction(thing)
 
 
-PARSE =
+PARSER =
 
   _parse_methodhooks: (mixin, hooks) ->
     for own hook_key, methods of hooks
@@ -45,7 +45,7 @@ PARSE =
         throw new errors.ValueError "Some omit keys aren't in mixin: #{diff}"
     (omits?.length && omits) || []
 
-  mix: (mixin, options) ->
+  parse_mix: (mixin, options) ->
     {omits} = options
     {hook_before, hook_after} = options
     {premixing_hook, postmixing_hook} = options
@@ -57,21 +57,52 @@ PARSE =
     {omits, methodhooks: {before, after}, mixinghooks: {premix, postmix}}
 
 
-MIX =
+MIXER =
 
-  with_hook: ({context, mixinprop, mixinvalue}, before = false) ->
+  _with_hook: ({mixtarget, mixinprop, mixinvalue}, before = false) ->
     hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
 
-    unless _.isFunction(context[hookname])
+    unless _.isFunction(mixtarget[hookname])
       throw errors.NotImplemented "Unimplemented hook: #{hookname}"
     if before
-      hooked_mixinfunc = _.compose mixinvalue, context[hookname]
+      hooked_mixinfunc = _.compose mixinvalue, mixtarget[hookname]
     else
-      hooked_mixinfunc = _.compose context[hookname], mixinvalue
-    context[mixinprop] = hooked_mixinfunc
+      hooked_mixinfunc = _.compose mixtarget[hookname], mixinvalue
+    mixtarget[mixinprop] = hooked_mixinfunc
 
-  without_hook: ({context, mixinprop, mixinvalue}) ->
-    context[mixinprop] = mixinvalue
+  _without_hook: ({mixtarget, mixinprop, mixinvalue}) ->
+    mixtarget[mixinprop] = mixinvalue
+
+  mix: (mixtarget, mixin, options = {}) ->
+    Mixin.validate(mixin)
+    {omits, methodhooks, mixinghooks} = PARSER.parse_mix(mixin, options)
+    [__, __, __, mixinhook_args] = arguments
+
+    mixinghooks.premix?.call(mixtarget, mixinhook_args)
+
+    mixing_in = _.object(
+      [k, v] for k, v of mixin when k in mixin.mixin_keys and k not in omits)
+
+    if _.isEmpty mixing_in
+      throw new errors.ValueError "Found nothing to mix in!"
+    for mixinprop, mixinvalue of mixing_in
+      mixcontent = {mixtarget, mixinprop, mixinvalue}
+
+      if not (mixinprop in _.union(methodhooks.before, methodhooks.after))
+        @_without_hook mixcontent
+      else
+        @_with_hook mixcontent, (mixinprop in methodhooks.before)
+
+    mixinghooks.postmix?.call(mixtarget, mixinhook_args)
+    mixtarget
+
+get_protomixer = ->
+  ->
+    MIXER.mix(@::, arguments...)
+
+get_classmixer = ->
+  ->
+    MIXER.mix(@, arguments...)
 
 
-module.exports = {UTILS, MIX, PARSE}
+module.exports = {UTILS, get_protomixer, get_classmixer}
