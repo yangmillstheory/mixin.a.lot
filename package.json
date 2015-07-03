@@ -1,7 +1,7 @@
 {
-  "name": "mixin.a.lot",
+  "name": "mixin-a-lot",
   "version": "1.0.0",
-  "description": "CoffeeScript mixin module",
+  "description": "JavaScript mixin framework",
   "repository": {
     "type": "git",
     "url": "https://github.com/yangmillstheory/mixin.a.lot.git"
@@ -12,10 +12,24 @@
     "mixin",
     "mixins",
     "framework",
+    "gulp",
+    "gulpfriendly",
     "npm"
   ],
-  "author": "Victor Alvarez",
-  "license": "ISC",
+  "author": {
+    "name": "Victor Alvarez",
+    "email": "v.alvarez312@gmail.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "files": {
+    "main": "dist/mixin-a-lot.js"
+  }
+  "license": {
+    "type": "MIT",
+    "url": "http://opensource.org/licenses/MIT"
+  },
   "bugs": {
     "url": "https://github.com/yangmillstheory/mixin.a.lot/issues"
   },
@@ -24,7 +38,8 @@
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-coffee": "^2.3.1",
-    "gulp-symlink": "^2.1.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-resolve-dependencies": "^2.1.0",
     "jasmine": "^2.3.1",
     "jasmine-spec-reporter": "^2.2.3"
   },
