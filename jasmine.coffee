@@ -3,7 +3,7 @@ SpecReporter = require 'jasmine-spec-reporter'
 
 j = new Jasmine
 j.loadConfig
-  spec_dir: "spec"
+  spec_dir: "build"
   spec_files: [
     "**/*.spec.js"
   ]
