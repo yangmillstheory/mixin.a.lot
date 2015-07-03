@@ -4,7 +4,7 @@
 
 A CoffeeScript-developed JavaScript mixin framework.
 
-### Introduction ###
+## Introduction ##
 
 ![mixin.a.lot logo](images/icon.jpg)
 
@@ -27,7 +27,10 @@ Callers should:
 * be able to attach hooks to the mixing process
 * [know if they're consuming the API incorrectly as early as possible](http://stackoverflow.com/a/2807375/2419669) 
 
-### Usage & Examples ###
+## Usage & Examples ##
 
 ...
    
+## License ##
+
+MIT © Victor Alvarez
