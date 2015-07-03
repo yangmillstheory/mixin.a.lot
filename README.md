@@ -10,7 +10,7 @@ A CoffeeScript-developed JavaScript mixin framework.
 
 I like big closures and I cannot lie.
 
-**mixin.a.lot** is a lightweight JavaScript mixin library implemented in [CoffeeScript](http://www.coffeescript.org) that tries to "get it right'.
+**mixin.a.lot** is a lightweight JavaScript mixin library implemented in [CoffeeScript](http://www.coffeescript.org).
 
 It's guided by the following ideas:
 
