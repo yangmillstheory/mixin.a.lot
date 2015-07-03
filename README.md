@@ -25,7 +25,7 @@ Callers should:
 
 * be able to opt-out of some mixin functionality
 * be able to attach hooks to the mixing process
-* [know if they're consuming the API incorrectly as early as possible](http://stackoverflow.com/questions/2807241/what-does-the-expression-fail-early-mean-and-when-would-you-want-to-do-so) 
+* [know if they're consuming the API incorrectly as early as possible](http://stackoverflow.com/a/2807375/2419669) 
 
 ### Usage & Examples ###
 
