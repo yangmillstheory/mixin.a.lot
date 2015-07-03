@@ -1,4 +1,4 @@
-The MIT License (MIT)
+**The MIT License (MIT)**
 
 Copyright (c) 2015 Victor Alvarez (v.alvarez312@gmail.com)
 
