@@ -1,6 +1,7 @@
 gulp = require 'gulp'
 
 coffee = require 'gulp-coffee'
+concat = require 'gulp-concat'
 del = require 'del'
 
 
@@ -11,11 +12,17 @@ SRC =
 
 BUILD =
   base: 'build'
+  files: ->
+    [
+      "#{@base}/**/*.js"
+      "!#{@base}/**/*.spec.js"
+      "!#{@base}/spec-utils/*"
+    ]
 
 DIST =
   base: '.'
   file: ->
-    "#{@.base}/mixin-a-lot.js"
+    "#{@base}/index.js"
   excludes: [
     "!#{BUILD.base}/util/spec.coffee"
     "!#{BUILD.base}/**/*.spec.coffee"
@@ -34,6 +41,10 @@ gulp.task 'coffee', ->
 
 
 gulp.task 'concat', ->
+  gulp
+    .src(BUILD.files())
+    .pipe(concat(DIST.file()))
+    .pipe(gulp.dest DIST.base)
 
 
 gulp.task 'build', gulp.series('clean', 'coffee', 'concat')

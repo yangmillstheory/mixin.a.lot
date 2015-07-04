@@ -1,5 +1,6 @@
 _ = require 'underscore'
-{Mixin, errors} = require '../mixin'
+errors = require '../errors'
+Mixin = require '../mixin'
 
 
 UTILS =

@@ -1,7 +1,9 @@
 describe 'mix.it.classmixin', ->
 
-  {enable_classmixing, Mixin, errors} = require '../index'
-  {beforeOnce, _, MIXINS} = require '../spec-utils'
+  {enable_classmixing, make} = require '../index'
+  {beforeOnce, MIXINS} = require '../spec-utils'
+  errors = require '../errors'
+  _ = require 'underscore'
 
   beforeOnce ->
     enable_classmixing()
@@ -39,8 +41,8 @@ describe 'mix.it.classmixin', ->
     expect(Example.baz()).toEqual ['baz']
 
   it 'should be order-dependent', ->
-    mixin_1 = Mixin.from_obj name: 'mixin_1', foo: 'bar1', baz: 'qux'
-    mixin_2 = Mixin.from_obj name: 'mixin_2', foo: 'bar2', qux: 'baz'
+    mixin_1 = make name: 'mixin_1', foo: 'bar1', baz: 'qux'
+    mixin_2 = make name: 'mixin_2', foo: 'bar2', qux: 'baz'
 
     class Example
       @mixinto_class mixin_1

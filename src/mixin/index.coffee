@@ -1,13 +1,5 @@
 _ = require 'underscore'
-
-
-errors =
-
-  NotImplemented: class NotImplemented extends Error
-
-  NotMutable: class NotMutable extends Error
-
-  ValueError: class ValueError extends Error
+errors = require '../errors'
 
 
 class Mixin
@@ -45,13 +37,13 @@ class Mixin
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"
     unless _.isString(obj.name) && obj.name
-      throw new ValueError "Expected String name in options argument"
+      throw new errors.ValueError "Expected String name in options argument"
 
     mixin = new Mixin
     mkeys = Object.keys(_.omit(obj, 'name')).sort()
 
     if _.isEmpty(mkeys)
-      throw new ValueError "Found nothing to mix in!"
+      throw new errors.ValueError "Found nothing to mix in!"
 
     for key, value of _.extend(obj, mixin_keys: mkeys)
       do (key, value) =>
@@ -60,7 +52,7 @@ class Mixin
           get: ->
             value
           set: =>
-            throw new NotMutable "Cannot change #{key} on #{mixin}"
+            throw new errors.NotMutable "Cannot change #{key} on #{mixin}"
     (freeze && Object.freeze mixin) || mixin
 
   toString: ->
@@ -72,4 +64,8 @@ Object.freeze(Mixin)
 Object.freeze(Mixin::)
 
 
-module.exports = {Mixin, errors}
+make = Mixin.from_obj.bind(Mixin)
+validate = Mixin.validate.bind(Mixin)
+
+
+module.exports = {make, validate}

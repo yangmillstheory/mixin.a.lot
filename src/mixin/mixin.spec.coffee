@@ -1,6 +1,7 @@
 describe 'mix.it.mixinfactory', ->
 
-  {Mixin, errors} = require './index'
+  Mixin = require './index'
+  errors = require '../errors'
   _ = require 'underscore'
 
 
@@ -18,35 +19,27 @@ describe 'mix.it.mixinfactory', ->
     it 'should reject bad mixin types', ->
       for invalid_mixin in @invalid_mixin_types
         expect(->
-          Mixin.from_obj invalid_mixin
+          Mixin.make invalid_mixin
         ).toThrow new TypeError "Expected non-empty object"
 
     it 'should reject objects with no name property', ->
       expect(->
-        Mixin.from_obj quack: -> console.log 'Quack!'
+        Mixin.make quack: -> console.log 'Quack!'
       ).toThrow new errors.ValueError "Expected String name in options argument"
 
     it 'should reject objects with only a name property', ->
       expect(->
-        Mixin.from_obj name: 'Example Mixin'
+        Mixin.make name: 'Example Mixin'
       ).toThrow new errors.ValueError "Found nothing to mix in!"
 
     it 'should validate a proposed Mixin', ->
       for invalid_mixin in @invalid_mixin_types
         expect(->
-          Mixin.validate(invalid_mixin)
+          Mixin.validate invalid_mixin
         ).toThrow new TypeError "Expected a Mixin instance"
 
-    it 'should return a Mixin', ->
-      mixin = Mixin.from_obj
-        speak: ->
-          'Hello, World!'
-        name: 'Example Mixin'
-
-      expect(mixin instanceof Mixin).toBe true
-
-    it 'should not allow adding or modifying properties', ->
-      mixin = Mixin.from_obj
+    it 'should return an immutable Mixin', ->
+      mixin = Mixin.make
         speak: ->
           'Hello, World!'
         name: 'Example Mixin'
@@ -60,7 +53,7 @@ describe 'mix.it.mixinfactory', ->
       expect(mixin.speak()).toBe('Hello, World!')
 
     it 'should allow adding but not modifying existing properties if freeze = false', ->
-      mixin = Mixin.from_obj({name: 'Example Mixin', foo: ->}, false)
+      mixin = Mixin.make({name: 'Example Mixin', foo: ->}, false)
       delete mixin.name
       delete mixin.foo
 
@@ -73,7 +66,7 @@ describe 'mix.it.mixinfactory', ->
   describe 'Mixin', ->
 
     beforeEach ->
-      @mixin = Mixin.from_obj
+      @mixin = Mixin.make
         name: 'Example Mixin'
         speak: ->
           "Hello, my name is #{@name}!"
@@ -101,11 +94,12 @@ describe 'mix.it.mixinfactory', ->
         ).toThrow new errors.NotMutable "Cannot change #{key} on #{@mixin}"
 
     it 'should have a frozen prototype with silent failures on change attempts', ->
-      old_keys = Object.keys Mixin::
+      proto = Object.getPrototypeOf @mixin
+      old_keys = Object.keys proto
 
-      Mixin::foo = 'bar'
-      Mixin::baz = ->
+      proto.foo = 'bar'
+      proto.baz = ->
         'qux'
 
-      expect(Object.keys(Mixin::)).toEqual old_keys
+      expect(Object.keys proto ).toEqual old_keys
 

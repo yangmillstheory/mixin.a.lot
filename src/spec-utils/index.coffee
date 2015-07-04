@@ -1,5 +1,5 @@
 _ = require 'underscore'
-{Mixin, errors} = require '../mixin'
+{make} = require '../mixin'
 
 
 beforeOnce = (fn) ->
@@ -24,7 +24,7 @@ MIXINS =
     mixin
 
   default_mixin: ->
-    mixin = Mixin.from_obj
+    mixin = make
       name: 'Default Example Mixin'
       foo: 'foo'
       bar: 1
@@ -32,4 +32,4 @@ MIXINS =
     mixin = @_make_spyable_method({mixin, methodname: 'baz'})
     mixin
 
-module.exports = {beforeOnce, _, MIXINS}
+module.exports = {beforeOnce, MIXINS}
