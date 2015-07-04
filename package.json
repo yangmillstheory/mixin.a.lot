@@ -24,6 +24,7 @@
     "node": ">=0.10.0"
   },
   "main": "build/index.js",
+  "files": ["build"],
   "license": {
     "type": "MIT",
     "url": "http://opensource.org/licenses/MIT"
@@ -45,6 +46,7 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "test": "gulp clean && gulp build && coffee jasmine.coffee"
+    "prepublish": "gulp build",
+    "test": "gulp build && coffee jasmine.coffee"
   }
 }

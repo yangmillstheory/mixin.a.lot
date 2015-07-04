@@ -47,4 +47,4 @@ gulp.task 'concat', ->
     .pipe(gulp.dest DIST.base)
 
 
-gulp.task 'build', gulp.series('clean', 'coffee', 'concat')
+gulp.task 'build', gulp.series('clean', 'coffee')
