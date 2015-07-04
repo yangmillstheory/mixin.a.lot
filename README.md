@@ -6,10 +6,6 @@ A CoffeeScript-developed JavaScript mixin framework.
 
 ## Introduction ##
 
-![mixin.a.lot logo](images/icon.jpg)
-
-I like big closures and I cannot lie.
-
 **mixin.a.lot** is a lightweight JavaScript mixin library implemented in [CoffeeScript](http://www.coffeescript.org).
 
 ### Guiding Principles ###
