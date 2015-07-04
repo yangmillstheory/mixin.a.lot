@@ -23,7 +23,7 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "main": "dist/mixin-a-lot.js",
+  "main": "build/index.js",
   "license": {
     "type": "MIT",
     "url": "http://opensource.org/licenses/MIT"
