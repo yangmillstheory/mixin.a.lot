@@ -37,7 +37,7 @@ class Mixin
     unless _.isObject(obj) && !_.isArray(obj)
       throw new TypeError "Expected non-empty object"
     unless _.isString(obj.name) && obj.name
-      throw new errors.ValueError "Expected String name in options argument"
+      throw new errors.ValueError "Expected String name in mixin object"
 
     mixin = new Mixin
     mkeys = Object.keys(_.omit(obj, 'name')).sort()

@@ -25,7 +25,7 @@ describe 'mix.it.mixinfactory', ->
     it 'should reject objects with no name property', ->
       expect(->
         Mixin.make quack: -> console.log 'Quack!'
-      ).toThrow new errors.ValueError "Expected String name in options argument"
+      ).toThrow new errors.ValueError "Expected String name in mixin object"
 
     it 'should reject objects with only a name property', ->
       expect(->
