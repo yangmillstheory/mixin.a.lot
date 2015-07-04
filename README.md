@@ -30,6 +30,30 @@ Mixing classes should
 ## Usage & Examples ##
 
 ...
+
+## Development ##
+
+Get the source code.
+
+    $ git clone git@github.com:yangmillstheory/mixin.a.lot.git
+
+Install dependencies:
+    
+    $ cd mixin.a.lot && sudo npm install
+    
+Compile CoffeeScripts into `build/`:
+
+    $ ./node_modules/.bin/gulp coffee
+   
+Run unit tests:
+
+    $ .node_modules/.bin/jasmine jasmine.coffee
+
+To clean the build, compile, and test, use:
+
+    $ npm test
+    
+TODO: deployment and release instructions
    
 ## License ##
 
