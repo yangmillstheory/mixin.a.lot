@@ -160,6 +160,8 @@ Mixing hooks defined here take precedence over mixing hooks defined in the mixin
 
 Same as [mixinto_proto](#mixinto-proto), except mixing applies to the calling `Function`.
 
+For more detail, browse through the `*.spec.coffee` unit tests in `src`. 
+
 ## Development
 
 Get the source code.
@@ -184,9 +186,7 @@ Run unit tests:
 
 To clean the build, compile, and test, use:
 
-    $ npm test
-        
-I welcome collaboration! Pull requests are welcome; pull requests with tests even more so. 
+    $ npm test 
    
 ## License
 
