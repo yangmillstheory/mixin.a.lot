@@ -10,41 +10,39 @@ SRC =
   files: ->
     ["#{@base}/**/*.coffee"]
 
-BUILD =
-  base: 'build'
-  files: ->
-    [
-      "#{@base}/**/*.js"
-      "!#{@base}/**/*.spec.js"
-      "!#{@base}/spec-utils/*"
-    ]
-
 DIST =
-  base: '.'
-  file: ->
-    "#{@base}/index.js"
-  excludes: [
-    "!#{BUILD.base}/util/spec.coffee"
-    "!#{BUILD.base}/**/*.spec.coffee"
-  ]
+  base: "dist"
+
+  SERVER:
+    base: 'dist/server'
+    files: ->
+      [
+        "#{@base}/**/*.js"
+        "!#{@base}/**/*.spec.js"
+        "!#{@base}/spec-utils/*"
+      ]
+  CLIENT:
+    base: 'dist/client'
+    file: "mixin-a-lot.min.js"
 
 
 gulp.task 'clean', (postDelete) ->
-  del([DIST.file(), BUILD.base], force: true, postDelete?())
+  del([DIST.base], force: true, postDelete)
 
 
-gulp.task 'coffee', ->
+gulp.task 'coffee', (done) ->
   gulp
     .src(SRC.files())
     .pipe(coffee(bare: true))
-    .pipe(gulp.dest(BUILD.base))
+    .pipe(gulp.dest(DIST.SERVER.base))
+  done?()
 
 
-gulp.task 'concat', ->
+gulp.task 'browserify', ->
   gulp
-    .src(BUILD.files())
-    .pipe(concat(DIST.file()))
-    .pipe(gulp.dest DIST.base)
+    .src(DIST.SERVER.files())
+    .pipe(concat DIST.CLIENT.file)
+    .pipe(gulp.dest DIST.CLIENT.base)
 
 
 gulp.task 'build', gulp.series('clean', 'coffee')
