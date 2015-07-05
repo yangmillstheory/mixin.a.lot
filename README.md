@@ -170,23 +170,27 @@ Get the source code.
 
     $ git clone git@github.com:yangmillstheory/mixin.a.lot.git
 
-Install dependencies:
+Install dependencies.
     
     $ cd mixin.a.lot && sudo npm install
     
-Compile CoffeeScripts into `dist/`:
+Compile CoffeeScripts into `dist/server`.
 
     $ ./node_modules/.bin/gulp coffee
 
-To rebuild (removes `dist/` and re-compiles):
+"Browserify" - must have compiled first. This creates sourcemaps and minifies too.
+
+    $ ./node_modules/.bin/gulp browserify
+
+Removes `dist/`, re-compile CoffeeScript, and browserify package.
 
     $ ./node_modules/.bin/gulp build
    
-Run unit tests:
+Run unit tests.
 
     $ .node_modules/.bin/jasmine jasmine.coffee
 
-To clean the build, compile, and test, use:
+Clean the build, compile, and test.
 
     $ npm test 
    
