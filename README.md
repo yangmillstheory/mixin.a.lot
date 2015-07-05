@@ -164,9 +164,9 @@ For more detail, browse through the `*.spec.coffee` unit tests in `src`.
 
 ## Development
 
-Development is in `snake_case` CoffeeScript.
+**Development is in `snake_case` CoffeeScript.**
 
-Get the source code.
+Get the source.
 
     $ git clone git@github.com:yangmillstheory/mixin.a.lot.git
 
@@ -182,7 +182,7 @@ Compile CoffeeScripts into `dist/server`.
 
     $ ./node_modules/.bin/gulp browserify
 
-Removes `dist/`, re-compile CoffeeScript, and browserify package.
+Remove `dist/`, re-compile CoffeeScript, and browserify package.
 
     $ ./node_modules/.bin/gulp build
    
@@ -190,7 +190,7 @@ Run unit tests.
 
     $ .node_modules/.bin/jasmine jasmine.coffee
 
-Clean the build, compile, and test.
+Re-build, compile, and test.
 
     $ npm test 
    
