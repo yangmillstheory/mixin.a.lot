@@ -24,7 +24,11 @@ Goals for mixing classes:
 
 ### Install
 
-First, turn it on:
+Get the latest build:
+
+    $ npm install mixin-a-lot
+    
+Turn it on:
 
     var Mixin = require('mixin-a-lot');
     
@@ -182,9 +186,9 @@ Run unit tests:
 To clean the build, compile, and test, use:
 
     $ npm test
-    
-TODO: deployment and release instructions
+        
+I welcome collaboration! Pull requests are welcome; pull requests with tests even more so. 
    
 ## License
 
-MIT © Victor Alvarez
+MIT © 2015, Victor Alvarez
