@@ -1,6 +1,6 @@
 describe 'protomixing', ->
 
-  {enable_protomixing, make} = require '../index'
+  {enable_protomixing, make_mixin} = require '../index'
   {beforeOnce,  MIXINS} = require '../spec-utils'
   errors = require '../errors'
   _ = require 'underscore'
@@ -41,8 +41,8 @@ describe 'protomixing', ->
     expect(e.baz()).toEqual ['baz']
 
   it 'should be order-dependent', ->
-    mixin_1 = make name: 'mixin_1', foo: 'bar1', baz: 'qux'
-    mixin_2 = make name: 'mixin_2', foo: 'bar2', qux: 'baz'
+    mixin_1 = make_mixin name: 'mixin_1', foo: 'bar1', baz: 'qux'
+    mixin_2 = make_mixin name: 'mixin_2', foo: 'bar2', qux: 'baz'
 
     class Example
       @mixinto_proto mixin_1

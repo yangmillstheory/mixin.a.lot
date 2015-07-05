@@ -6,5 +6,5 @@
 module.exports = {
   enable_classmixing
   enable_protomixing
-  make
+  make_mixin: make
 }

@@ -30,16 +30,16 @@ Get the latest build:
     
 Turn it on:
 
-    var Mixin = require('mixin-a-lot');
+    var mixin_a_lot = require('mixin-a-lot');
     
-    Mixin.enable_protomixing();
-    Mixin.enable_classmixing();
+    mixin_a_lot.enable_protomixing();
+    mixin_a_lot.enable_classmixing();
 
 ### Make a mixin
 
 Make a mixin. The only required property is `name`, and the only way to do this is through the factory.
 
-    var logger = Mixin.make({
+    var logger = mixin_a_lot.make_mixin({
         name: "Logger",
         logname: "Default Logname",
         log_info: function(error) {...},
@@ -88,11 +88,11 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
 
 ### <a name="mixing-hooks"></a> Mixing hooks
     
-Mixins can have pre-mixing and post-mixing hooks that fire before and after mixing (resp.) with the class or prototype context.
+`Mixins` can have pre-mixing and post-mixing hooks that fire before and after mixing (resp.) with the class or prototype context.
 
 There are two not mutually exclusive ways to specify them. They can be attached to the mixin 
 
-    var mixin = Mixin.make({
+    var mixin = mixin_a_lot.make_mixin({
         name: "Logger",
            
         // various methods that operate on this.logname    
@@ -134,7 +134,7 @@ Given the following setup:
 
 Attach `mixinto_class`, `mixinto_proto` methods on `Function.prototype`. These properties are [non-enumerable, non-configurable, non-writable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
 
-### m.make(Object mixin_properties, [Boolean freeze])
+### m.make_mixin(Object mixin_properties, [Boolean freeze])
 
 Make a `Mixin` from an object literal with at least a `String name` property. 
 
