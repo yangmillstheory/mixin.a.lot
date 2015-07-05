@@ -55,7 +55,7 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "prepublish": "gulp build",
-    "test": "gulp build && coffee jasmine.coffee"
+    "prepublish": "gulp build && gulp browserify",
+    "test": "gulp build && gulp browserify && coffee jasmine.coffee"
   }
 }

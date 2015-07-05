@@ -49,7 +49,7 @@ gulp.task 'coffee', (done) ->
 # implementation credit:
 #
 #   https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md
-gulp.task 'browserify', ->
+gulp.task 'browserify', (done) ->
   browserify(entries: DIST.main, debug: true)
     .bundle()
     .pipe(source(DIST.CLIENT.file))
@@ -58,6 +58,6 @@ gulp.task 'browserify', ->
     .pipe(uglify())
     .pipe(sourcemaps.write './')
     .pipe(gulp.dest DIST.CLIENT.base)
+  done?()
 
-
-gulp.task 'build', gulp.series('clean', 'coffee', 'browserify')
+gulp.task 'build', gulp.series('clean', 'coffee')
