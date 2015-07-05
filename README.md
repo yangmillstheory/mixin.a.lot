@@ -37,53 +37,62 @@ Turn it on:
 
 ### Make a mixin
 
-Make a mixin. The only required property is `name`, and the only way to do this is through the factory.
+Make a mixin; `name` and at least one other property is required. The only way to make new instances is through the factory.
 
     var logger = mixin_a_lot.make_mixin({
         name: "Logger",
         logname: "Default Logname",
-        log_info: function(error) {...},
-        log_debug: function(error) {...},
-        log_error: function(error) {...},
-        log_warning: function(error) {...},
+        log: function(log_object) {
+            ...
+        },
     });
 
-### Mix
+### Mix a mixin
 
 Mix a mixin. Mixins must be `Mixin` instances.
 
     var Thing = function() {};
     
     Thing.mixinto_class(mixin); // mix into the class (the Thing Function instance)
-    Thing.mixinto_class(mixin); // mix into the prototype: Thing.prototype
+    Thing.mixinto_proto(mixin); // mix into the prototype: Thing.prototype
 
 ### <a name="mixin-method-hooks"></a> Mix options & mixin method hooks
 
 A subset of mixin methods/properties can be omitted (but not all):
     
     Thing.mixinto_proto(mixin, {
-        omits: ['log_error', 'log_warning']
+        omits: ['logname']
     });
     
 You can request before and after hooks into mixin methods; make sure to implement a requested hook before mixing. 
 
-Return values are propagated [accordingly](http://www.catb.org/~esr/writings/taoup/html/ch01s06.html#id2878339).
+Return values are propagated [accordingly](http://www.catb.org/~esr/writings/taoup/html/ch01s06.html#id2878339) - it's best to use an object or container class argument (as below) when propagating multiple return values.
     
     // the return value from this hook is passed to log_error
-    Thing.before_log_error = function(error) {
-        return this._serialize_error(error || this._trapped_error); 
+    Thing.before_log = function(error) {
+        var level, serialized;
+    
+        if (error instance of Critical) {
+            level = 'critical';
+        } else if (error instance of SyntaxError) {
+            level = 'error';
+        } ...
+        
+        serialized = this._serialize_error(error); 
+        
+        return {level: level, serialized_error: serialized}; 
     };
     Thing.mixinto_class(mixin, {
-        hook_before: ['log_error']
+        hook_before: ['log']
     });
     
     
     // return value from log_error is passed to this hook
-    Thing.prototype.after_log_error = function(serialized_error) {
-        // do something with logged serialized error (assuming log_error returns it)
+    Thing.prototype.after_log = function(log_object) {
+        // do something with log_object.level and log_object.serialized error (assuming log_error returns it)
     };
     Thing.mixinto_proto(mixin, {
-        hook_after: ['log_error']
+        hook_after: ['log']
     });
 
 ### <a name="mixing-hooks"></a> Mixing hooks
