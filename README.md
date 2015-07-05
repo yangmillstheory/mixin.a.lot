@@ -174,7 +174,7 @@ Install dependencies.
     
     $ cd mixin.a.lot && sudo npm install
     
-Compile CoffeeScripts into `dist/server`.
+Compile CoffeeScripts into `dist/`.
 
     $ ./node_modules/.bin/gulp coffee
 
