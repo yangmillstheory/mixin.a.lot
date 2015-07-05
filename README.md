@@ -178,11 +178,7 @@ Compile CoffeeScripts into `dist/server`.
 
     $ ./node_modules/.bin/gulp coffee
 
-"Browserify" - must have compiled first. This creates sourcemaps and minifies too.
-
-    $ ./node_modules/.bin/gulp browserify
-
-Remove `dist/`, re-compile CoffeeScript, and browserify package.
+Build - remove `dist/` and re-compile CoffeeScript.
 
     $ ./node_modules/.bin/gulp build
    
@@ -190,7 +186,7 @@ Run unit tests.
 
     $ .node_modules/.bin/jasmine jasmine.coffee
 
-Re-build, compile, and test.
+Re-build and test.
 
     $ npm test 
    
