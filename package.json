@@ -1,6 +1,6 @@
 {
   "name": "mixin-a-lot",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "JavaScript mixin framework",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "files": [
     "dist/**/*.js",
     "!/dist/**/*.spec.js",
