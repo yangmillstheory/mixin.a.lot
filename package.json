@@ -24,7 +24,12 @@
     "node": ">=0.10.0"
   },
   "main": "build/index.js",
-  "files": ["build", "LICENSE.md"],
+  "files": [
+    "build/**/*.js",
+    "!/build/**/*.spec.js",
+    "!/build/server/spec-utils/*.js",
+    "LICENSE.md"
+  ],
   "license": {
     "type": "MIT",
     "url": "http://opensource.org/licenses/MIT"
