@@ -1,4 +1,4 @@
-describe 'mix.it.mixinfactory', ->
+describe 'mixin', ->
 
   Mixin = require './index'
   errors = require '../errors'

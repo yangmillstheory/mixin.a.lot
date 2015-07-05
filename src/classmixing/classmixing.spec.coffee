@@ -1,17 +1,15 @@
-describe 'mix.it.classmixin', ->
+describe 'classmixing', ->
 
   {enable_classmixing, make} = require '../index'
   {beforeOnce, MIXINS} = require '../spec-utils'
   errors = require '../errors'
   _ = require 'underscore'
 
-  beforeOnce ->
-    enable_classmixing()
+  it 'should return true when classmixing is first enabled', ->
+    expect(enable_classmixing()).toBe true
 
-  it 'should raise an error when classmixing is enabled more than once', ->
-    expect(->
-      enable_classmixing()
-    ).toThrow(new Error "Function.prototype.mixinto_class is already defined!")
+  it 'should return false if classmixing is already enabled', ->
+    expect(enable_classmixing()).toBe false
 
   it 'should attach a non-enumerable, immutable .mixinto_class to Function.prototype', ->
     expect(_.isFunction Function::mixinto_class).toBe true

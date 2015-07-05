@@ -1,17 +1,15 @@
-describe 'mix.it.protomixin', ->
+describe 'protomixing', ->
 
   {enable_protomixing, make} = require '../index'
   {beforeOnce,  MIXINS} = require '../spec-utils'
   errors = require '../errors'
   _ = require 'underscore'
 
-  beforeOnce ->
-    enable_protomixing()
+  it 'should return true when protomixing is first enabled', ->
+    expect(enable_protomixing()).toBe true
 
-  it 'should raise an error when protomixing is enabled more than once', ->
-    expect(->
-      enable_protomixing()
-    ).toThrow(new Error "Function.prototype.mixinto_proto is already defined!")
+  it 'should return false if protomixing is already enabled', ->
+    expect(enable_protomixing()).toBe false
 
   it 'should attach a non-enumerable, immutable .mixinto_proto to Function.prototype', ->
     expect(_.isFunction Function::mixinto_proto).toBe true
