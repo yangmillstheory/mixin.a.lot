@@ -53,7 +53,7 @@ Mix a mixin. Mixins must be `Mixin` instances.
     Thing.mixinto_class(mixin); // mix into the class (the Thing Function instance)
     Thing.mixinto_class(mixin); // mix into the prototype: Thing.prototype
 
-### Mix options & mixin method hooks <a name="mixin-method-hooks"></a>
+### <a name="mixin-method-hooks"></a> Mix options & mixin method hooks
 
 A subset of mixin methods/properties can be omitted (but not all):
     
@@ -82,11 +82,11 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
         hook_after: ['log_error']
     });
 
-### Mixing hooks <a name="mixing-hooks"></a>
+### <a name="mixing-hooks"></a> Mixing hooks
     
 Mixins can have pre-mixing and post-mixing hooks that fire before and after mixing (resp.) with the class or prototype context.
 
-There are two (not mutually exclusive ways to specify them) They can be attached to the mixin 
+There are two not mutually exclusive ways to specify them. They can be attached to the mixin 
 
     var mixin = Mixin.make({
         name: "Logger",
@@ -100,9 +100,7 @@ There are two (not mutually exclusive ways to specify them) They can be attached
         }
     });
    
-or specified on a per-mixing basis via the options hash. (If both are specified, the hooks from the options hash take precedence.) 
-
-`this` in mixing hooks always point to the prototype or the class, depending on whether `mixinto_proto` or `mixinto_class` was invoked. 
+or specified on a per-mixing basis via the options hash.  
     
     Thing.mixinto_proto(mixin, {
         postmixing_hook: function(arg1, arg2) {
@@ -112,11 +110,15 @@ or specified on a per-mixing basis via the options hash. (If both are specified,
         };
     }, ['arg1', 'arg2']);
     
-Optional arguments to the mixing hooks are passed via the third parameter. 
+If specified in both places, the hooks from the options hash take precedence. 
+
+`this` in mixing hooks always point to the prototype or the class, depending on whether `mixinto_proto` or `mixinto_class` was invoked.
+
+Optional arguments to the mixing hooks are passed via the third parameter.  
 
 ## API
 
-Given:
+Given the following setup:
 
     var mixin_a_lot = require('mixin-a-lot');
     
@@ -125,35 +127,35 @@ Given:
     
     var Thing = function () {};
 
-### enable_classmixing(), enable_protomixing()
+### mixin_a_lot.enable_classmixing(), mixin_a_lot.enable_protomixing()
 
 Attach `mixinto_class`, `mixinto_proto` methods on `Function.prototype`. These properties are [non-enumerable, non-configurable, non-writable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
 
-### make(Object mixin_properties, [Boolean freeze])
+### mixin_a_lot.make(Object mixin_properties, [Boolean freeze])
 
 Make a `Mixin` from an object literal with at least a `String name` property. 
 
-If `freeze` is not false,`NotMutable` is thrown whenever a mixin property is mutated.
+If `freeze` is not false,`NotMutable` is thrown whenever there's an attempt to mutate a mixin property.
 
 If `freeze` is false, the returned `Mixin` will still throw `NotMutable` for the supplied properties, but new properties can now be added and deleted.
 
 `premixing_hook` and `postmixing_hook` can optionally be [supplied as above.](#mixing-hooks)
 
-`mixin_keys` is an `Array` of property names that will mix into a mixing class; of course, these names don't include `name`.
+The returned `Mixin` has a property `mixin_keys`, which is an `Array` of property names that will mix into a mixing class; of course, these names don't include `name`.
 
-### Function.prototype.mixinto_proto(Mixin mixin, [options], [mixinghook_args]) <a name="mixinto-proto"></a>
+### <a name="mixinto-proto"></a> Function.prototype.mixinto_proto(Mixin mixin, [options], [mixinghook_args])
 
 Mix properties from the Mixin into the prototype of your class. Optional `options` should be an object literal with allowed keys:
  
 * `omits`: `Array` of `Strings` which are properties of the mixin to exclude from mixing
-* `hook_before`, `hook_after`: `Array` of `Strings` which are properties of the mixin to hook before or after. Make sure to have methods `before_mixin_method`, `after_mixin_method` defined before invocation, [as above](#mixin-method-hooks).
-* `postmixing_hook`, `premixing_hook`: `Functions` that fire before and after the mixing process, [as above](#mixing-hooks). These take precedence over mixing hooks defined in the mixin. 
+* `hook_before`, `hook_after`: `Array` of `Strings` which are mixin methods to hook before or after. Make sure to have the method hooks defined before invocation, [as above](#mixin-method-hooks).
+* `postmixing_hook`, `premixing_hook`: `Functions` that fire before and after the mixing process, [as above](#mixing-hooks). 
 
-`mixinghook_args` are passed to supplied mixing hooks, if any.
+Mixing hooks defined here take precedence over mixing hooks defined in the mixin. `mixinghook_args` are passed to supplied mixing hooks, if any.
 
 ### Function.prototype.mixinto_class(Mixin mixin, [options], [mixinghook_args])
 
-Same as [`mixinto_proto`](#mixinto-proto), except mixing applies to the calling `Function`.
+Same as `mixinto_proto`(#mixinto-proto), except mixing applies to the calling `Function`.
 
 ## Development
 
