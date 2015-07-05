@@ -4,8 +4,7 @@ errors = require '../errors'
 
 class Mixin
   ###
-    An immutable class wrapping an immutable mixin instances that wrap simple
-    object literals.
+    An immutable class of mixin instances that wrap object literals.
 
     Mixins have no special behavior or data other than
 
@@ -13,13 +12,13 @@ class Mixin
       - toString()
       - mixin_keys
           (Array of property names that to mix in)
-      - pre/post mixinghooks
+      - pre/post mixinghooks (optional)
           (functions invoked with the mixtarget context before/after mixing)
 
     and immutability.
 
     The augmentation logic is in the factory method .from_obj, which is
-    the only meaningful way to create instances.
+    the only way to create instances.
   ###
 
   @validate: (mixin) ->

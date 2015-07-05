@@ -1,11 +1,14 @@
 {get_classmixer} = require '../mixer'
 
 
+CLASSMIXING_KEY = 'mixinto_class'
+
+
 enable_classmixing = ->
-  if Function::mixinto_class?
+  if Function::[CLASSMIXING_KEY]?
     false
   else
-    Object.defineProperty Function::, 'mixinto_class',
+    Object.defineProperty Function::, CLASSMIXING_KEY,
       enumerable: false
       value: get_classmixer()
     true

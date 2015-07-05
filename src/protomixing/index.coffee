@@ -1,11 +1,14 @@
 {get_protomixer} = require '../mixer'
 
 
+PROTOMIXING_KEY = 'mixinto_proto'
+
+
 enable_protomixing = ->
-  if Function::mixinto_proto?
+  if Function::[PROTOMIXING_KEY]?
     false
   else
-    Object.defineProperty Function::, 'mixinto_proto',
+    Object.defineProperty Function::, PROTOMIXING_KEY,
       enumerable: false
       value: get_protomixer()
     true

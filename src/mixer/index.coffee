@@ -1,6 +1,6 @@
 _ = require 'underscore'
 errors = require '../errors'
-Mixin = require '../mixin'
+{validate} = require '../mixin'
 
 
 UTILS =
@@ -14,7 +14,7 @@ UTILS =
     _.isObject(thing) && !Array.isArray(thing) && !_.isFunction(thing)
 
 
-PARSER =
+OPTS_PARSER =
 
   _parse_methodhooks: (mixin, methodhooks) ->
     for own hook_key, methods of methodhooks
@@ -62,8 +62,11 @@ PARSER =
 
 MIXER =
 
+  _hookname: (mixinprop, before = false) ->
+    (before && "before_#{mixinprop}") || "after_#{mixinprop}"
+
   _mix_with_hook: ({mixtarget, mixinprop, mixinvalue}, before = false) ->
-    hookname = (before && "before_#{mixinprop}") || "after_#{mixinprop}"
+    hookname = @_hookname(mixinprop, before)
 
     unless _.isFunction(mixtarget[hookname])
       throw errors.NotImplemented "Unimplemented hook: #{hookname}"
@@ -77,9 +80,9 @@ MIXER =
     mixtarget[mixinprop] = mixinvalue
 
   mix: (mixtarget, mixin, options = {}) ->
-    Mixin.validate(mixin)
+    validate(mixin)
 
-    {omits, methodhooks, mixinghooks} = PARSER.parse_mix(mixin, options)
+    {omits, methodhooks, mixinghooks} = OPTS_PARSER.parse_mix(mixin, options)
     {premixing_hook, postmixing_hook} = mixin
     [__, __, __, mixinghook_args] = arguments
 
