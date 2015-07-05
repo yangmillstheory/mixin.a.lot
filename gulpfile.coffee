@@ -2,6 +2,13 @@ gulp = require 'gulp'
 
 coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
+
+source = require 'vinyl-source-stream'
+buffer = require 'vinyl-buffer'
+uglify = require 'gulp-uglify'
+sourcemaps = require 'gulp-sourcemaps'
+browserify = require 'browserify'
+
 del = require 'del'
 
 
@@ -12,6 +19,7 @@ SRC =
 
 DIST =
   base: "dist"
+  main: "dist/server/index.js"
 
   SERVER:
     base: 'dist/server'
@@ -38,11 +46,18 @@ gulp.task 'coffee', (done) ->
   done?()
 
 
+# implementation credit:
+#
+#   https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md
 gulp.task 'browserify', ->
-  gulp
-    .src(DIST.SERVER.files())
-    .pipe(concat DIST.CLIENT.file)
+  browserify(entries: DIST.main, debug: true)
+    .bundle()
+    .pipe(source(DIST.CLIENT.file))
+    .pipe(buffer())
+    .pipe(sourcemaps.init loadMaps: true)
+    .pipe(uglify())
+    .pipe(sourcemaps.write './')
     .pipe(gulp.dest DIST.CLIENT.base)
 
 
-gulp.task 'build', gulp.series('clean', 'coffee')
+gulp.task 'build', gulp.series('clean', 'coffee', 'browserify')
