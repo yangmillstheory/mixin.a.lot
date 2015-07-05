@@ -114,7 +114,7 @@ or specified on a per-mixing basis via the options hash.
         };
     }, ['arg1', 'arg2']);
     
-If specified in both places, the hooks from the options hash take precedence. 
+If specified in both places, the hooks from the options hash run before the ones from the mixin. 
 
 `this` in mixing hooks always point to the prototype or the class, depending on whether `mixinto_proto` or `mixinto_class` was invoked.
 
