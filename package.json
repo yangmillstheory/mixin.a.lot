@@ -1,6 +1,6 @@
 {
   "name": "mixin-a-lot",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "JavaScript mixin framework",
   "repository": {
     "type": "git",
@@ -25,9 +25,9 @@
   },
   "main": "build/index.js",
   "files": [
-    "build/**/*.js",
-    "!/build/**/*.spec.js",
-    "!/build/server/spec-utils/*.js",
+    "dist/**/*.js",
+    "!/dist/**/*.spec.js",
+    "!/dist/spec-utils/*.js",
     "LICENSE.md"
   ],
   "license": {
@@ -38,24 +38,18 @@
     "url": "https://github.com/yangmillstheory/mixin.a.lot/issues"
   },
   "devDependencies": {
-    "browserify": "^10.2.4",
     "coffee-script": "^1.9.2",
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-coffee": "^2.3.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-uglify": "^1.2.0",
     "jasmine": "^2.3.1",
-    "jasmine-spec-reporter": "^2.2.3",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "jasmine-spec-reporter": "^2.2.3"
   },
   "dependencies": {
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "prepublish": "gulp build && gulp browserify",
-    "test": "gulp build && gulp browserify && coffee jasmine.coffee"
+    "prepublish": "gulp build",
+    "test": "gulp build && coffee jasmine.coffee"
   }
 }

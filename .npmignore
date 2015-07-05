@@ -1,4 +1,4 @@
 src
 
-build/**/*.spec.js
-build/spec-utils/**/*
+dist/**/*.spec.js
+dist/spec-utils/**/*

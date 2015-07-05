@@ -4,7 +4,7 @@
 
 **mixin.a.lot** is a JavaScript mixin library implemented in [CoffeeScript](http://www.coffeescript.org). 
 
-Its only dependency is [underscore.js](http://underscorejs.org/). You can run it in [node](https://nodejs.org/), or in the browser (a ["browserified"](http://browserify.org/) version is provided in the distribution).
+Its only dependency is [underscore.js](http://underscorejs.org/). You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/).
 
 Goals for `Mixins`: 
 
