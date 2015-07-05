@@ -164,6 +164,8 @@ For more detail, browse through the `*.spec.coffee` unit tests in `src`.
 
 ## Development
 
+Development is in `snake_case` CoffeeScript.
+
 Get the source code.
 
     $ git clone git@github.com:yangmillstheory/mixin.a.lot.git
@@ -176,7 +178,7 @@ Compile CoffeeScripts into `dist/`:
 
     $ ./node_modules/.bin/gulp coffee
 
-To rebuild:
+To rebuild (removes `dist/` and re-compiles):
 
     $ ./node_modules/.bin/gulp build
    
