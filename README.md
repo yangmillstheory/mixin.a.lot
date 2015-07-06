@@ -49,7 +49,7 @@ Make a mixin; `name` and at least one other property is required. The only way t
 
 ### Mix a mixin
 
-Mix a mixin. Mixins must be `Mixin` instances.
+Mix a mixin into your class or class's prototype. Mixins must be `Mixin` instances.
 
     var Thing = function() {};
     
