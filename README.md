@@ -72,9 +72,9 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
     Thing.before_log = function(error) {
         var level, serialized;
     
-        if (error instance of Critical) {
+        if (error instanceof Critical) {
             level = 'critical';
-        } else if (error instance of SyntaxError) {
+        } else if (error instanceof SyntaxError) {
             level = 'error';
         } ...
         
