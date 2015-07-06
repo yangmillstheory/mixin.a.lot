@@ -5,11 +5,13 @@ describe 'protomixing', ->
   errors = require '../errors'
   _ = require 'underscore'
 
-  it 'should return true when protomixing is first enabled', ->
-    expect(enable_protomixing()).toBe true
+  describe 'enabling protomixing', ->
 
-  it 'should return false if protomixing is already enabled', ->
-    expect(enable_protomixing()).toBe false
+    it 'should return true when protomixing is first enabled', ->
+      expect(enable_protomixing()).toBe true
+
+    it 'should return false if protomixing is already enabled', ->
+      expect(enable_protomixing()).toBe false
 
   it 'should attach a non-enumerable, immutable .mixinto_proto to Function.prototype', ->
     expect(_.isFunction Function::mixinto_proto).toBe true

@@ -5,11 +5,13 @@ describe 'classmixing', ->
   errors = require '../errors'
   _ = require 'underscore'
 
-  it 'should return true when classmixing is first enabled', ->
-    expect(enable_classmixing()).toBe true
+  describe 'enabling classmixing', ->
 
-  it 'should return false if classmixing is already enabled', ->
-    expect(enable_classmixing()).toBe false
+    it 'should return true when classmixing is first enabled', ->
+      expect(enable_classmixing()).toBe true
+
+    it 'should return false if classmixing is already enabled', ->
+      expect(enable_classmixing()).toBe false
 
   it 'should attach a non-enumerable, immutable .mixinto_class to Function.prototype', ->
     expect(_.isFunction Function::mixinto_class).toBe true
