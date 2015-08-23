@@ -28,7 +28,8 @@
     "dist/**/*.js",
     "!/dist/**/*.spec.js",
     "!/dist/spec-utils/*.js",
-    "LICENSE.md"
+    "LICENSE.md",
+    "CHANGELOG.md"
   ],
   "license": {
     "type": "MIT",
