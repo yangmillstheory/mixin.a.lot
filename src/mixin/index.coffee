@@ -25,12 +25,31 @@ class Mixin
     unless mixin instanceof @
       throw new TypeError "Expected a Mixin instance"
 
-    {premixing_hook, postmixing_hook} = mixin
-
-    for own hook_name, hook of {premixing_hook, postmixing_hook}
+    for own hook_name, hook of @_parse_mixinghooks(mixin)
       if hook? && !_.isFunction hook
         throw new TypeError "Expected a function for #{hook_name}"
 
+  @premixing_hook_keys = [
+    'premixing_hook'
+    'premixing'
+    'premix'
+  ]
+
+  @postmixing_hook_keys = [
+    'postmixing_hook'
+    'postmixing'
+    'postmix'
+  ]
+
+  @_parse_mixinghooks: (mixin) ->
+    mixinghooks = {}
+    before = _.find @premixing_hook_keys, (alias) -> _.has(mixin, alias)
+    after = _.find @postmixing_hook_keys, (alias) -> _.has(mixin, alias)
+    if before?
+      mixinghooks[before] = mixin[before]
+    if after?
+      mixinghooks[after] = mixin[after]
+    mixinghooks
 
   @from_obj: (obj, freeze = true) ->
     unless _.isObject(obj) && !_.isArray(obj)
@@ -57,6 +76,14 @@ class Mixin
   toString: ->
     string_keys = _.without(@mixin_keys, 'name')
     "Mixin(#{@name}: #{string_keys.join(', ')})"
+
+  get_postmixing_hook: ->
+    hook_key = _.find @constructor.postmixing_hook_keys, (key) => @[key]?
+    @[hook_key]
+
+  get_premixing_hook: ->
+    hook_key = _.find @constructor.premixing_hook_keys, (key) => @[key]?
+    @[hook_key]
 
 
 Object.freeze(Mixin)
