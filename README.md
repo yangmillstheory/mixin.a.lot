@@ -83,7 +83,7 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
         return {level: level, serialized_error: serialized}; 
     };
     Thing.mixinto_class(mixin, {
-        hook_before: ['log']
+        before_hook: ['log']
     });
     
     
@@ -92,7 +92,7 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
         // do something with log_object.level and log_object.serialized error (assuming log_error returns it)
     };
     Thing.mixinto_proto(mixin, {
-        hook_after: ['log']
+        after_hook: ['log']
     });
 
 ### <a name="mixing-hooks"></a> Mixing hooks
@@ -106,7 +106,7 @@ There are two not mutually exclusive ways to specify them. They can be attached 
            
         // various methods that operate on this.logname    
         
-        premixing_hook: function() {
+        premix: function() {
             if (!this.logname) {
                 throw new Error("Can't log without a logname!");
             }
@@ -116,7 +116,7 @@ There are two not mutually exclusive ways to specify them. They can be attached 
 or specified on a per-mixing basis via the options hash.  
     
     Thing.mixinto_proto(mixin, {
-        postmixing_hook: function(arg1, arg2) {
+        postmix: function(arg1, arg2) {
             // do something useful; finalize the mixing.
             // `this` points to Thing.prototype;
             // arguments are optionally specified via an optional array as below
@@ -151,7 +151,7 @@ If `freeze` is not false, `NotMutable` is thrown whenever there's an attempt to 
 
 If `freeze` is false, the returned `Mixin` will still throw `NotMutable` for the supplied properties, but new properties can now be added and deleted.
 
-`premixing_hook` and `postmixing_hook` can optionally be [supplied as above.](#mixing-hooks)
+`premix` and `postmix` can optionally be [supplied as above](#mixing-hooks), with aliases `premixing`, `premixing_hook`, and `postmixing`, `postmixing_hook`, resp.
 
 The returned `Mixin` has a property `mixin_keys`, which is an `Array` of property names that will mix into a mixing class; of course, these names don't include `name`.
 
@@ -160,8 +160,10 @@ The returned `Mixin` has a property `mixin_keys`, which is an `Array` of propert
 Mix properties from the Mixin into the prototype of the mixing class. Optional `options` should be an object literal conforming to the following schema:
  
 * `omits`: `Array` of `Strings` which are properties of the mixin to exclude from mixing
-* `hook_before`, `hook_after`: `Array` of `Strings` which are mixin methods to hook before or after. Make sure to have the method hooks defined before invocation, [as above](#mixin-method-hooks).
-* `postmixing_hook`, `premixing_hook`: `Functions` that fire before and after the mixing process, [as above](#mixing-hooks). 
+* `before_hook`, `after_hook`: `Array` of `Strings` which are mixin methods to hook before or after. Make sure to have the method hooks defined before invocation, [as above](#mixin-method-hooks).
+    * **aliases:** `hook_before`, `hook_after`, resp. 
+* `postmix`, `premix`: `Functions` that fire before and after the mixing process, [as above](#mixing-hooks).
+    * **aliases:** `postmixing`, `postmixing_hook`, and `premixing`, `premixing_hook`, resp.
 
 Mixing hooks defined via `options` are invoked before those mixing hooks defined in the mixin. `hook_args` are passed to supplied mixing hooks, if any.
 
