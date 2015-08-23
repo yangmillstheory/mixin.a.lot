@@ -6,9 +6,9 @@ get_protomixer = ->
     MIXER.mix(@::, arguments...)
 
 
-get_classmixer = ->
+get_staticmixer = ->
   ->
     MIXER.mix(@, arguments...)
 
 
-module.exports = {get_protomixer, get_classmixer}
+module.exports = {get_protomixer, get_staticmixer}

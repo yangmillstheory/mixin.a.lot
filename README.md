@@ -33,7 +33,7 @@ Turn it on:
     var mixin_a_lot = require('mixin-a-lot');
     
     mixin_a_lot.enable_protomixing();
-    mixin_a_lot.enable_classmixing();
+    mixin_a_lot.enable_staticmixing();
 
 ### Make a mixin
 
@@ -53,14 +53,14 @@ Mix a mixin into your class or class's prototype. Mixins must be `Mixin` instanc
 
     var Thing = function() {};
     
-    Thing.mixinto_class(mixin); // mix into the class (the Thing Function instance)
-    Thing.mixinto_proto(mixin); // mix into the prototype: Thing.prototype
+    Thing.static_mix(mixin); // mix into Thing
+    Thing.proto_mix(mixin); //  mix into Thing.prototype
 
 ### <a name="mixin-method-hooks"></a> Mix options & mixin method hooks
 
 A subset of mixin methods/properties can be omitted (but not all):
     
-    Thing.mixinto_proto(mixin, {
+    Thing.proto_mix(mixin, {
         omits: ['logname']
     });
     
@@ -82,7 +82,7 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
         
         return {level: level, serialized_error: serialized}; 
     };
-    Thing.mixinto_class(mixin, {
+    Thing.static_mix(mixin, {
         before_hook: ['log']
     });
     
@@ -91,7 +91,7 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
     Thing.prototype.after_log = function(log_object) {
         // do something with log_object.level and log_object.serialized error (assuming log_error returns it)
     };
-    Thing.mixinto_proto(mixin, {
+    Thing.proto_mix(mixin, {
         after_hook: ['log']
     });
 
@@ -115,7 +115,7 @@ There are two not mutually exclusive ways to specify them. They can be attached 
    
 or specified on a per-mixing basis via the options hash.  
     
-    Thing.mixinto_proto(mixin, {
+    Thing.proto_mix(mixin, {
         postmix: function(arg1, arg2) {
             // do something useful; finalize the mixing.
             // `this` points to Thing.prototype;
@@ -125,7 +125,7 @@ or specified on a per-mixing basis via the options hash.
     
 If specified in both places, the hooks from the options hash run before the ones from the mixin. 
 
-`this` in mixing hooks always points to the prototype or the class (the `Function`), depending on whether `mixinto_proto` or `mixinto_class` was invoked.
+`this` in mixing hooks always points to the prototype or the class (the `Function`), depending on whether `proto_mix` or `static_mix` was invoked.
 
 Optional arguments to the mixing hooks are passed via the third parameter.  
 
@@ -135,13 +135,15 @@ Given the following setup:
 
     var m = require('mixin-a-lot');
     
-    m.enable_classmixing();
+    m.enable_staticmixing();
     m.enable_protomixing();
 
 
-### m.enable_classmixing(), m.enable_protomixing()
+### m.enable_staticmixing(), m.enable_protomixing()
 
-Attach `mixinto_class`, `mixinto_proto` methods on `Function.prototype`. These properties are [non-enumerable, non-configurable, non-writable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
+Attach `static_mix`, `proto_mix` methods on `Function.prototype`. These properties are [non-enumerable, non-configurable, non-writable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
+
+**Aliases:** `enable_staticmixing`: `enable_classmixing`. Deprecated in `1.1.1`.
 
 ### m.make_mixin(Object mixin_properties, [Boolean freeze])
 
@@ -155,7 +157,7 @@ If `freeze` is false, the returned `Mixin` will still throw `NotMutable` for the
 
 The returned `Mixin` has a property `mixin_keys`, which is an `Array` of property names that will mix into a mixing class; of course, these names don't include `name`.
 
-### <a name="mixinto-proto"></a> Function.prototype.mixinto_proto(Mixin mixin, [options], [hook_args])
+### <a name="mixinto-proto"></a> Function.prototype.proto_mix(Mixin mixin, [options], [hook_args])
 
 Mix properties from the Mixin into the prototype of the mixing class. Optional `options` should be an object literal conforming to the following schema:
  
@@ -167,11 +169,15 @@ Mix properties from the Mixin into the prototype of the mixing class. Optional `
 
 Mixing hooks defined via `options` are invoked before those mixing hooks defined in the mixin. `hook_args` are passed to supplied mixing hooks, if any.
 
-### Function.prototype.mixinto_class(Mixin mixin, [options], [hook_args])
+**Aliases:** `mixinto_proto`
 
-Same as [mixinto_proto](#mixinto-proto), except mixing applies to the calling `Function`.
+### Function.prototype.static_mix(Mixin mixin, [options], [hook_args])
+
+Same as [proto_mix](#mixinto-proto), except mixing applies to the calling `Function`.
 
 For more detail, browse through the `*.spec.coffee` unit tests in `src`. 
+
+**Aliases:** `mixinto_class`. Deprecated in `1.1.1`.
 
 ## Development
 

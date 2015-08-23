@@ -1,33 +1,33 @@
-describe 'classmixing', ->
+describe 'static_mix', ->
 
-  {enable_classmixing, make_mixin} = require '../index'
+  {enable_staticmixing, make_mixin} = require '../index'
   {beforeOnce, MIXINS} = require '../spec-utils'
   errors = require '../errors'
   _ = require 'underscore'
 
-  describe 'enabling classmixing', ->
+  describe 'enabling static_mix', ->
 
-    it 'should return true when classmixing is first enabled', ->
-      expect(enable_classmixing()).toBe true
+    it 'should return true when static_mix is first enabled', ->
+      expect(enable_staticmixing()).toBe true
 
-    it 'should return false if classmixing is already enabled', ->
-      expect(enable_classmixing()).toBe false
+    it 'should return false if static_mix is already enabled', ->
+      expect(enable_staticmixing()).toBe false
 
-  it 'should attach a non-enumerable, immutable .mixinto_class to Function.prototype', ->
-    expect(_.isFunction Function::mixinto_class).toBe true
-    expect(Object.keys Function::).not.toContain 'mixinto_class'
+  it 'should attach a non-enumerable, immutable .static_mix to Function.prototype', ->
+    expect(_.isFunction Function::static_mix).toBe true
+    expect(Object.keys Function::).not.toContain 'static_mix'
 
-    delete Function::mixinto_class
-    expect(_.isFunction Function::mixinto_class).toBe true
+    delete Function::static_mix
+    expect(_.isFunction Function::static_mix).toBe true
 
-    Function::mixinto_class = 'bar'
-    expect(_.isFunction Function::mixinto_class).toBe true
+    Function::static_mix = 'bar'
+    expect(_.isFunction Function::static_mix).toBe true
 
   it 'should throw an error when mixing non-Mixins', ->
     for non_Mixin in [1, 'String', [], {}]
       expect(->
         class Example
-          @mixinto_class non_Mixin
+          @static_mix non_Mixin
       ).toThrow new TypeError 'Expected a Mixin instance'
 
   it 'should mix into the class', ->
@@ -35,7 +35,7 @@ describe 'classmixing', ->
     spyOn(mixin, 'baz').and.returnValue ['baz']
 
     class Example
-      @mixinto_class mixin
+      @static_mix mixin
 
     expect(Example.bar).toBe 1
     expect(Example.baz()).toEqual ['baz']
@@ -45,8 +45,8 @@ describe 'classmixing', ->
     mixin_2 = make_mixin name: 'mixin_2', foo: 'bar2', qux: 'baz'
 
     class Example
-      @mixinto_class mixin_1
-      @mixinto_class mixin_2
+      @static_mix mixin_1
+      @static_mix mixin_2
 
     expect(Example.foo).toBe 'bar2'
     expect(Example.baz).toBe 'qux'
@@ -60,14 +60,14 @@ describe 'classmixing', ->
 
       expect(=>
         class Example
-        Example.mixinto_class @mixin, mix_opts
+        Example.static_mix @mixin, mix_opts
       ).toThrow(new TypeError('Expected a function for premix'))
 
       mix_opts = {postmix: []}
 
       expect(=>
         class Example
-        Example.mixinto_class @mixin, mix_opts
+        Example.static_mix @mixin, mix_opts
       ).toThrow(new TypeError('Expected a function for postmix'))
 
     it 'should throw an error with mixin-supplied non-Function mixing hooks', ->
@@ -76,7 +76,7 @@ describe 'classmixing', ->
 
       expect(=>
         class Example
-        Example.mixinto_class @mixin
+        Example.static_mix @mixin
       ).toThrow(new TypeError('Expected a function for premix'))
 
       @mixin = MIXINS.default_mixin()
@@ -84,7 +84,7 @@ describe 'classmixing', ->
 
       expect(=>
         class Example
-        Example.mixinto_class @mixin
+        Example.static_mix @mixin
       ).toThrow(new TypeError('Expected a function for postmix'))
 
     describe 'pre-mixing hooks', ->
@@ -97,7 +97,7 @@ describe 'classmixing', ->
         spyOn(mix_opts, 'premix').and.callThrough()
 
         class Example
-        Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
+        Example.static_mix @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
 
@@ -121,13 +121,13 @@ describe 'classmixing', ->
         expect(=>
           class Example
             # special_key is not on the class; schema unsatisfied, hook will throw
-          Example.mixinto_class @mixin, null, ['arg1', 'arg2']
+          Example.static_mix @mixin, null, ['arg1', 'arg2']
         ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
         class Example
           # special_key is on the class; schema satisfied, hook won't throw
           @special_key: 1
-        Example.mixinto_class @mixin, null, ['arg1', 'arg2']
+        Example.static_mix @mixin, null, ['arg1', 'arg2']
 
         expect(@mixin.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.premix.calls.count()).toBe 2
@@ -149,7 +149,7 @@ describe 'classmixing', ->
         class Example
 
         try
-          Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
+          Example.static_mix @mixin, mix_opts, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -168,7 +168,7 @@ describe 'classmixing', ->
         class Example
 
         try
-          Example.mixinto_class @mixin, null, ['arg1', 'arg2']
+          Example.static_mix @mixin, null, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -186,7 +186,7 @@ describe 'classmixing', ->
         spyOn(@mixin, 'premix').and.callThrough()
 
         class Example
-        Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
+        Example.static_mix @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
@@ -202,7 +202,7 @@ describe 'classmixing', ->
         spyOn(mix_opts, 'postmix').and.callThrough()
 
         class Example
-        Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
+        Example.static_mix @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
 
@@ -217,7 +217,7 @@ describe 'classmixing', ->
         spyOn(@mixin, 'postmix').and.callThrough()
 
         class Example
-        Example.mixinto_class @mixin, null, ['arg1', 'arg2']
+        Example.static_mix @mixin, null, ['arg1', 'arg2']
 
         expect(@mixin.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
 
@@ -238,7 +238,7 @@ describe 'classmixing', ->
         class Example
 
         try
-          Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
+          Example.static_mix @mixin, mix_opts, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -256,7 +256,7 @@ describe 'classmixing', ->
         class Example
 
         try
-          Example.mixinto_class @mixin, null, ['arg1', 'arg2']
+          Example.static_mix @mixin, null, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -273,13 +273,13 @@ describe 'classmixing', ->
         spyOn(@mixin, 'postmix').and.callThrough()
 
         class Example
-        Example.mixinto_class @mixin, mix_opts, ['arg1', 'arg2']
+        Example.static_mix @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(call_sequence).toEqual [1, 2]
 
-  describe 'classmixing options', ->
+  describe 'static_mix options', ->
 
     beforeEach ->
       @mixin = MIXINS.default_mixin()
@@ -288,7 +288,7 @@ describe 'classmixing', ->
 
       it 'should omit some mixin keys', ->
         class Example
-        Example.mixinto_class @mixin, omits: ['bar']
+        Example.static_mix @mixin, omits: ['bar']
 
         expect(Example.bar).toBeUndefined()
         expect(Example.baz).toBeDefined()
@@ -305,13 +305,13 @@ describe 'classmixing', ->
         for bad_omits_value in bad_omits_values
           expect(=>
             class Example
-            Example.mixinto_class @mixin, omits: bad_omits_value
+            Example.static_mix @mixin, omits: bad_omits_value
           ).toThrow new errors.ValueError "Expected omits option to be a nonempty Array"
 
       it 'should throw an error when omitting a non-existing mixin key', ->
         expect(=>
           class Example
-          Example.mixinto_class @mixin, omits: ['non_mixin_key']
+          Example.static_mix @mixin, omits: ['non_mixin_key']
         ).toThrow new errors.ValueError "Some omit keys aren't in mixin: non_mixin_key"
 
       it 'should not mangle the class hierarchy when omitting keys', ->
@@ -320,7 +320,7 @@ describe 'classmixing', ->
             'bar'
 
         class Example extends Super
-        Example.mixinto_class @mixin, omits: ['bar']
+        Example.static_mix @mixin, omits: ['bar']
 
         e = new Example
 
@@ -330,7 +330,7 @@ describe 'classmixing', ->
       it 'should not omit all mixin keys', ->
         expect(=>
           class Example
-          Example.mixinto_class @mixin, omits: ['bar', 'baz', 'foo']
+          Example.static_mix @mixin, omits: ['bar', 'baz', 'foo']
         ).toThrow new errors.ValueError "Found nothing to mix in!"
 
     describe 'mixin method hooks', ->
@@ -347,7 +347,7 @@ describe 'classmixing', ->
         for bad_hook_value in bad_hook_values
           expect(=>
             class Example
-            Example.mixinto_class @mixin, before_hook: bad_hook_value
+            Example.static_mix @mixin, before_hook: bad_hook_value
           ).toThrow new TypeError "before_hook: expected an Array of mixin method names"
 
       it 'should throw an error when the hook request contains a non-string or empty string', ->
@@ -378,7 +378,7 @@ describe 'classmixing', ->
         for bad_hook_request in bad_hook_requests
           expect(=>
             class Example
-            Example.mixinto_class @mixin, before_hook: bad_hook_request
+            Example.static_mix @mixin, before_hook: bad_hook_request
           ).toThrow new TypeError "before_hook: expected an Array of mixin method names"
 
       it 'should throw an error when the hook request contains a non-existent mixin method', ->
@@ -397,33 +397,33 @@ describe 'classmixing', ->
         for {before_hook, bad_method} in bad_hook_requests
           expect(=>
             class Example
-            Example.mixinto_class @mixin, {before_hook}
+            Example.static_mix @mixin, {before_hook}
           ).toThrow new errors.ValueError "#{bad_method} isn't a method on #{@mixin}"
 
       it 'should require that a before_hook be implemented when before_hooks are requested', ->
         expect(=>
           class Example
-          Example.mixinto_class @mixin, before_hook: ['baz']
+          Example.static_mix @mixin, before_hook: ['baz']
         ).toThrow new errors.NotImplemented "Unimplemented hook: before_baz"
 
         expect(=>
           class Example
             @before_baz: ->
 
-          Example.mixinto_class @mixin, before_hook: ['baz']
+          Example.static_mix @mixin, before_hook: ['baz']
         ).not.toThrow()
 
       it 'should require that an after_hook be implemented when after_hooks are requested', ->
         expect(=>
           class Example
-          Example.mixinto_class @mixin, after_hook: ['baz']
+          Example.static_mix @mixin, after_hook: ['baz']
         ).toThrow new errors.NotImplemented "Unimplemented hook: after_baz"
 
         expect(=>
           class Example
             @after_baz: ->
 
-          Example.mixinto_class @mixin, after_hook: ['baz']
+          Example.static_mix @mixin, after_hook: ['baz']
         ).not.toThrow()
 
       it 'should call the before_hook before the mixin method and pass the return value', ->
@@ -433,7 +433,7 @@ describe 'classmixing', ->
         class Example
           @before_baz: ->
             'before_baz'
-        Example.mixinto_class @mixin, before_hook: ['baz']
+        Example.static_mix @mixin, before_hook: ['baz']
 
         expect(Example.baz()).toEqual(['before_baz'])
 
@@ -443,6 +443,6 @@ describe 'classmixing', ->
         class Example
           @after_baz: (baz) ->
             baz.concat ['after_baz']
-        Example.mixinto_class @mixin, after_hook: ['baz']
+        Example.static_mix @mixin, after_hook: ['baz']
 
         expect(Example.baz()).toEqual(['baz', 'after_baz'])
