@@ -143,7 +143,7 @@ Given the following setup:
 
 Attach `static_mix`, `proto_mix` methods on `Function.prototype`. These properties are [non-enumerable, non-configurable, non-writable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
 
-**Aliases:** `enable_staticmixing`: `enable_classmixing`. Deprecated in `1.1.1`.
+**Aliases:** `enable_classmixing`. Deprecated in `1.2.0`.
 
 ### m.make_mixin(Object mixin_properties, [Boolean freeze])
 
@@ -177,7 +177,7 @@ Same as [proto_mix](#mixinto-proto), except mixing applies to the calling `Funct
 
 For more detail, browse through the `*.spec.coffee` unit tests in `src`. 
 
-**Aliases:** `mixinto_class`. Deprecated in `1.1.1`.
+**Aliases:** `mixinto_class`. Deprecated in `1.2.0`.
 
 ## Development
 
