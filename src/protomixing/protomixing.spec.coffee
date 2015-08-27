@@ -339,12 +339,12 @@ describe 'proto_mix', ->
 
     describe 'mixin method hooks', ->
 
-      it 'should throw an error when the hook request is not an Array of Strings', ->
+      it 'should throw an error when the hook request is not a map of strings to functions', ->
         bad_hook_values = [
           'String'
           1
           null
-          {}
+          []
           true
         ]
 
@@ -352,50 +352,37 @@ describe 'proto_mix', ->
           expect(=>
             class Example
             Example.proto_mix @mixin, before_hook: bad_hook_value
-          ).toThrow new TypeError "before_hook: expected an Array of mixin method names"
+          ).toThrow new TypeError "before_hook: expected dict of mixin methods to callbacks"
 
       it 'should throw an error when the hook request contains a non-string or empty string', ->
         bad_hook_requests = [
-          [
-            'mixinmethod_1'
-            false
-          ]
-          [
-            null
-            'mixinmethod_1'
-            'mixinmethod_2'
-          ]
-          [
-            {}
-            'mixinmethod_1'
-          ]
-          [
-            'mixinmethod_1'
-            1
-          ]
-          [
-            'mixinmethod_1'
-            ''
-          ]
+          {bad_mapping: 1}
+          {
+            bad_mapping: true
+            good_mapping: ->
+          }
+          {bad_mapping: null}
+          {bad_mapping: 'string'}
         ]
 
         for bad_hook_request in bad_hook_requests
           expect(=>
             class Example
             Example.proto_mix @mixin, before_hook: bad_hook_request
-          ).toThrow new TypeError "before_hook: expected an Array of mixin method names"
+          ).toThrow new TypeError "hook for bad_mapping isn't a function"
 
       it 'should throw an error when the hook request contains a non-existent mixin method', ->
         bad_hook_requests = [
-          before_hook: [
-            'baz'                   # valid method
-            'non_existent_method_1' # invalid
-            'non_existent_method_2' # invalid
-          ], bad_method: 'non_existent_method_1'
-          before_hook: [
-            'baz' # valid method
-            'foo' # non-method property
-          ], bad_method: 'foo'
+          before_hook:
+            baz: ->                    # valid method
+            non_existent_method_1: ->  # invalid
+            non_existent_method_2: ->  # invalid
+          bad_method: 'non_existent_method_1',
+
+          before_hook:
+            baz: -> # valid method
+            foo: -> # non-method property
+          bad_method: 'foo'
         ]
 
         for {before_hook, bad_method} in bad_hook_requests
@@ -404,40 +391,12 @@ describe 'proto_mix', ->
             Example.proto_mix @mixin, {before_hook}
           ).toThrow new errors.ValueError "#{bad_method} isn't a method on #{@mixin}"
 
-      it 'should require that a before_hook be implemented when before_hooks are requested', ->
-        expect(=>
-          class Example
-          Example.proto_mix @mixin, before_hook: ['baz']
-        ).toThrow new errors.NotImplemented "Unimplemented hook: before_baz"
-
-        expect(=>
-          class Example
-            before_baz: ->
-
-          Example.proto_mix @mixin, before_hook: ['baz']
-        ).not.toThrow()
-
-      it 'should require that an after_hook be implemented when after_hooks are requested', ->
-        expect(=>
-          class Example
-          Example.proto_mix @mixin, after_hook: ['baz']
-        ).toThrow new errors.NotImplemented "Unimplemented hook: after_baz"
-
-        expect(=>
-          class Example
-            after_baz: ->
-
-          Example.proto_mix @mixin, after_hook: ['baz']
-        ).not.toThrow()
-
       it 'should call the before_hook before the mixin method and pass the return value', ->
         spyOn(@mixin, 'baz').and.callFake (before_value) ->
           [before_value]
 
         class Example
-          before_baz: ->
-            'before_baz'
-        Example.proto_mix @mixin, before_hook: ['baz']
+        Example.proto_mix @mixin, before_hook: {baz: -> 'before_baz'}
 
         expect((new Example).baz()).toEqual(['before_baz'])
 
@@ -445,8 +404,6 @@ describe 'proto_mix', ->
         spyOn(@mixin, 'baz').and.returnValue ['baz']
 
         class Example
-          after_baz: (baz) ->
-            baz.concat ['after_baz']
-        Example.proto_mix @mixin, after_hook: ['baz']
+        Example.proto_mix @mixin, after_hook: {baz: (baz) -> baz.concat(['after_baz'])}
 
         expect((new Example).baz()).toEqual(['baz', 'after_baz'])

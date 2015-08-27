@@ -20,16 +20,18 @@ first_alias_pair = (aliases, options) ->
     [null, null]
 
 parse_methodhook = (mixin, options, {aliases}) ->
-  [hook_key, methods] = first_alias_pair(aliases, options)
+  [hook_key, methodmap] = first_alias_pair(aliases, options)
   if hook_key?
-    unless Array.isArray(methods) && _.all(methods, UTILS.is_nonempty_string)
-      throw new errors.ValueError "#{hook_key}: expected an Array of mixin method names"
-    for methodname in methods
+    unless UTILS.is_obj_literal(methodmap)
+      throw new errors.ValueError "#{hook_key}: expected dict of mixin methods to callbacks"
+    for own methodname, hook of methodmap
+      unless _.isFunction hook
+        throw new errors.ValueError "hook for #{methodname} isn't a function"
       unless _.isFunction mixin[methodname]
         throw new errors.ValueError "#{methodname} isn't a method on #{mixin}"
   else
-    methods = []
-  methods
+    methodmap = {}
+  methodmap
 
 parse_mixinghook = (mixin, options, {aliases}) ->
   [hook_key, hook] = first_alias_pair(aliases, options)

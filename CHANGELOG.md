@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0] - 2015-08-26
+### BREAKING CHANGESl
+Mixin method hooks are now requested via key-value pairs of mixin methods mapping to callbacks.
+
+This is more natural and flexible than the previous API, which requested a before/after hook for a mixin method 
+via a string (the mixin method name) and required the mix target to implement a specially named method based on 
+the requested method name (before_[method_name]/after_[method_name]).
+
+Now, the mix target doesn't necessarily have to implement methods - unbound functions can be used, and the hook
+will still be invoked with the right context (instance or static).
+
 ## [1.2.1] - 2015-08-23
 ### Changed
 Nothing; bump for publish due to mistakes in versioning. 

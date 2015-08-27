@@ -6,19 +6,13 @@ OPTIONS = require './options'
 
 module.exports =
 
-  _hookname: (mixinprop, before = false) ->
-    (before && "before_#{mixinprop}") || "after_#{mixinprop}"
-
-  _mix_with_hook: ({mixtarget, mixinprop, mixinvalue}, before = false) ->
-    hookname = @_hookname(mixinprop, before)
-
-    unless _.isFunction(mixtarget[hookname])
-      throw errors.NotImplemented "Unimplemented hook: #{hookname}"
+  _mix_with_hook: ({mixtarget, mixinprop, mixinvalue, methodhooks}, before = false) ->
+    bound_hook = methodhooks[(before && 'before') || 'after'][mixinprop].bind(mixtarget)
     if before
-      hooked_mixinfunc = _.compose mixinvalue, mixtarget[hookname]
+      hooked_mixinmethod = _.compose mixinvalue, bound_hook
     else
-      hooked_mixinfunc = _.compose mixtarget[hookname], mixinvalue
-    mixtarget[mixinprop] = hooked_mixinfunc
+      hooked_mixinmethod = _.compose bound_hook, mixinvalue
+    mixtarget[mixinprop] = hooked_mixinmethod
 
   _mix_without_hook: ({mixtarget, mixinprop, mixinvalue}) ->
     mixtarget[mixinprop] = mixinvalue
@@ -37,15 +31,16 @@ module.exports =
 
     if _.isEmpty mixing_in
       throw new errors.ValueError "Found nothing to mix in!"
+    methods_to_hook = _.union(
+      Object.keys(methodhooks.before),
+      Object.keys(methodhooks.after))
     for mixinprop, mixinvalue of mixing_in
-      mixcontent = {mixtarget, mixinprop, mixinvalue}
-
-      if not (mixinprop in _.union(methodhooks.before, methodhooks.after))
+      mixcontent = {mixtarget, mixinprop, mixinvalue, methodhooks}
+      if not (mixinprop in methods_to_hook)
         @_mix_without_hook mixcontent
       else
-        @_mix_with_hook mixcontent, (mixinprop in methodhooks.before)
+        @_mix_with_hook mixcontent, (mixinprop of methodhooks.before)
 
     mixinghooks.after?.call(mixtarget, mixinghook_args)
     mixin.get_postmixing_hook()?.call(mixtarget, mixinghook_args)
-
     mixtarget

@@ -64,12 +64,14 @@ A subset of mixin methods/properties can be omitted (but not all):
         omits: ['logname']
     });
     
-You can request before and after hooks into mixin methods; make sure to implement a requested hook before mixing. 
+You can request before and after hooks into mixin methods. They'll always be called with the right context - instance or static. 
 
-Return values are propagated [accordingly](http://www.catb.org/~esr/writings/taoup/html/ch01s06.html#id2878339) - it's best to use an object or container class argument (as below) when propagating multiple return values.
+Return values are propagated [accordingly](http://www.catb.org/~esr/writings/taoup/html/ch01s06.html#id2878339) - 
+it's best to use an object or container class argument (as below) when propagating multiple return values.
     
     // the return value from this hook is passed to log_error
-    Thing.before_log = function(error) {
+    // 'this' is the Thing function. 
+    var before_log = function(error) {
         var level, serialized;
     
         if (error instanceof Critical) {
@@ -83,16 +85,17 @@ Return values are propagated [accordingly](http://www.catb.org/~esr/writings/tao
         return {level: level, serialized_error: serialized}; 
     };
     Thing.static_mix(mixin, {
-        before_hook: ['log']
+        before_hook: {log: before_log, ...}
     });
     
     
     // return value from log_error is passed to this hook
-    Thing.prototype.after_log = function(log_object) {
+    // 'this' is the instance of Thing
+    var after_log = function(log_object) {
         // do something with log_object.level and log_object.serialized error (assuming log_error returns it)
     };
     Thing.proto_mix(mixin, {
-        after_hook: ['log']
+        after_hook: {log: after_log}
     });
 
 ### <a name="mixing-hooks"></a> Mixing hooks
@@ -162,7 +165,7 @@ The returned `Mixin` has a property `mixin_keys`, which is an `Array` of propert
 Mix properties from the Mixin into the prototype of the mixing class. Optional `options` should be an object literal conforming to the following schema:
  
 * `omits`: `Array` of `Strings` which are properties of the mixin to exclude from mixing
-* `before_hook`, `after_hook`: `Array` of `Strings` which are mixin methods to hook before or after. Make sure to have the method hooks defined before invocation, [as above](#mixin-method-hooks).
+* `before_hook`, `after_hook`: object literal mapping mixin method names to callbacks, which are invoked with appropriate context, [as above](#mixin-method-hooks).
     * **aliases:** `hook_before`, `hook_after`, resp. 
 * `postmix`, `premix`: `Functions` that fire before and after the mixing process, [as above](#mixing-hooks).
     * **aliases:** `postmixing`, `postmixing_hook`, and `premixing`, `premixing_hook`, resp.
