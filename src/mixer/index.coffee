@@ -1,14 +1,5 @@
 MIXER = require './mixer'
+{enable_mixing} = require './utils'
 
 
-get_protomixer = ->
-  ->
-    MIXER.mix(@::, arguments...)
-
-
-get_staticmixer = ->
-  ->
-    MIXER.mix(@, arguments...)
-
-
-module.exports = {get_protomixer, get_staticmixer}
+module.exports = {MIXER, enable_mixing}

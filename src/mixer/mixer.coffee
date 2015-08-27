@@ -4,18 +4,20 @@ errors = require '../errors'
 OPTIONS = require './options'
 
 
+
+mix_with_hook = ({mixtarget, mixinprop, mixinvalue, methodhooks}, before = false) ->
+  bound_hook = methodhooks[(before && 'before') || 'after'][mixinprop].bind(mixtarget)
+  if before
+    hooked_mixinmethod = _.compose mixinvalue, bound_hook
+  else
+    hooked_mixinmethod = _.compose bound_hook, mixinvalue
+  mixtarget[mixinprop] = hooked_mixinmethod
+
+mix_without_hook = ({mixtarget, mixinprop, mixinvalue}) ->
+  mixtarget[mixinprop] = mixinvalue
+
+
 module.exports =
-
-  _mix_with_hook: ({mixtarget, mixinprop, mixinvalue, methodhooks}, before = false) ->
-    bound_hook = methodhooks[(before && 'before') || 'after'][mixinprop].bind(mixtarget)
-    if before
-      hooked_mixinmethod = _.compose mixinvalue, bound_hook
-    else
-      hooked_mixinmethod = _.compose bound_hook, mixinvalue
-    mixtarget[mixinprop] = hooked_mixinmethod
-
-  _mix_without_hook: ({mixtarget, mixinprop, mixinvalue}) ->
-    mixtarget[mixinprop] = mixinvalue
 
   mix: (mixtarget, mixin, options = {}) ->
     validate(mixin)
@@ -37,9 +39,9 @@ module.exports =
     for mixinprop, mixinvalue of mixing_in
       mixcontent = {mixtarget, mixinprop, mixinvalue, methodhooks}
       if not (mixinprop in methods_to_hook)
-        @_mix_without_hook mixcontent
+        mix_without_hook mixcontent
       else
-        @_mix_with_hook mixcontent, (mixinprop of methodhooks.before)
+        mix_with_hook mixcontent, (mixinprop of methodhooks.before)
 
     mixinghooks.after?.call(mixtarget, mixinghook_args)
     mixin.get_postmixing_hook()?.call(mixtarget, mixinghook_args)

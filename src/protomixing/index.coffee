@@ -1,4 +1,4 @@
-{get_protomixer} = require '../mixer'
+{MIXER, enable_mixing} = require '../mixer'
 
 
 PROTOMIXING_KEY = 'proto_mix'
@@ -8,17 +8,10 @@ PROTOMIXING_ALIASES = [
 
 
 enable_protomixing = ->
-  if Function::[PROTOMIXING_KEY]?
-    false
-  else
-    Object.defineProperty Function::, PROTOMIXING_KEY,
-      enumerable: false
-      value: get_protomixer()
-    for alias in PROTOMIXING_ALIASES
-      Object.defineProperty Function::, alias,
-        enumerable: false,
-        value: (args...) ->
-          @[PROTOMIXING_KEY](args...)
-    true
+  enable_mixing(
+    Function::,
+    -> MIXER.mix(@::, arguments...),
+    PROTOMIXING_KEY,
+    PROTOMIXING_ALIASES)
 
 module.exports = {enable_protomixing}

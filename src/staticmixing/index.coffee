@@ -1,4 +1,4 @@
-{get_staticmixer} = require '../mixer'
+{MIXER, enable_mixing} = require '../mixer'
 
 
 STATICMIXING_KEY = 'static_mix'
@@ -8,17 +8,10 @@ STATICMIXING_ALIASES = [
 
 
 enable_staticmixing = ->
-  if Function::[STATICMIXING_KEY]?
-    false
-  else
-    Object.defineProperty Function::, STATICMIXING_KEY,
-      enumerable: false
-      value: get_staticmixer()
-    for alias in STATICMIXING_ALIASES
-      Object.defineProperty Function::, alias,
-        enumerable: false,
-        value: (args...) ->
-          @[STATICMIXING_KEY](args...)
-    true
+  enable_mixing(
+    Function::,
+    -> MIXER.mix(@, arguments...),
+    STATICMIXING_KEY,
+    STATICMIXING_ALIASES)
 
 module.exports = {enable_staticmixing}
