@@ -1,4 +1,4 @@
-{MIXER, enable_mixing} = require '../mixer'
+mixer = require '../mixer'
 
 
 PROTOMIXING_KEY = 'proto_mix'
@@ -8,9 +8,9 @@ PROTOMIXING_ALIASES = [
 
 
 enable_protomixing = ->
-  enable_mixing(
+  mixer.enable_mixing(
     Function::,
-    -> MIXER.mix(@::, arguments...),
+    -> mixer.mix(@::, arguments...),
     PROTOMIXING_KEY,
     PROTOMIXING_ALIASES)
 

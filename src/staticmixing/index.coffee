@@ -1,4 +1,4 @@
-{MIXER, enable_mixing} = require '../mixer'
+mixer = require '../mixer'
 
 
 STATICMIXING_KEY = 'static_mix'
@@ -8,9 +8,9 @@ STATICMIXING_ALIASES = [
 
 
 enable_staticmixing = ->
-  enable_mixing(
+  mixer.enable_mixing(
     Function::,
-    -> MIXER.mix(@, arguments...),
+    -> mixer.mix(@, arguments...),
     STATICMIXING_KEY,
     STATICMIXING_ALIASES)
 
