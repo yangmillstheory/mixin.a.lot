@@ -2,6 +2,32 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [2.1.0] - 2015-08-27
+Deprecated bootstrap API:
+    
+    var mixin_a_lot = require('mixin-a-lot');
+    
+    mixin_a_lot.enable_classmixing();
+    mixin_a_lot.enable_protomixing();
+
+A new method `mix` is exported:
+
+    var mixin_a_lot = require('mixin-a-lot');
+    var mixin = mixin_a_lot.make_mixin(...);
+    
+    mixin_a_lot.mix(Foo.prototype, mixin);
+    mixin_a_lot.mix(Bar, mixin);
+    mixin_a_lot.mix({...}, mixin);
+    
+
+This is a much more flexible API than monkey-patching `Function.prototype`. It also
+allows callers to mix into any non-null type that's an `Object` or `Function` - this
+functionality actually didn't exist before (!).
+
+The old API will still work, for backwards-compatibility, but it's 
+deprecated in the source and documentation.
+
 ## [2.0.0] - 2015-08-26
 ### BREAKING CHANGES
 Mixin method hooks are now requested via key-value pairs of mixin methods mapping to callbacks.
