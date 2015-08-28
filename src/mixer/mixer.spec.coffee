@@ -1,7 +1,7 @@
 describe 'mixer', ->
 
+  {MIXINS} = require '../spec-utils'
   mixin_a_lot = require '../index'
-  {beforeOnce,  MIXINS} = require '../spec-utils'
   errors = require '../errors'
 
   it 'should throw an error when mixing non-Mixins', ->
@@ -41,8 +41,10 @@ describe 'mixer', ->
 
   describe 'mixing hooks', ->
 
-    it 'should throw an error with options-supplied non-Function mixing hooks', ->
+    beforeEach ->
       @mixin = MIXINS.default_mixin()
+
+    it 'should throw an error with options-supplied non-Function mixing hooks', ->
       mix_opts = {premix: 1}
 
       expect(=>
@@ -56,7 +58,6 @@ describe 'mixer', ->
       ).toThrow(new TypeError('Expected a function for postmix'))
 
     it 'should throw an error with mixin-supplied non-Function mixing hooks', ->
-      @mixin = MIXINS.default_mixin()
       @mixin.premix = 1
 
       expect(=>
@@ -94,7 +95,7 @@ describe 'mixer', ->
         This is also a good example of pre-mixin hook usage;
         to validate that the mix target satisfies a certain schema.
       ###
-      it 'should invoke a mixin pre-mixing hook with the prototype context', ->
+      it 'should invoke a mixin pre-mixing hook with the target context', ->
         @mixin.premix = ->
           unless @special_key?
             throw new errors.NotImplemented "Wanted schema key special_key"
@@ -177,7 +178,7 @@ describe 'mixer', ->
       beforeEach ->
         @mixin = MIXINS.default_mixin()
 
-      it 'should invoke an options post-mixing hook with the right context', ->
+      it 'should invoke an options post-mixing hook with the target context', ->
         mix_opts = {postmix: ->}
         spyOn(mix_opts, 'postmix').and.callThrough()
 
@@ -192,7 +193,7 @@ describe 'mixer', ->
         expect(object).toBe(mixtarget)
         expect(args...).toEqual(['arg1', 'arg2'])
 
-      it 'should invoke a mixin post-mixing hook with the prototype context', ->
+      it 'should invoke a mixin post-mixing hook with the target context', ->
         @mixin.postmix = ->
         spyOn(@mixin, 'postmix').and.callThrough()
 
@@ -258,7 +259,7 @@ describe 'mixer', ->
         expect(@mixin.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(call_sequence).toEqual [1, 2]
 
-  describe 'proto_mix options', ->
+  describe 'mix options', ->
 
     beforeEach ->
       @mixin = MIXINS.default_mixin()
