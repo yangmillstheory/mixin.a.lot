@@ -1,19 +1,20 @@
-describe 'mixer', ->
+describe 'MIXER', ->
 
   {MIXINS} = require '../spec-utils'
-  mixin_a_lot = require '../index'
+  mixer = require './index'
+  Mixin = require '../mixin'
   errors = require '../errors'
 
   it 'should throw an error when mixing non-Mixins', ->
     for non_Mixin in [1, 'String', [], {}]
       expect(->
-        mixin_a_lot.mix({}, non_Mixin)
+        mixer.mix({}, non_Mixin)
       ).toThrow new TypeError 'Expected a Mixin instance'
 
   it 'should throw an error when mixing into invalid targets', ->
     for mixtarget in [1, 'string', true, null, undefined]
       expect(->
-        mixin_a_lot.mix(mixtarget, MIXINS.default_mixin())
+        mixer.mix(mixtarget, MIXINS.default_mixin())
       ).toThrow new TypeError "Expected non-null object or function, got #{mixtarget}"
 
   it 'should mix into the target', ->
@@ -21,19 +22,19 @@ describe 'mixer', ->
     spyOn(mixin, 'baz').and.returnValue ['baz']
 
     mixtarget = {}
-    mixin_a_lot.mix(mixtarget, mixin)
+    mixer.mix(mixtarget, mixin)
 
     expect(mixtarget.bar).toBe 1
     expect(mixtarget.baz()).toEqual ['baz']
 
   it 'should be order-dependent', ->
-    mixin_1 = mixin_a_lot.make_mixin name: 'mixin_1', foo: 'bar1', baz: 'qux'
-    mixin_2 = mixin_a_lot.make_mixin name: 'mixin_2', foo: 'bar2', qux: 'baz'
+    mixin_1 = Mixin.make name: 'mixin_1', foo: 'bar1', baz: 'qux'
+    mixin_2 = Mixin.make name: 'mixin_2', foo: 'bar2', qux: 'baz'
 
     mixtarget = {}
 
-    mixin_a_lot.mix(mixtarget, mixin_1)
-    mixin_a_lot.mix(mixtarget, mixin_2)
+    mixer.mix(mixtarget, mixin_1)
+    mixer.mix(mixtarget, mixin_2)
 
     expect(mixtarget.foo).toBe 'bar2'
     expect(mixtarget.baz).toBe 'qux'
@@ -48,27 +49,27 @@ describe 'mixer', ->
       mix_opts = {premix: 1}
 
       expect(=>
-        mixin_a_lot.mix {}, @mixin, mix_opts
+        mixer.mix {}, @mixin, mix_opts
       ).toThrow(new TypeError('Expected a function for premix'))
 
       mix_opts = {postmix: []}
 
       expect(=>
-        mixin_a_lot.mix {}, @mixin, mix_opts
+        mixer.mix {}, @mixin, mix_opts
       ).toThrow(new TypeError('Expected a function for postmix'))
 
     it 'should throw an error with mixin-supplied non-Function mixing hooks', ->
       @mixin.premix = 1
 
       expect(=>
-        mixin_a_lot.mix {}, @mixin
+        mixer.mix {}, @mixin
       ).toThrow(new TypeError('Expected a function for premix'))
 
       @mixin = MIXINS.default_mixin()
       @mixin.postmix = []
 
       expect(=>
-        mixin_a_lot.mix {}, @mixin
+        mixer.mix {}, @mixin
       ).toThrow(new TypeError('Expected a function for postmix'))
 
     describe 'pre-mixing hooks', ->
@@ -81,7 +82,7 @@ describe 'mixer', ->
         spyOn(mix_opts, 'premix').and.callThrough()
 
         mixtarget = {}
-        mixin_a_lot.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
+        mixer.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
 
@@ -104,12 +105,12 @@ describe 'mixer', ->
 
         expect(=>
             # special_key is not on the target; schema unsatisfied, hook will throw
-          mixin_a_lot.mix {}, @mixin, null, ['arg1', 'arg2']
+          mixer.mix {}, @mixin, null, ['arg1', 'arg2']
         ).toThrow new errors.NotImplemented('Wanted schema key special_key')
 
 
         mixtarget = special_key: 1
-        mixin_a_lot.mix mixtarget, @mixin, null, ['arg1', 'arg2']
+        mixer.mix mixtarget, @mixin, null, ['arg1', 'arg2']
 
         expect(@mixin.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.premix.calls.count()).toBe 2
@@ -131,7 +132,7 @@ describe 'mixer', ->
         mixtarget = {}
 
         try
-          mixin_a_lot.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
+          mixer.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -150,7 +151,7 @@ describe 'mixer', ->
         mixtarget = {}
 
         try
-          mixin_a_lot.mix mixtarget, @mixin, null, ['arg1', 'arg2']
+          mixer.mix mixtarget, @mixin, null, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -167,7 +168,7 @@ describe 'mixer', ->
         spyOn(mix_opts, 'premix').and.callThrough()
         spyOn(@mixin, 'premix').and.callThrough()
 
-        mixin_a_lot.mix {}, @mixin, mix_opts, ['arg1', 'arg2']
+        mixer.mix {}, @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.premix).toHaveBeenCalledWith(['arg1', 'arg2'])
@@ -183,7 +184,7 @@ describe 'mixer', ->
         spyOn(mix_opts, 'postmix').and.callThrough()
 
         mixtarget = {}
-        mixin_a_lot.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
+        mixer.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
 
@@ -198,7 +199,7 @@ describe 'mixer', ->
         spyOn(@mixin, 'postmix').and.callThrough()
 
         mixtarget = {}
-        mixin_a_lot.mix mixtarget, @mixin, null, ['arg1', 'arg2']
+        mixer.mix mixtarget, @mixin, null, ['arg1', 'arg2']
 
         expect(@mixin.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
 
@@ -219,7 +220,7 @@ describe 'mixer', ->
         mixtarget = {}
 
         try
-          mixin_a_lot.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
+          mixer.mix mixtarget, @mixin, mix_opts, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -237,7 +238,7 @@ describe 'mixer', ->
         mixtarget = {}
 
         try
-          mixin_a_lot.mix mixtarget, @mixin, null, ['arg1', 'arg2']
+          mixer.mix mixtarget, @mixin, null, ['arg1', 'arg2']
         catch error
           threw = true
         finally
@@ -253,7 +254,7 @@ describe 'mixer', ->
         spyOn(mix_opts, 'postmix').and.callThrough()
         spyOn(@mixin, 'postmix').and.callThrough()
 
-        mixin_a_lot.mix {}, @mixin, mix_opts, ['arg1', 'arg2']
+        mixer.mix {}, @mixin, mix_opts, ['arg1', 'arg2']
 
         expect(mix_opts.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
         expect(@mixin.postmix).toHaveBeenCalledWith(['arg1', 'arg2'])
@@ -268,7 +269,7 @@ describe 'mixer', ->
 
       it 'should omit some mixin keys', ->
         mixtarget = {}
-        mixin_a_lot.mix mixtarget, @mixin, omits: ['bar']
+        mixer.mix mixtarget, @mixin, omits: ['bar']
 
         expect(mixtarget.bar).toBeUndefined()
         expect(mixtarget.baz).toBeDefined()
@@ -284,26 +285,26 @@ describe 'mixer', ->
 
         for bad_omits_value in bad_omits_values
           expect(=>
-            mixin_a_lot.mix {}, @mixin, omits: bad_omits_value
+            mixer.mix {}, @mixin, omits: bad_omits_value
           ).toThrow new errors.ValueError "Expected omits option to be a nonempty Array"
 
       it 'should throw an error when omitting a non-existing mixin key', ->
         expect(=>
-          mixin_a_lot.mix {}, @mixin, omits: ['non_mixin_key']
+          mixer.mix {}, @mixin, omits: ['non_mixin_key']
         ).toThrow new errors.ValueError "Some omit keys aren't in mixin: non_mixin_key"
 
       it 'should not mangle the class hierarchy when omitting keys', ->
         mixtarget = {}
         mixtarget.__proto__ = Object.create(bar: -> 'bar')
 
-        mixin_a_lot.mix mixtarget, @mixin, omits: ['bar']
+        mixer.mix mixtarget, @mixin, omits: ['bar']
 
         expect(mixtarget.bar).toBeDefined()
         expect(mixtarget.bar()).toBe('bar')
 
       it 'should not omit all mixin keys', ->
         expect(=>
-          mixin_a_lot.mix {}, @mixin, omits: ['bar', 'baz', 'foo']
+          mixer.mix {}, @mixin, omits: ['bar', 'baz', 'foo']
         ).toThrow new errors.ValueError "Found nothing to mix in!"
 
     describe 'mixin method hooks', ->
@@ -319,7 +320,7 @@ describe 'mixer', ->
 
         for bad_hook_value in bad_hook_values
           expect(=>
-            mixin_a_lot.mix {}, @mixin, before_hook: bad_hook_value
+            mixer.mix {}, @mixin, before_hook: bad_hook_value
           ).toThrow new TypeError "before_hook: expected dict of mixin methods to callbacks"
 
       it 'should throw an error when the hook request contains a non-string or empty string', ->
@@ -335,7 +336,7 @@ describe 'mixer', ->
 
         for bad_hook_request in bad_hook_requests
           expect(=>
-            mixin_a_lot.mix {}, @mixin, before_hook: bad_hook_request
+            mixer.mix {}, @mixin, before_hook: bad_hook_request
           ).toThrow new TypeError "hook for bad_mapping isn't a function"
 
       it 'should throw an error when the hook request contains a non-existent mixin method', ->
@@ -354,7 +355,7 @@ describe 'mixer', ->
 
         for {before_hook, bad_method} in bad_hook_requests
           expect(=>
-            mixin_a_lot.mix {}, @mixin, {before_hook}
+            mixer.mix {}, @mixin, {before_hook}
           ).toThrow new errors.ValueError "#{bad_method} isn't a method on #{@mixin}"
 
       it 'should call the before_hook before the mixin method and pass the return value', ->
@@ -362,7 +363,7 @@ describe 'mixer', ->
           [before_value]
 
         mixtarget = {}
-        mixin_a_lot.mix mixtarget, @mixin, before_hook: {baz: -> 'before_baz'}
+        mixer.mix mixtarget, @mixin, before_hook: {baz: -> 'before_baz'}
 
         expect(mixtarget.baz()).toEqual(['before_baz'])
 
@@ -370,6 +371,6 @@ describe 'mixer', ->
         spyOn(@mixin, 'baz').and.returnValue ['baz']
 
         mixtarget = {}
-        mixin_a_lot.mix mixtarget, @mixin, after_hook: {baz: (baz) -> baz.concat(['after_baz'])}
+        mixer.mix mixtarget, @mixin, after_hook: {baz: (baz) -> baz.concat(['after_baz'])}
 
         expect(mixtarget.baz()).toEqual(['baz', 'after_baz'])
