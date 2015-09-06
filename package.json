@@ -50,7 +50,7 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "prepublish": "gulp build",
+    "prepublish": "gulp build && npm test",
     "test": "gulp build && coffee jasmine.coffee"
   }
 }
