@@ -165,31 +165,6 @@ Mix properties from the Mixin into mixtarget, which should be a non-null `Object
 
 Mixing hooks defined via `options` are invoked before those mixing hooks defined in the mixin. `hook_args` are passed to supplied mixing hooks, if any.
 
-
-### **Deprecated**
-
-The following remain for backwards-compatibility, but are deprecated.
-
-### m.enable_staticmixing(), m.enable_protomixing()
-
-Attach `static_mix`, `proto_mix` methods on `Function.prototype`. These properties are [non-enumerable, non-configurable, non-writable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty).
-
-**Aliases:** `enable_classmixing`. Deprecated in `1.2.0`.
-
-### <a name="mixinto-proto"></a> Function.prototype.proto_mix(Mixin mixin, [options], [hook_args])
-
-Mix properties from the Mixin into the prototype of the mixing class. Optional `options` should be an object literal conforming to the same schema in [mix](#mix).
-
-**Aliases:** `mixinto_proto`
-
-### Function.prototype.static_mix(Mixin mixin, [options], [hook_args])
-
-Same as [proto_mix](#mixinto-proto), except mixing applies to the calling `Function`.
-
-For more detail, browse through the `*.spec.coffee` unit tests in `src`. 
-
-**Aliases:** `mixinto_class`. Deprecated in `1.2.0`.
-
 ## Development
 
 **Development is in `snake_case` CoffeeScript.**
