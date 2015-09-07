@@ -12,16 +12,14 @@ Its only dependency is [underscore.js](http://underscorejs.org/). You can run it
 Goals for `Mixins`: 
 
 1. should be lightweight and immutable without a complex class hierarchy
-2. [should be customizable with message hooks - not calls to `super`](https://en.wikipedia.org/wiki/Composition_over_inheritance)
-3. should not assume anything about the classes/objects they're being mixed into
-4. should allow the mixed-into class to preserve the existing class hierarchy and MRO (method resolution order) 
+2. should be customizable with message hooks - not calls to `super`
+3. should allow preserve the class hierarchy of the mix target
 
 Goals for mixing classes:
 
 1. should be able to opt-out of some mixin functionality
 2. should be able to attach hooks to the mixing process
 3. should be able to attach hooks to individual mixin methods
-4. [should know if they're misusing the API as early as possible](http://stackoverflow.com/a/2807375/2419669)
 
 ## Usage & Examples
 
@@ -70,8 +68,7 @@ A subset of mixin methods/properties can be omitted (but not all):
     
 You can request before and after hooks into mixin methods. They'll always be called the context bound to the mix target.
 
-Return values are propagated [accordingly](http://www.catb.org/~esr/writings/taoup/html/ch01s06.html#id2878339) - 
-it's best to use an object or container class argument (as below) when propagating multiple return values.
+Return values are propagated accordingly - it's best to use an object or container class argument (as below) when propagating multiple return values.
     
     // the return value from this hook is passed to logger.log
     // 'this' is the MyLogger function. 
