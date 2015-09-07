@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.1 - 2.1.2] - 2015-09-16
+## [2.1.1 - 2.1.3] - 2015-09-16
 ### Changed
 Removed deprecated API section from README. Remove unnecessary links in README.
 

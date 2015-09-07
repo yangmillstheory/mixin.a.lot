@@ -13,9 +13,10 @@ Goals for `Mixins`:
 
 1. should be lightweight and immutable without a complex class hierarchy
 2. should be customizable with message hooks - not calls to `super`
-3. should allow preserve the class hierarchy of the mix target
+3. should not modify the prototype chain of the mix target
 
-Goals for mixing classes:
+
+Goals for mix targets:
 
 1. should be able to opt-out of some mixin functionality
 2. should be able to attach hooks to the mixing process
