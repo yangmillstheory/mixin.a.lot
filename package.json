@@ -1,7 +1,7 @@
 {
   "name": "mixin-a-lot",
-  "version": "2.1.3",
-  "description": "JavaScript mixin framework",
+  "version": "2.1.4",
+  "description": "A minimalist aspect-oriented JavaScript mixin framework.",
   "repository": {
     "type": "git",
     "url": "https://github.com/yangmillstheory/mixin.a.lot.git"
