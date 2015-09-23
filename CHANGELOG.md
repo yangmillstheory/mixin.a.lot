@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0]
+### BREAKING CHANGES
+Removed deprecated API:
+
+* `mixin_a_lot.enable_classmixing`
+* `mixin_a_lot.enable_protomixing`
+* `mixin_a_lot.enable_staticmixing`
+
 ## [2.1.1 - 2.1.4] - 2015-09-16
 ### Changed
 Removed deprecated API section from README. Remove unnecessary links in README. Change package description.
