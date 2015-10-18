@@ -86,7 +86,7 @@ Return values are propagated accordingly - it's best to use an object or contain
         
         return {level: level, serialized_error: serialized}; 
     };
-    mixin_a_lot.mix(MyLogger, {
+    mixin_a_lot.mix(MyLogger, mixin, {
         before_hook: {log: before_log, ...}
     });
     
