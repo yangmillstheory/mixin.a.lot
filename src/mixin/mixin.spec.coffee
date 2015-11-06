@@ -2,7 +2,7 @@ describe 'mixin', ->
 
   Mixin = require './index'
   errors = require '../errors'
-  _ = require 'underscore'
+  _ = require 'lodash'
 
 
   describe 'factory', ->

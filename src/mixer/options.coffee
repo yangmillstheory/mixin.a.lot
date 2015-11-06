@@ -1,6 +1,6 @@
 UTILS = require './utils'
 errors = require '../errors'
-_ = require 'underscore'
+_ = require 'lodash'
 
 
 parse_omits = (mixin, omits) ->
