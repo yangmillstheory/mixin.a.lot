@@ -7,7 +7,7 @@
     "url": "https://github.com/yangmillstheory/mixin.a.lot.git"
   },
   "keywords": [
-    "coffeescript",
+    "es6",
     "javascript",
     "mixin",
     "mixins",
@@ -43,6 +43,8 @@
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-coffee": "^2.3.1",
+    "babel": "^5.8.21",
+    "babel-core": "^5.8.22",
     "jasmine": "^2.3.1",
     "jasmine-spec-reporter": "^2.2.3"
   },
