@@ -31,6 +31,9 @@
     },
     "q/Q.d.ts": {
       "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
+    },
+    "gulp-typescript/gulp-typescript.d.ts": {
+      "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
     }
   }
 }
