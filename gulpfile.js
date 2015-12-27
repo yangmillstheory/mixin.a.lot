@@ -1,6 +1,7 @@
 "use strict";
 let gulp = require('gulp');
 let ts = require('gulp-typescript');
+let tslint = require('gulp-tslint');
 let del = require('del');
 
 let series = gulp.series, 
@@ -44,8 +45,10 @@ task('test', (done) => {
 });
 
 task('lint', (done) => {
-    console.log('linting');
-    done()
+    return gulp
+        .src(SRC.files())
+        .pipe(tslint())
+        .pipe(tslint.report("verbose"));
 });
 
 task('build', series(parallel('clean', 'lint'), 'compile', 'test'));
