@@ -1,14 +1,20 @@
-let errors: Array<Function> = [
-    class NotImplemented extends Error {},
-    class NotMutable extends Error {},
-    class ValueError extends Error {},
-];
+interface ErrorWithMessage {
+    new(message?: string): Error
+}
 
-for (let klass of errors) {
+class NotImplemented extends Error {};
+class NotMutable extends Error {};
+class ValueError extends Error {};
+
+
+for (let klass of [NotImplemented, NotMutable, ValueError]) {
     Object.freeze(klass);
     Object.freeze(klass.prototype);
 }
 
-Object.freeze(errors);
-
+let errors: {[key: string]: ErrorWithMessage;} = {
+    NotImplemented,
+    NotMutable, 
+    ValueError
+};
 export {errors};
