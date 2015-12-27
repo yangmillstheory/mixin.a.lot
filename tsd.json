@@ -19,6 +19,18 @@
     },
     "lodash/lodash.d.ts": {
       "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
+    },
+    "gulp/gulp.d.ts": {
+      "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
+    },
+    "node/node.d.ts": {
+      "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
+    },
+    "orchestrator/orchestrator.d.ts": {
+      "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
+    },
+    "q/Q.d.ts": {
+      "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
     }
   }
 }
