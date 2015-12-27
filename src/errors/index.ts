@@ -1,15 +1,14 @@
-// errors =
+let errors: Array<Function> = [
+    class NotImplemented extends Error {},
+    class NotMutable extends Error {},
+    class ValueError extends Error {},
+];
 
-//   NotImplemented: class NotImplemented extends Error
+for (let klass of errors) {
+    Object.freeze(klass);
+    Object.freeze(klass.prototype);
+}
 
-//   NotMutable: class NotMutable extends Error
+Object.freeze(errors);
 
-//   ValueError: class ValueError extends Error
-
-
-// for own _, error_class of errors
-//   Object.freeze error_class
-// Object.freeze errors
-
-
-// module.exports = errors
+export {errors};
