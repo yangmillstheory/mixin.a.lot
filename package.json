@@ -11,10 +11,14 @@
     "javascript",
     "mixin",
     "mixins",
-    "framework",
     "gulp",
     "gulpfriendly",
-    "npm"
+    "sinon",
+    "chai",
+    "karma",
+    "mocha",
+    "npm",
+    "typescript"
   ],
   "author": {
     "name": "Victor Alvarez",
