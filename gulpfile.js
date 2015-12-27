@@ -1,20 +1,41 @@
 "use strict";
 let gulp = require('gulp');
-let typescript = require('gulp-typescript');
+let ts = require('gulp-typescript');
 let del = require('del');
 
 let series = gulp.series, 
     parallel = gulp.parallel, 
     task = gulp.task;
+    
+const SRC = {
+  base: 'src',
+  files() {
+    return [`${this.base}/**/*.ts`];
+  }
+}
 
-task('compile', (done) => {
-    console.log('compiling');
-    done()
+const DIST = {
+  base: 'dist',
+  files() {
+    return [
+      `${this.base}/**/*.js`,
+      `!${this.base}/**/*.spec.js`,
+      `!${this.base}/spec-utils/*`
+    ];
+  }
+}
+    
+task('compile', () => {
+    let project = ts.createProject('tsconfig.json');
+    return project
+        .src()
+        .pipe(ts(project))
+        .js.pipe(gulp.dest(DIST.base));
 });
 
 task('clean', (done) => {
-    console.log('cleaning');
-    done()
+    // async completion API
+    del([DIST.base], {force: true}, done)
 })
 
 task('test', (done) => {
@@ -28,38 +49,3 @@ task('lint', (done) => {
 });
 
 task('build', series(parallel('clean', 'lint'), 'compile', 'test'));
-
-// gulp = require 'gulp'
-
-// coffee = require 'gulp-coffee'
-// del = require 'del'
-
-
-// SRC =
-//   base: 'src'
-//   files: ->
-//     ["#{@base}/**/*.coffee"]
-
-// DIST =
-//   base: 'dist'
-//   files: ->
-//     [
-//       "#{@base}/**/*.js"
-//       "!#{@base}/**/*.spec.js"
-//       "!#{@base}/spec-utils/*"
-//     ]
-
-
-// gulp.task 'clean', (postDelete) ->
-//   del([DIST.base], force: true, postDelete)
-
-
-// gulp.task 'coffee', (done) ->
-//   gulp
-//     .src(SRC.files())
-//     .pipe(coffee(bare: true))
-//     .pipe(gulp.dest(DIST.base))
-//   done?()
-
-
-// gulp.task 'build', gulp.series('clean', 'coffee')

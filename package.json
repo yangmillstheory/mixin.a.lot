@@ -62,7 +62,6 @@
     "lodash": "^3.10.1"
   },
   "scripts": {
-    "prepublish": "gulp build && npm test",
-    "test": "gulp build && coffee jasmine.coffee"
+    "prepublish": "gulp build && npm test"
   }
 }
