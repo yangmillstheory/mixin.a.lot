@@ -46,6 +46,7 @@
     "chai": "^3.4.1",
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
+    "gulp-tslint": "^4.2.2",
     "gulp-typescript": "^2.10.0",
     "karma": "^0.13.16",
     "karma-chai": "^0.1.0",
@@ -54,6 +55,7 @@
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "tsd": "^0.6.5",
+    "tslint": "^3.2.1",
     "typescript": "^1.7.5"
   },
   "dependencies": {
