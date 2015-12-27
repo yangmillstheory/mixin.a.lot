@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "es6",
+        "noImplicitAny": false
+    },
+    "exclude": [
+        "node_modules",
+        "typings"
+    ]
+}
