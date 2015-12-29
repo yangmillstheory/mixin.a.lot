@@ -28,6 +28,7 @@
     "node": ">=0.10.0"
   },
   "main": "dist/index.js",
+  "typings": "./typings.d.ts",
   "files": [
     "dist/**/*.js",
     "!/dist/**/*.spec.js",

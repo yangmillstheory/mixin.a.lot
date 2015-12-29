@@ -1,5 +1,5 @@
 // MIXER = require './mixer'
-// {enable_mixing} = require './utils'
+// {enable_mixing} = require './utility'
 
 
 // module.exports = {
@@ -16,3 +16,4 @@
 //       throw new Error usage()
 //     MIXER.mix(target, rest...)
 // }
+export default {foo: 'bar'}

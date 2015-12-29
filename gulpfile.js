@@ -51,4 +51,4 @@ task('lint', (done) => {
         .pipe(tslint.report("verbose"));
 });
 
-task('build', series(parallel('clean', 'lint'), 'compile', 'test'));
+task('build', series(parallel('clean'), 'compile', 'test'));

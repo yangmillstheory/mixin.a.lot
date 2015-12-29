@@ -1,29 +1,37 @@
-// _ = require 'lodash'
-// errors = require '../errors'
+import * as _ from 'lodash/array';
+import {NotImplemented} from '../errors';
 
+    
+class Mixin {
+    /**
+        An immutable mixin type.
 
-// class Mixin
-//   ###
-//     An immutable class of mixin instances that wrap object literals.
+        Has no special behavior or data other than immutability and
 
-//     Mixins have no special behavior or data other than
+        - name
+        - toString()
+        - mixin_keys
+            (Array of property names that to mix in)
+        - pre/post mixinghooks (optional)
+            (functions invoked with the mixtarget context before/after mixing)
 
-//       - name
-//       - toString()
-//       - mixin_keys
-//           (Array of property names that to mix in)
-//       - pre/post mixinghooks (optional)
-//           (functions invoked with the mixtarget context before/after mixing)
+        The only way to create instances is through the factory method .from_obj.
+     */
+    
+    name: string;
+    mixin_keys: Array<string>;
+    
+    static validate(mixin: any): void {
+        if (!(mixin instanceof this)) {
+            throw new TypeError(`Expected a Mixin instance`); 
+        }
+    }
+    
+    toString() {
+        return `Mixin(${this.name}: ${_.without(this.mixin_keys, 'name').join(', ')})`;
+    }
+}
 
-//     and immutability.
-
-//     The augmentation logic is in the factory method .from_obj, which is
-//     the only way to create instances.
-//   ###
-
-//   @validate: (mixin) ->
-//     unless mixin instanceof @
-//       throw new TypeError "Expected a Mixin instance"
 
 //     for own hook_name, hook of @_parse_mixinghooks(mixin)
 //       if hook? && !_.isFunction hook
@@ -73,9 +81,6 @@
 //             throw new errors.NotMutable "Cannot change #{key} on #{mixin}"
 //     (freeze && Object.freeze mixin) || mixin
 
-//   toString: ->
-//     string_keys = _.without(@mixin_keys, 'name')
-//     "Mixin(#{@name}: #{string_keys.join(', ')})"
 
 //   get_postmixing_hook: ->
 //     hook_key = _.find @constructor.postmixing_hook_keys, (key) => @[key]?
@@ -86,12 +91,11 @@
 //     @[hook_key]
 
 
-// Object.freeze(Mixin)
-// Object.freeze(Mixin::)
+Object.freeze(Mixin);
+Object.freeze(Mixin.prototype);
 
 
-// make = Mixin.from_obj.bind(Mixin)
-// validate = Mixin.validate.bind(Mixin)
+let make = Mixin.from_obj.bind(Mixin);
+let validate = Mixin.validate.bind(Mixin);
 
-
-// module.exports = {make, validate}
+export {make, validate};
