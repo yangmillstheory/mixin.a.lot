@@ -13,7 +13,7 @@ const SRC = {
   files() {
     return [`${this.base}/**/*.ts`];
   }
-}
+};
 
 const DIST = {
   base: 'dist',
@@ -24,7 +24,7 @@ const DIST = {
       `!${this.base}/spec-utils/*`
     ];
   }
-}
+};
     
 task('compile', () => {
     let project = ts.createProject('tsconfig.json');
@@ -37,7 +37,7 @@ task('compile', () => {
 task('clean', (done) => {
     // async completion API
     del([DIST.base], {force: true}, done)
-})
+});
 
 task('test', (done) => {
     console.log('testing');
