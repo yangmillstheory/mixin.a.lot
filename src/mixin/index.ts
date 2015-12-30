@@ -2,7 +2,7 @@ import * as _ from 'lodash/array';
 import {NotImplemented} from '../errors';
 
     
-class Mixin {
+export class Mixin {
     /**
         An immutable mixin type.
 

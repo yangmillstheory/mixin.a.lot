@@ -1,3 +1,4 @@
+import {Mixin} from '../mixin'
 import {NOOP_CALLBACK} from '../utility'
 import {ValueError} from '../errors'
 import * as _arr from 'lodash/array'
@@ -18,7 +19,7 @@ interface MixOptions {
         pre?:  (target) => void,
         post?: (target) => void,
     }
-}
+};
 
 const DEFAULT_MIX_OPTIONS = {
     omits: [], 
@@ -45,7 +46,7 @@ let validate_omits = (mixin_keys: string[], omits: string[]) => {
     if (difference.length) {
         throw new ValueError(`Some omit keys are not in the mixin: ${difference}`);
     }
-}
+};
 
 export function parse(mixin: Mixin, options = {}): MixOptions {
     let normalized_options = normalize_options(options);
@@ -55,7 +56,7 @@ export function parse(mixin: Mixin, options = {}): MixOptions {
         method_advice: {},
         mixing_advice: {} 
     }; 
-}
+};
 
 // first_alias_pair = (aliases, options) ->
 //   alias = _.find(aliases, (alias) -> _.has(options, alias))

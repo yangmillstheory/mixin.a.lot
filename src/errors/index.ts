@@ -1,4 +1,4 @@
-interface Messaged {
+interface ErrorWithMessage {
     new(message?: string): Error
 }
 
@@ -11,6 +11,6 @@ for (let klass of [_NotImplemented_, _NotMutable_, _ValueError_]) {
     Object.freeze(klass.prototype);
 }
 
-export var NotImplemented: Messaged = _NotImplemented_;
-export var NotMutable: Messaged = _NotMutable_;
-export var ValueError: Messaged = _ValueError_;
+export var NotImplemented: ErrorWithMessage = _NotImplemented_;
+export var NotMutable: ErrorWithMessage = _NotMutable_;
+export var ValueError: ErrorWithMessage = _ValueError_;

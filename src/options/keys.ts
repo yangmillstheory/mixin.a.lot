@@ -1,10 +1,12 @@
 interface OptionKey {
+    // the primary internal identifier for an option key;
+    // should be kept in sync with the type definition.
     primary: string,
     aliases: string[],
 }
 
 const PRE_METHOD_ADVICE: OptionKey = {
-    primary: 'pre_methods',
+    primary: 'pre_method_hook',
     aliases: [
         'before_hook',
         'hook_before'
@@ -12,15 +14,16 @@ const PRE_METHOD_ADVICE: OptionKey = {
 };
 
 const PRE_MIXING_ADVICE: OptionKey = {
-    primary: 'premixing_hook',
+    primary: 'pre_mixing_hook',
     aliases: [
+        'premixing_hook',
         'premixing', 
         'premix'
     ],
 };
 
 const POST_METHOD_ADVICE: OptionKey = {
-    primary: 'post_methods',
+    primary: 'post_method_hook',
     aliases: [
         'after_hook',
         'hook_after'
@@ -28,8 +31,9 @@ const POST_METHOD_ADVICE: OptionKey = {
 };
 
 const POST_MIXING_ADVICE: OptionKey = {
-    primary: 'postmixing_hook',
+    primary: 'post_mixing_hook',
     aliases: [
+        'postmixing_hook',
         'postmixing', 
         'postmix'
     ], 
@@ -67,4 +71,4 @@ export var normalize_option_key = (key: string): string => {
     } else {
         return key;
     }
-}
+};

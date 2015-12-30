@@ -1,11 +1,11 @@
 declare interface MixOptions {
     omits: Array<string>,
-    post_method?: {
+    post_mixing_hook?: (any) => void,
+    post_method_hook?: {
         [method: string]: (any) => any
     },
-    pre_method?: {
+    pre_mixing_hook?:  (any) => void,
+    pre_method_hook?: {
         [method: string]: (any) => any
     },
-    premixing_hook?:  (any) => void,
-    postmixing_hook?: (any) => void
 }
