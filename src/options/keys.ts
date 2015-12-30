@@ -1,6 +1,6 @@
 interface OptionKey {
     // the primary internal identifier for an option key;
-    // should be kept in sync with the type definition.
+    // must be kept in sync with the type definition.
     primary: string,
     aliases: string[],
 }

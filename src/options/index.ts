@@ -1,41 +1,28 @@
+/// <reference path="index.d.ts" />
 import {Mixin} from '../mixin'
-import {NOOP_CALLBACK} from '../utility'
+import {NOOP_FN} from '../utility'
 import {ValueError} from '../errors'
 import * as _arr from 'lodash/array'
 import * as _obj from 'lodash/object'
 import {normalize_option_key} from './keys'
 
-interface MixOptions {
-    omits: string[],
-    method_advice: {
-        pre?: {
-            [method: string]: (target: any) => any
-        },
-        post?: {
-            [method: string]: (target: any) => any
-        },
-    },
-    mixing_advice: {
-        pre?:  (target) => void,
-        post?: (target) => void,
-    }
-};
-
-const DEFAULT_MIX_OPTIONS = {
+const DEFAULT_OPTIONS: MixOptions = {
     omits: [], 
-    method_advice: {},
-    mixing_advice: {},
+    post_mixing_hook: NOOP_FN,
+    post_method_hook: {},
+    pre_mixing_hook: NOOP_FN,
+    pre_method_hook: {},
 };
 
-let normalize_options = (options: Object) => {
+let normalize_options = (options: Object): MixOptions => {
     let normalized = {};
     for (let key in options) {
         if (!options.hasOwnProperty(key)) {
             continue;
         }
         normalized[normalize_option_key(key)] = options[key];
-    }    
-    return normalized;
+    }
+    return <MixOptions>_.defaults(normalized, DEFAULT_OPTIONS);
 };
 
 let validate_omits = (mixin_keys: string[], omits: string[]) => {
@@ -49,8 +36,13 @@ let validate_omits = (mixin_keys: string[], omits: string[]) => {
 };
 
 export function parse(mixin: Mixin, options = {}): MixOptions {
-    let normalized_options = normalize_options(options);
+    let { 
+        pre_method_hook, post_method_hook,
+        pre_mixing_hook, post_mixing_hook,
+        omits
+    } = normalize_options(options);
     let {mixin_keys} = mixin;
+    validate_omits(mixin_keys, omits);
     return {
         omits: [], 
         method_advice: {},
