@@ -1,8 +1,8 @@
-import {NOOP_CALLBACK} from './utility'
+import {NOOP_CALLBACK} from '../utility'
 import {ValueError} from '../errors'
 import * as _arr from 'lodash/array'
 import * as _obj from 'lodash/object'
-import {normalize_option_key} from '../aliases'
+import {normalize_option_key} from './keys'
 
 interface MixOptions {
     omits: string[],

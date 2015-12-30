@@ -36,7 +36,7 @@ const POST_MIXING_ADVICE: OptionKey = {
 };
 
 let specifies_option = (option_key: OptionKey, key: string) => {
-    return option_key.primary === key || (key in option_key.aliases);
+    return (option_key.primary === key) || (key in option_key.aliases);
 };
 
 let specifies_pre_method_advice = (key: string) => {

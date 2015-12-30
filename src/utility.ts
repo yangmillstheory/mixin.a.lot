@@ -1,6 +1,3 @@
-import * as _ from 'lodash/lang';
-
-
 export const NOOP_CALLBACK = () => {};
 
 // module.exports =
