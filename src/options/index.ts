@@ -1,5 +1,4 @@
 /// <reference path="index.d.ts" />
-import {Mixin} from '../mixin'
 import {NOOP_FN} from '../utility'
 import {ValueError} from '../errors'
 import * as _arr from 'lodash/array'
@@ -14,17 +13,6 @@ const DEFAULT_OPTIONS: MixOptions = {
     pre_method_hook: {},
 };
 
-let normalize_options = (options: Object): MixOptions => {
-    let normalized = {};
-    for (let key in options) {
-        if (!options.hasOwnProperty(key)) {
-            continue;
-        }
-        normalized[normalize_option_key(key)] = options[key];
-    }
-    return <MixOptions>_.defaults(normalized, DEFAULT_OPTIONS);
-};
-
 let validate_omits = (mixin_keys: string[], omits: string[]) => {
     if (!(Array.isArray(omits) && omits.length)) {
         throw new ValueError('Expected omits option to be a nonempty Array');
@@ -35,19 +23,15 @@ let validate_omits = (mixin_keys: string[], omits: string[]) => {
     }
 };
 
-export function parse(mixin: Mixin, options = {}): MixOptions {
-    let { 
-        pre_method_hook, post_method_hook,
-        pre_mixing_hook, post_mixing_hook,
-        omits
-    } = normalize_options(options);
-    let {mixin_keys} = mixin;
-    validate_omits(mixin_keys, omits);
-    return {
-        omits: [], 
-        method_advice: {},
-        mixing_advice: {} 
-    }; 
+export function parse(options: Object = {}): MixOptions {
+    let parsed = {};
+    for (let key in options) {
+        if (!options.hasOwnProperty(key)) {
+            continue;
+        }
+        parsed[normalize_option_key(key)] = options[key];
+    }
+    return <MixOptions>_.defaults(parsed, DEFAULT_OPTIONS);
 };
 
 // first_alias_pair = (aliases, options) ->
