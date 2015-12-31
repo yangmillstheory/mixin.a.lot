@@ -1,4 +1,3 @@
-/// <reference path="index.d.ts" />
 import * as _arr from 'lodash/array';
 import * as _obj from 'lodash/object';
 import * as _lang from 'lodash/lang';
