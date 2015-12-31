@@ -10,10 +10,10 @@ since those functions should only ever be invoked once, they should be passed as
 
 New mix option aliases:
 
-* `pre_mixing_hook` for `premixing_hook`, et. al.
-* `pre_method_hook` for `before_hook`, et. al.
-* `post_mixing_hook` for `postmixing_hook`, et. al.
-* `post_method_hook` for `after_hook`, et. al.
+* `pre_method_advice` for `premixing_hook`, et. al.
+* `pre_mixing_advice` for `before_hook`, et. al.
+* `post_method_advice` for `postmixing_hook`, et. al.
+* `post_mixing_advice` for `after_hook`, et. al.
 
 ## [3.0.1]
 ### BREAKING CHANGES

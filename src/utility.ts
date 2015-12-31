@@ -1,17 +1,3 @@
-import * as _lang from 'lodash/lang';
-
-export const NOOP_FN = () => {};
-
-export var is_obj_literal = (thing: any): boolean => {
-    // This might be wrong in some cases -
-    // the implementation is guided by https://lodash.com/#isObject
-    return _.isObject(thing)  && 
-        !_.isFunction(thing)  && 
-        !_.isNumber(thing)    && 
-        !_.isString(thing);   &&
-        !Array.isArray(thing); 
-};
-
 // module.exports =
 
 //   is_nonempty_string: (thing) ->

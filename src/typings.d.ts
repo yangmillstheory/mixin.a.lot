@@ -15,13 +15,13 @@ declare interface MixinSpec {
 }
 
 declare interface MixOptions {
-    omits?: string[],
-    post_mixing_hook?: (any) => void,
-    post_method_hook?: {
-        [method: string]: (any) => any
-    },
-    pre_mixing_hook?:  (any) => void,
-    pre_method_hook?: {
+    omits?: string[];
+    pre_mixing_advice?: (any) => void;
+    pre_method_advice?: {
+        [method: string]: (any) => (any)
+    };
+    post_mixing_advice?: (any) => void;
+    post_method_advice?: {
         [method: string]: (any) => any
     },
 }

@@ -1,8 +1,6 @@
-// _ = require 'lodash'
-// errors = require '../errors'
-// {validate} = require '../mixin'
-// OPTIONS = require './options'
-
+import {parse_options} from '../options'
+import {ValueError} from '../errors'
+import * as _arr from 'lodash/array'
 
 
 // mix_with_hook = ({mixtarget, mixinprop, mixinvalue, methodhooks}, before = false) ->
@@ -16,10 +14,30 @@
 // mix_without_hook = ({mixtarget, mixinprop, mixinvalue}) ->
 //   mixtarget[mixinprop] = mixinvalue
 
+let validate_omits = (mixin_keys: string[], omits: string[]) => {
+    if (!(Array.isArray(omits) && omits.length)) {
+        throw new ValueError('Expected omits option to be a nonempty Array');
+    }
+    let difference = _arr.difference(omits, mixin_keys);
+    if (difference.length) {
+        throw new ValueError(`Some omit keys are not in the mixin: ${difference}`);
+    }
+};
 
-let mix = (target: any, mixin: Mixin, options: MixOptions) => {
-        
-}
+
+export var mix = (target: any, mixin: Mixin, options?: MixOptions) => {
+    if (Object.getPrototypeOf(mixin) !== Mixin.prototype) {
+        throw new TypeError('Expected a Mixin instance');
+    }
+    if (options === undefined) {
+        options = {};
+    }
+    let {
+        pre_method_hook, post_method_hook, 
+        pre_mixing_hook, post_mixing_hook,
+        omits
+    } = parse_options(options);
+};
 
 // module.exports =
 

@@ -1,36 +1,44 @@
-import {NOOP_FN} from '../utility'
-import {ValueError} from '../errors'
+import {normalize_option_key} from './keys'
 import * as _arr from 'lodash/array'
 import * as _obj from 'lodash/object'
-import {normalize_option_key} from './keys'
+import * as _lang from 'lodash/lang'
+import * as _util from 'lodash/utility'
 
-const DEFAULT_OPTIONS: MixOptions = {
+// Terminology: https://en.wikipedia.org/wiki/Advice_(programming)
+interface Advice {
+    pre:  Function,
+    post: Function,
+}
+
+// Internal representation of MixOptions which is a client interface.
+export interface IMixOptions {
+    omits: string[],
+    mixing_advice: Advice,
+    method_advice: {
+        [method_name: string]: Advice 
+    },
+}
+
+const DEFAULT_OPTIONS: IMixOptions = {
     omits: [], 
-    post_mixing_hook: NOOP_FN,
-    post_method_hook: {},
-    pre_mixing_hook: NOOP_FN,
-    pre_method_hook: {},
+    mixing_advice: {pre: _.noop, post: _.noop},
+    method_advice: {},
 };
 
-let validate_omits = (mixin_keys: string[], omits: string[]) => {
-    if (!(Array.isArray(omits) && omits.length)) {
-        throw new ValueError('Expected omits option to be a nonempty Array');
+ 
+export var parse_options: (options: MixOptions) => IMixOptions = (options) => {
+    let parsed: IMixOptions = {
+        omits: null,
+        mixing_advice: null,
+        method_advice: null
+    };
+    if (!_.isPlainObject(options)) {
+        throw new TypeError('Expected defined options')
     }
-    let difference = _arr.difference(omits, mixin_keys);
-    if (difference.length) {
-        throw new ValueError(`Some omit keys are not in the mixin: ${difference}`);
-    }
-};
-
-export function parse(options: MixOptions): MixOptions {
-    let parsed = {};
-    for (let key in options) {
-        if (!options.hasOwnProperty(key)) {
-            continue;
-        }
-        parsed[normalize_option_key(key)] = options[key];
-    }
-    return <MixOptions>_.defaults(parsed, DEFAULT_OPTIONS);
+    _.forOwn(options, (value, key) => {
+        parsed[value] = options[key];
+    });
+    return <IMixOptions>_.defaultsDeep(parsed, DEFAULT_OPTIONS);
 };
 
 // parse_methodhook = (mixin, options, {aliases}) ->
