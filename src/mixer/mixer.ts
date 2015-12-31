@@ -17,6 +17,10 @@
 //   mixtarget[mixinprop] = mixinvalue
 
 
+let mix = (target: any, mixin: Mixin, options: MixOptions) => {
+        
+}
+
 // module.exports =
 
 //   mix: (mixtarget, mixin, options = {}) ->

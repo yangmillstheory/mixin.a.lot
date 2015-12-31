@@ -1,4 +1,3 @@
-/// <reference path="index.d.ts" />
 import {NOOP_FN} from '../utility'
 import {ValueError} from '../errors'
 import * as _arr from 'lodash/array'
@@ -23,7 +22,7 @@ let validate_omits = (mixin_keys: string[], omits: string[]) => {
     }
 };
 
-export function parse(options: Object = {}): MixOptions {
+export function parse(options: MixOptions): MixOptions {
     let parsed = {};
     for (let key in options) {
         if (!options.hasOwnProperty(key)) {
@@ -33,13 +32,6 @@ export function parse(options: Object = {}): MixOptions {
     }
     return <MixOptions>_.defaults(parsed, DEFAULT_OPTIONS);
 };
-
-// first_alias_pair = (aliases, options) ->
-//   alias = _.find(aliases, (alias) -> _.has(options, alias))
-//   if alias?
-//     [alias, options[alias]]
-//   else
-//     [null, null]
 
 // parse_methodhook = (mixin, options, {aliases}) ->
 //   [hook_key, methodmap] = first_alias_pair(aliases, options)
@@ -63,31 +55,3 @@ export function parse(options: Object = {}): MixOptions {
 //   else
 //     hook = null
 //   hook
-
-
-// module.exports =
-
-//   parse: (mixin, options) ->
-//     {
-//       omits: parse_omits(mixin, options.omits)
-//       methodhooks:
-//         before: parse_methodhook(mixin, options, aliases: [
-//           'before_hook'
-//           'hook_before'
-//         ])
-//         after: parse_methodhook(mixin, options, aliases: [
-//           'after_hook'
-//           'hook_after'
-//         ])
-//       mixinghooks:
-//         before: parse_mixinghook(mixin, options, aliases: [
-//           'premixing_hook'
-//           'premixing'
-//           'premix'
-//         ])
-//         after: parse_mixinghook(mixin, options, aliases: [
-//           'postmixing_hook'
-//           'postmixing'
-//           'postmix'
-//         ])
-//     }

@@ -1,4 +1,16 @@
-export const NOOP_CALLBACK = () => {};
+import * as _lang from 'lodash/lang';
+
+export const NOOP_FN = () => {};
+
+export var is_obj_literal = (thing: any): boolean => {
+    // This might be wrong in some cases -
+    // the implementation is guided by https://lodash.com/#isObject
+    return _.isObject(thing)  && 
+        !_.isFunction(thing)  && 
+        !_.isNumber(thing)    && 
+        !_.isString(thing);   &&
+        !Array.isArray(thing); 
+};
 
 // module.exports =
 
@@ -6,9 +18,6 @@ export const NOOP_CALLBACK = () => {};
 //     _.isString(thing) && (thing.length > 0)
 
 //   is_obj_literal: (thing) ->
-//     # This might be wrong in some cases -
-//     # the implementation is guided by http://underscorejs.org/#isObject
-//     _.isObject(thing) && !Array.isArray(thing) && !_.isFunction(thing)
 
 //   enable_mixing: (thing, mixer, mixing_prop, mixing_aliases = null) ->
 //     if thing[mixing_prop]?
