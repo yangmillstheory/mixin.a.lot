@@ -16,12 +16,12 @@ declare interface MixinSpec {
 
 declare interface MixOptions {
     omits?: string[];
-    pre_mixing_advice?: (any) => void;
+    pre_mixing_advice?: Function;
     pre_method_advice?: {
-        [method: string]: (any) => (any)
+        [method: string]: Function
     };
-    post_mixing_advice?: (any) => void;
+    post_mixing_advice?: Function;
     post_method_advice?: {
-        [method: string]: (any) => any
-    },
+        [method: string]: Function
+    };
 }

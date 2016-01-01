@@ -1,16 +1,15 @@
-interface ErrorWithMessage {
-    new(message?: string): Error
+class NotImplemented extends Error {}
+class NotMutable extends Error {}
+class ValueError extends Error {}
+
+export default {
+    value_error(message: string): Error {
+        return new ValueError(message);
+    },
+    not_mutable_error(message: string): Error {
+        return new NotMutable(message);
+    },
+    not_implemented_error(message: string): Error {
+        return new NotImplemented(message);
+    },
 }
-
-class _NotImplemented_ extends Error {};
-class _NotMutable_ extends Error {};
-class _ValueError_ extends Error {};
-
-for (let klass of [_NotImplemented_, _NotMutable_, _ValueError_]) {
-    Object.freeze(klass);
-    Object.freeze(klass.prototype);
-}
-
-export var NotImplemented: ErrorWithMessage = _NotImplemented_;
-export var NotMutable: ErrorWithMessage = _NotMutable_;
-export var ValueError: ErrorWithMessage = _ValueError_;

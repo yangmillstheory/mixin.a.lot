@@ -1,11 +1,11 @@
-interface OptionKey {
+export interface OptionKey {
     // the primary internal identifier for an option key;
-    // must be kept in sync with the type definition.
+    // must be kept in sync with the type definition MixOptions
     primary: string
     aliases: string[]
 }
 
-const PRE_METHOD_ADVICE: OptionKey = {
+export const PRE_METHOD_ADVICE: OptionKey = {
     primary: 'pre_method_advice',
     aliases: [
         'before_hook',
@@ -13,7 +13,7 @@ const PRE_METHOD_ADVICE: OptionKey = {
     ],
 };
 
-const PRE_MIXING_ADVICE: OptionKey = {
+export const PRE_MIXING_ADVICE: OptionKey = {
     primary: 'pre_mixing_advice',
     aliases: [
         'premixing_hook',
@@ -22,7 +22,7 @@ const PRE_MIXING_ADVICE: OptionKey = {
     ],
 };
 
-const POST_METHOD_ADVICE: OptionKey = {
+export const POST_METHOD_ADVICE: OptionKey = {
     primary: 'post_method_advice',
     aliases: [
         'after_hook',
@@ -30,7 +30,7 @@ const POST_METHOD_ADVICE: OptionKey = {
     ],
 };
 
-const POST_MIXING_ADVICE: OptionKey = {
+export const POST_MIXING_ADVICE: OptionKey = {
     primary: 'post_mixing_advice',
     aliases: [
         'postmixing_hook',
@@ -39,36 +39,27 @@ const POST_MIXING_ADVICE: OptionKey = {
     ], 
 };
 
+export const OMITS: OptionKey = {
+    primary: 'omits',
+    aliases: []
+};
+
 let specifies_option = (option_key: OptionKey, key: string) => {
     return (option_key.primary === key) || (key in option_key.aliases);
 };
 
-let specifies_pre_method_advice = (key: string) => {
-    return specifies_option(PRE_METHOD_ADVICE, key);
-};
-
-let specifies_pre_mixing_advice = (key: string) => {
-    return specifies_option(PRE_MIXING_ADVICE, key);
-};
-
-let specifies_post_method_advice = (key: string) => {
-    return specifies_option(POST_METHOD_ADVICE, key);
-};
-
-let specifies_post_mixing_advice = (key: string) => {
-    return specifies_option(POST_MIXING_ADVICE, key);
-};
-
-export var normalize_option_key = (key: string): string => {
-    if (specifies_pre_mixing_advice(key)) {
-        return PRE_MIXING_ADVICE.primary;
-    } else if (specifies_pre_method_advice(key)) {
-        return PRE_METHOD_ADVICE.primary;
-    } else if (specifies_post_mixing_advice(key)) {
-        return POST_MIXING_ADVICE.primary;
-    } else if (specifies_post_method_advice(key)) {
-        return POST_METHOD_ADVICE.primary;
+export var key_type_of = (key: string): OptionKey => {
+    if (specifies_option(PRE_METHOD_ADVICE, key)) {
+        return PRE_MIXING_ADVICE;
+    } else if (specifies_option(PRE_MIXING_ADVICE, key)) {
+        return PRE_METHOD_ADVICE;
+    } else if (specifies_option(POST_METHOD_ADVICE, key)) {
+        return POST_MIXING_ADVICE;
+    } else if (specifies_option(POST_MIXING_ADVICE, key)) {
+        return POST_METHOD_ADVICE;
+    } else if (specifies_option(OMITS, key)) {
+        return OMITS;
     } else {
-        return key;
+        return {primary: key, aliases: []};
     }
 };
