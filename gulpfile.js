@@ -15,16 +15,7 @@ const SRC = {
   }
 };
 
-const DIST = {
-  base: 'dist',
-  files() {
-    return [
-      `${this.base}/**/*.js`,
-      `!${this.base}/**/*.spec.js`,
-      `!${this.base}/spec-utils/*`
-    ];
-  }
-};
+const DIST = {base: 'dist'};
     
 task('compile', () => {
     let project = ts.createProject('tsconfig.json');
