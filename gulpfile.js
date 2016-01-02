@@ -41,7 +41,10 @@ task('lint', (done) => {
             '!**/*.spec.ts'
         ]))
         .pipe(tslint())
-        .pipe(tslint.report("verbose"));
+        .pipe(tslint.report("verbose", {
+            emitError: false,
+            summarizeFailureOutput: true
+        }));
 });
 
 task('build', series(parallel('clean', 'lint'), 'compile', 'test'));
