@@ -47,6 +47,8 @@
     "gulp-tslint": "^4.2.2",
     "karma": "^0.13.16",
     "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-firefox-launcher": "^0.1.7",
     "karma-mocha": "^0.2.1",
     "karma-sinon": "^1.0.4",
     "mocha": "^2.3.4",
