@@ -4,9 +4,9 @@ let ts = require('gulp-typescript');
 let tslint = require('gulp-tslint');
 let del = require('del');
 
-let series = gulp.series, 
-    parallel = gulp.parallel, 
-    task = gulp.task;
+let series = gulp.series; 
+let parallel = gulp.parallel; 
+let task = gulp.task;
     
 const SRC = {
   base: 'src',
@@ -27,12 +27,12 @@ task('compile', () => {
 
 task('clean', (done) => {
     // async completion API
-    del([`${DIST.base}/**/*`], {force: true}, done)
+    del([`${DIST.base}/**/*`], {force: true}, done);
 });
 
 task('test', (done) => {
     console.log('testing');
-    done()
+    done();
 });
 
 task('lint', (done) => {
