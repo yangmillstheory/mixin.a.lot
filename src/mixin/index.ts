@@ -1,6 +1,4 @@
-import * as _ from 'lodash/array';
-import * as _ from 'lodash/object';
-import * as _ from 'lodash/lang';
+import * as _ from 'lodash';
 import errors from '../errors';
 
 
