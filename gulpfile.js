@@ -36,7 +36,7 @@ task('compile', () => {
 
 task('clean', (done) => {
     // async completion API
-    del([DIST.base], {force: true}, done)
+    del([`${DIST.base}/**/*`], {force: true}, done)
 });
 
 task('test', (done) => {
