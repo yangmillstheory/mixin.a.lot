@@ -1,5 +1,5 @@
- import * as _ from 'lodash';
- import {make_mixin} from '../mixin';
+import * as _ from 'lodash';
+import {make_mixin} from '../mixin';
 
 export var beforeOnce = fn => {
     return beforeEach(_.once(fn));
