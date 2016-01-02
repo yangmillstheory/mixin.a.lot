@@ -33,29 +33,25 @@ export class Mixin {
     public static from_pojo(spec: MixinSpec, freeze: boolean = true): Mixin {
         if (!_.isPlainObject(spec)) {
             throw new TypeError("Expected non-empty object literal");
+        } else if (typeof spec.name !== 'string') {
+            throw errors.value_error("Expected String name in mixin spec")
         }
+        let mixin_name: string = spec.name; 
         let mixin_keys: string[] = _.chain(spec)
-            .tap(spec => {
-                if (typeof spec.name !== 'string') {
-                    throw errors.value_error("Expected String name in mixin spec")
-                }
-            })
             .keys()
             .select(mixin_key => {
                 return mixin_key !== 'name';
             })
-            .tap(mixin_keys => {
-                if (!mixin_keys.length) {
-                    throw errors.value_error('Found nothing to mix in!')
-                }
-            })
             .value();
-        let mixin = new Mixin(spec.name, mixin_keys);
-        _.forOwn(mixin_keys, (value, key) => {
+        if (!mixin_keys.length) {
+            throw errors.value_error('Found nothing to mix in!')
+        }
+        let mixin = new Mixin(mixin_name, mixin_keys);
+        _.each(mixin_keys, key => {
             Object.defineProperty(mixin, key, {
                 enumerable: true,
                 get() {
-                    return value;
+                    return spec[key];
                 },
                 set() {
                     throw errors.not_mutable_error(`Cannot change ${key} on ${mixin}`);
