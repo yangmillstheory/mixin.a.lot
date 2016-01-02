@@ -36,10 +36,7 @@
     "LICENSE.md",
     "CHANGELOG.md"
   ],
-  "license": {
-    "type": "MIT",
-    "url": "http://opensource.org/licenses/MIT"
-  },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/yangmillstheory/mixin.a.lot/issues"
   },
@@ -48,7 +45,6 @@
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-tslint": "^4.2.2",
-    "gulp-typescript": "^2.10.0",
     "karma": "^0.13.16",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^0.2.1",
