@@ -1,8 +1,8 @@
-// {make} = require './mixin'
-// {mix} = require './mixer'
+import {make_mixin} from './mixin';
+import {mix} from './mixer';
 
 
-// module.exports = {
-//   make_mixin: make
-//   mix
-// }
+export default {
+  make_mixin: make_mixin,
+  mix,
+}

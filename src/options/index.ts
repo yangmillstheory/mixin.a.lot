@@ -1,26 +1,26 @@
-import * as _ from 'lodash'
-import {OptionType, option_type_of} from './types'
-import errors from '../errors'
+import * as _ from 'lodash';
+import {OptionType, option_type_of} from './types';
+import {value_error} from '../errors';
 
 
-const DEFAULT_MIX_OPTIONS: MixOptions = {
+const DEFAULT_MIX_OPTIONS: IMixOptions = {
     omits: [],
     pre_mixing_advice: _.noop,
-    pre_method_advice:{},
+    pre_method_advice: {},
     post_mixing_advice: _.noop,
-    post_method_advice: {}
+    post_method_advice: {},
 };
 
 let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
     if (!_.isPlainObject(advice)) {
-        throw errors.value_error(
+        throw value_error(
             `${key}: expected dict of mixin methods to callbacks`);
     }
     _.forOwn(advice, (callback: Function, method_name: string) => {
         if (!_.isFunction(callback)) {
-            throw errors.value_error(`hook for ${method_name} isn't a function`);
+            throw value_error(`callback for ${method_name} isn't a function`);
         } else if (!_.isFunction(mixin[method_name])) {
-            throw errors.value_error(`${method_name} isn't a method on ${mixin}`);
+            throw value_error(`${method_name} isn't a method on ${mixin}`);
         }
     });
 };
@@ -33,19 +33,19 @@ let assert_mixing_advice = (key: string, advice): void => {
 
 let assert_omits = (omits: string[], mixin: Mixin): void => {
     if (!Array.isArray(omits)) {
-        throw errors.value_error('Expected omits option to be a nonempty Array');
+        throw value_error('Expected omits option to be a nonempty Array');
     }
     let diff = _.difference(omits, mixin.mixin_keys);
     if (diff.length) {
-        throw errors.value_error(`Some omit keys aren't in mixin: ${diff}`);
+        throw value_error(`Some omit keys aren't in mixin: ${diff}`);
     }
 };
 
-export var parse_options = (options: Object, mixin: Mixin): MixOptions => {
+export var parse_options = (options: Object, mixin: Mixin): IMixOptions => {
     if (!_.isPlainObject(options)) {
-        throw new TypeError('Expected options dictionary')
+        throw new TypeError('Expected options dictionary');
     }
-    let parsed: MixOptions = _.clone(DEFAULT_MIX_OPTIONS);
+    let parsed: IMixOptions = _.clone(DEFAULT_MIX_OPTIONS);
     _.forOwn(options, (value, key: string) => {
         switch (option_type_of(key)) {
             case (OptionType.PRE_METHOD_ADVICE):

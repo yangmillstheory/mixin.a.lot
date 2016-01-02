@@ -46,9 +46,11 @@ task('test', (done) => {
 
 task('lint', (done) => {
     return gulp
-        .src(SRC.files())
+        .src(SRC.files().concat([
+            '!**/*.spec.ts'
+        ]))
         .pipe(tslint())
         .pipe(tslint.report("verbose"));
 });
 
-task('build', series(parallel('clean'), 'compile', 'test'));
+task('build', series(parallel('clean', 'lint'), 'compile', 'test'));

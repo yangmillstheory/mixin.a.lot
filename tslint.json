@@ -26,7 +26,7 @@
     "label-undefined": true,
     "max-line-length": [
       true,
-      80
+      85
     ],
     "member-access": true,
     "member-ordering": [
@@ -69,7 +69,7 @@
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "no-var-requires": true,
-    "object-literal-sort-keys": true,
+    "object-literal-sort-keys": false,
     "one-line": [
       true,
       "check-open-brace",
@@ -79,12 +79,11 @@
     ],
     "quotemark": [
       true,
-      "double",
+      "single",
       "avoid-escape"
     ],
     "radix": true,
     "semicolon": true,
-    "switch-default": true,
     "trailing-comma": [
       true,
       {
@@ -97,12 +96,7 @@
       "allow-null-check"
     ],
     "typedef": [
-      true,
-      "call-signature",
-      "parameter",
-      "property-declaration",
-      "variable-declaration",
-      "member-variable-declaration"
+      false
     ],
     "typedef-whitespace": [
       true,
@@ -121,7 +115,6 @@
     ],
     "variable-name": [
       true,
-      "check-format",
       "allow-leading-underscore",
       "ban-keywords"
     ],

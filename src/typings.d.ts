@@ -1,20 +1,19 @@
 declare module 'mixin_a_lot' {
-    export function make(spec: MixinSpec): Mixin;
+    export function make(spec: IMixinSpec): Mixin;
 
-    export function mix(target: any, mixin: Mixin, options: MixOptions);
+    export function mix(target, mixin: Mixin, options: IMixOptions);
 }
 
 declare class Mixin {
-    mixin_keys: string[];
-    name: string;
+    public mixin_keys: string[];
 }
 
-declare interface MixinSpec {
+declare interface IMixinSpec {
     name: string;
     [key: string]: any;
 }
 
-declare interface MixOptions {
+declare interface IMixOptions {
     omits?: string[];
     pre_mixing_advice?: Function;
     pre_method_advice?: {
