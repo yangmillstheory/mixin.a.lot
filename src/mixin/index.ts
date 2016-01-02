@@ -10,28 +10,28 @@ export class Mixin {
 
         Has no special behavior or data other than immutability and
 
-        - name
         - mixin_keys
             (Array of property names that to mix in)
         - toString()
 
         The only way to create instances is through the factory method .from_pojo.
     */
-    
-    public name: string;
+
+    private name: string;
     public mixin_keys: string[];
-    
-    public constructor(name: string) {
+
+    public constructor(name: string, mixin_keys: string[]) {
         this.name = name;
+        this.mixin_keys = mixin_keys;
     }
-    
+
     public toString() {
         return `Mixin(${this.name}: ${_.without(this.mixin_keys, 'name')
             .join(', ')})`;
     }
-    
+
     public static from_pojo(spec: MixinSpec, freeze: boolean = true): Mixin {
-        if (!_.isPlainObject(spec) || Array.isArray(spec)) {
+        if (!_.isPlainObject(spec)) {
             throw new TypeError("Expected non-empty object literal");
         }
         let mixin_keys: string[] = _.chain(spec)
@@ -50,7 +50,7 @@ export class Mixin {
                 }
             })
             .value();
-        let mixin = new Mixin(spec.name);
+        let mixin = new Mixin(spec.name, mixin_keys);
         _.forOwn(mixin_keys, (value, key) => {
             Object.defineProperty(mixin, key, {
                 enumerable: true,

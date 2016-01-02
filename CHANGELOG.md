@@ -15,6 +15,11 @@ New mix option aliases:
 * `post_method_advice` for `postmixing_hook`, et. al.
 * `post_mixing_advice` for `after_hook`, et. al.
 
+Remove ability to specify pre/post mixing hooks within the `Mixin` instance. This should be specified
+in the options to `mixin_a_lot.mix`, so to reduce complexity and sources of truth for the same behavior.
+
+Furthermore, it doesn't quite have these properties in the mixin, which is just a simple container for shared data/behavior.
+
 ## [3.0.1]
 ### BREAKING CHANGES
 Removed deprecated API:

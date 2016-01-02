@@ -1,8 +1,5 @@
-import * as _ from 'lodash/array'
-import * as _ from 'lodash/object'
-import * as _ from 'lodash/lang'
-import * as _ from 'lodash/utility'
-import {OptionType, option_type_of} from './keys'
+import * as _ from 'lodash'
+import {OptionType, option_type_of} from './types'
 import errors from '../errors'
 
 
@@ -14,7 +11,7 @@ const DEFAULT_MIX_OPTIONS: MixOptions = {
     post_method_advice: {}
 };
 
-let assert_method_advice = (key: string, advice, target): void => {
+let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
     if (!_.isPlainObject(advice)) {
         throw errors.value_error(
             `${key}: expected dict of mixin methods to callbacks`);
@@ -22,8 +19,8 @@ let assert_method_advice = (key: string, advice, target): void => {
     _.forOwn(advice, (callback: Function, method_name: string) => {
         if (!_.isFunction(callback)) {
             throw errors.value_error(`hook for ${method_name} isn't a function`);
-        } else if (!_.isFunction(target[method_name])) {
-            throw errors.value_error(`${method_name} isn't a method on ${target}`);
+        } else if (!_.isFunction(mixin[method_name])) {
+            throw errors.value_error(`${method_name} isn't a method on ${mixin}`);
         }
     });
 };
@@ -34,7 +31,7 @@ let assert_mixing_advice = (key: string, advice): void => {
     }
 };
 
-let assert_omits = (omits: string[], mixin: Mixin, target): void => {
+let assert_omits = (omits: string[], mixin: Mixin): void => {
     if (!Array.isArray(omits)) {
         throw errors.value_error('Expected omits option to be a nonempty Array');
     }
@@ -44,7 +41,7 @@ let assert_omits = (omits: string[], mixin: Mixin, target): void => {
     }
 };
 
-export var parse = (options: Object, mixin: Mixin, target: Object): MixOptions => {
+export var parse_options = (options: Object, mixin: Mixin): MixOptions => {
     if (!_.isPlainObject(options)) {
         throw new TypeError('Expected options dictionary')
     }
@@ -52,7 +49,7 @@ export var parse = (options: Object, mixin: Mixin, target: Object): MixOptions =
     _.forOwn(options, (value, key: string) => {
         switch (option_type_of(key)) {
             case (OptionType.PRE_METHOD_ADVICE):
-                assert_method_advice(key, value, target);
+                assert_method_advice(key, value, mixin);
                 parsed.pre_method_advice = value;
                 break;
             case (OptionType.PRE_MIXING_ADVICE):
@@ -60,7 +57,7 @@ export var parse = (options: Object, mixin: Mixin, target: Object): MixOptions =
                 parsed.pre_mixing_advice = value;
                 break;
             case (OptionType.POST_METHOD_ADVICE):
-                assert_method_advice(key, value, target);
+                assert_method_advice(key, value, mixin);
                 parsed.post_method_advice = value;
                 break;
             case (OptionType.POST_MIXING_ADVICE):
@@ -68,7 +65,7 @@ export var parse = (options: Object, mixin: Mixin, target: Object): MixOptions =
                 parsed.post_mixing_advice = value;
                 break;
             case (OptionType.OMITS):
-                assert_omits(value, mixin, target);
+                assert_omits(value, mixin);
                 parsed.omits = value;
                 break;
         }
