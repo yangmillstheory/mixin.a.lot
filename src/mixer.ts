@@ -1,5 +1,5 @@
-import {parse_options} from '../options';
-import {value_error} from '../errors';
+import {parse_options} from './options';
+import {value_error} from './errors';
 import * as _ from 'lodash';
 
 

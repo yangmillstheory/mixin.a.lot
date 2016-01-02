@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {make_mixin} from '../mixin';
+import {make_mixin} from './mixin';
 
 
 let make_spyable_method = (mixin: Mixin, method_name: string): void => {
@@ -15,8 +15,4 @@ export var default_mixin = (): Mixin => {
     });
     make_spyable_method(mixin, 'baz');
     return mixin;
-};
-
-export var beforeOnce = fn => {
-    return beforeEach(_.once(fn));
 };

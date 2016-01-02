@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {value_error, not_mutable_error} from '../errors';
+import {value_error, not_mutable_error} from './errors';
 
 
 export class Mixin {
