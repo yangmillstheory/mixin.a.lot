@@ -31,8 +31,6 @@
   "typings": "src/typings.d.ts",
   "files": [
     "dist/**/*.js",
-    "!/dist/**/*.spec.js",
-    "!/dist/spec-utils/*.js",
     "LICENSE.md",
     "CHANGELOG.md"
   ],
@@ -66,6 +64,7 @@
     "lodash": "^3.10.1"
   },
   "scripts": {
-    "prepublish": "gulp build && npm test"
+    "prepublish": "node_modules/.bin/gulp build && npm test",
+    "test": "node_modules/.bin/gulp test"
   }
 }

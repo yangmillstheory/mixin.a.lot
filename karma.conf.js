@@ -14,11 +14,11 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: ['src/**/*.ts'],
+    files: ['build/**/*.ts'],
 
 
     // list of files to exclude
-    exclude: ['src/typings.d.ts'],
+    exclude: [],
 
 
     // preprocess matching files before serving them to the browser

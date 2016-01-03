@@ -7,10 +7,6 @@ let child_process = require('child_process');
 let karma = require('karma');
 
 
-let series = gulp.series;
-let parallel = gulp.parallel;
-let task = gulp.task;
-
 const SRC = {
   base: 'src',
   ts() {
@@ -23,38 +19,49 @@ const SRC = {
     return [`${this.base}/**/*.spec.ts`]
   }
 };
+
+const BUILD = {
+  base: 'build',
+  js() {
+    return [
+      `${this.base}/**/*.js`,
+      `!${this.base}/**/*.spec.js`
+    ];
+  },
+  spec() {
+    return [`${this.base}/**/*.spec.js`]
+  }
+};
+
 const DIST = {base: 'dist'};
 
-let ts_project = ts.createProject('tsconfig.json', {
+const TS_PROJECT = ts.createProject('tsconfig.json', {
   typescript: require('typescript'),
 });
 
-task('compile:ts', () => {
+//////////
+// compile
+gulp.task('compile:ts', () => {
   return gulp
     .src(SRC.ts())
-    .pipe(ts(ts_project))
-    .js.pipe(gulp.dest(DIST.base));
+    .pipe(ts(TS_PROJECT))
+    .js
+    .pipe(gulp.dest(BUILD.base))
+    .pipe(gulp.dest(DIST.base));
 });
 
-task('compile:spec', (done) => {
+gulp.task('compile:spec', () => {
   return gulp
     .src(SRC.spec())
-    .pipe(ts(ts_project, ts.reporter.nullReporter))
-    .js.pipe(gulp.dest(DIST.base));
+    .pipe(ts(TS_PROJECT, undefined, ts.reporter.nullReporter))
+    .js
+    .pipe(gulp.dest(BUILD.base));
 });
 
-task('compile', parallel('compile:ts', 'compile:spec'))
+gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 
-task('clean', (done) => {
-  del([`${DIST.base}/**/*`], {force: true}, done);
-});
-
-task('test', (done) => {
-  new karma.Server({
-    configFile: __dirname + '/karma.conf.js'
-  }, done).start();
-});
-
+///////
+// lint
 let tslint_stream = (glob, rules) => {
   let configuration = {
     tslint: require('tslint')
@@ -70,15 +77,34 @@ let tslint_stream = (glob, rules) => {
     }));
 }
 
-task('lint:ts', (done) => {
-  return tslint_stream(`${SRC.base}/**/!(*spec).ts`);
+gulp.task('lint:ts', (done) => {
+  return tslint_stream(SRC.ts());
 });
 
-task('lint:spec', (done) => {
-  return tslint_stream(`${SRC.base}/**/*.spec.ts`, {
+gulp.task('lint:spec', (done) => {
+  return tslint_stream(SRC.spec(), {
+    // tslint.json overrides
   });
 });
 
-task('lint', parallel('lint:ts', 'lint:spec'));
+////////
+// clean
+gulp.task('clean', (done) => {
+  del([
+    `${DIST.base}/**/*`,
+    `${BUILD.base}/**/*`
+  ], {force: true}, done);
+});
 
-task('build', series(parallel('clean', 'lint'), 'compile', 'test'));
+
+///////
+// test
+gulp.task('test', (done) => {
+  new karma.Server({
+    configFile: __dirname + '/karma.conf.js'
+  }, done).start();
+});
+
+gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
+
+gulp.task('build', gulp.series(gulp.parallel('clean', 'lint'), 'compile'));
