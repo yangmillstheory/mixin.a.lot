@@ -24,7 +24,7 @@
       "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
     },
     "node/node.d.ts": {
-      "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
     },
     "orchestrator/orchestrator.d.ts": {
       "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
@@ -33,6 +33,21 @@
       "commit": "1da639a106527e0c4010b354a1efe52a3059a291"
     },
     "karma/karma.d.ts": {
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
+    },
+    "bluebird/bluebird.d.ts": {
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
+    },
+    "log4js/log4js.d.ts": {
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
+    },
+    "express/express.d.ts": {
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
+    },
+    "serve-static/serve-static.d.ts": {
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
+    },
+    "mime/mime.d.ts": {
       "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
     }
   }
