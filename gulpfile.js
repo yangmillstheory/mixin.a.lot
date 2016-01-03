@@ -4,6 +4,7 @@ let tslint = require('gulp-tslint');
 let del = require('del');
 let child_process = require('child_process');
 let karma = require('karma');
+let _ = require('lodash');
 
 let series = gulp.series;
 let parallel = gulp.parallel;
@@ -27,11 +28,15 @@ task('test', (done) => {
   }, done).start();
 });
 
-let tslint_stream = (glob, config_file) => {
+let tslint_stream = (glob, rules) => {
+  let configuration = {
+    tslint: require('tslint')
+  };
+  if (rules) {
+    _.assign(configuration, rules);
+  }
   return gulp.src(glob)
-    .pipe(tslint({
-        configuration: config_file
-    }))
+    .pipe(tslint({configuration}))
     .pipe(tslint.report('verbose', {
         summarizeFailureOutput: true,
         emitError: false
@@ -39,11 +44,16 @@ let tslint_stream = (glob, config_file) => {
 }
 
 task('lint:ts', (done) => {
-  return tslint_stream(`${SRC.base}/**/!(*spec).ts`, './tslint.json');
+  return tslint_stream(`${SRC.base}/**/!(*spec).ts`);
 });
 
 task('lint:spec', (done) => {
-  return tslint_stream(`${SRC.base}/**/*.spec.ts`, './tslint.spec.json');
+  let rules = _.merge(require('./tslint.json'), {
+    'rules': {
+
+    }
+  });
+  return tslint_stream(`${SRC.base}/**/*.spec.ts`, rules);
 });
 
 task('lint', parallel('lint:ts', 'lint:spec'));
