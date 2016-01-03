@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts" />
 declare module 'mixin_a_lot' {
   export function make(spec: IMixinSpec): Mixin;
 
