@@ -1,3 +1,4 @@
+import {is_mixin} from './mixin';
 import {parse_options} from './options';
 import {value_error} from './errors';
 import * as _ from 'lodash';
@@ -13,7 +14,7 @@ export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
   } else if (!(_.isFunction(target) || _.isObject(target))) {
     throw new TypeError(target);
   }
-  if (mixin instanceof Mixin) {
+  if (!is_mixin(mixin)) {
     throw new TypeError('Expected a Mixin instance');
   }
   if (options === undefined) {

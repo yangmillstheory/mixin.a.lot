@@ -12,8 +12,8 @@ describe('mixer', () => {
   it('should throw an error when mixing non-Mixins', () => {
     _.each([1, 'String', [], {}], (non_Mixin) => {
       expect(() => {
-        mix({}, non_Mixin)
-      }).to.throw(new TypeError('Expected a Mixin instance'))
+        mix({}, non_Mixin);
+      }).to.throw(TypeError, 'Expected a Mixin instance')
     });
   });
 });

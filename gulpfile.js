@@ -3,8 +3,7 @@ let gulp = require('gulp');
 let tslint = require('gulp-tslint');
 let ts = require('gulp-typescript');
 let del = require('del');
-let child_process = require('child_process');
-let karma = require('karma');
+let mocha = require('gulp-mocha');
 
 
 const SRC = {
@@ -17,6 +16,9 @@ const SRC = {
   },
   spec() {
     return [`${this.base}/**/*.spec.ts`]
+  },
+  all() {
+    return this.ts().concat(this.spec())
   }
 };
 
@@ -100,10 +102,18 @@ gulp.task('clean', (done) => {
 ///////
 // test
 gulp.task('test', (done) => {
-  new karma.Server({
-    configFile: __dirname + '/karma.conf.js'
-  }, done).start();
+  return gulp.src(BUILD.spec())
+    .pipe(mocha({ui: 'bdd'}))
+    .once('error', () => {
+      done();
+      process.exit(1);
+    })
+    .once('end', () => {
+      done();
+      process.exit();
+    });
 });
+
 
 gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 

@@ -59,3 +59,7 @@ Object.freeze(Mixin.prototype);
 export var make_mixin = (spec: IMixinSpec, freeze: boolean = false): Mixin => {
     return Mixin.from_pojo(spec, freeze);
 };
+
+export var is_mixin = (thing) => {
+  return thing instanceof Mixin;
+}
