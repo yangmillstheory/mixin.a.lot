@@ -44,7 +44,7 @@
     "chai": "^3.4.1",
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
-    "gulp-tslint": "^4.2.2",
+    "gulp-tslint": "github:yangmillstheory/gulp-tslint",
     "karma": "^0.13.16",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.2",
