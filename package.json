@@ -43,7 +43,7 @@
     "del": "^1.2.0",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-mocha": "^2.2.0",
-    "gulp-tslint": "github:yangmillstheory/gulp-tslint",
+    "gulp-tslint": "yangmillstheory/gulp-tslint",
     "gulp-typescript": "^2.10.0",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
