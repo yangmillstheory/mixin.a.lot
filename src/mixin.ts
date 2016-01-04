@@ -42,8 +42,15 @@ export class Mixin {
   }
 
   public constructor(name: string, mixin_keys: string[]) {
-    this.name = name;
+    Object.defineProperty(this, 'name', {
+      enumerable: true,
+      configurable: false,
+      get() {
+        return name;
+      },
+    });
     this.mixin_keys = mixin_keys;
+    this.mixin_keys.sort();
   }
 
   public toString() {
