@@ -55,8 +55,6 @@
     "lodash": "^3.10.1"
   },
   "scripts": {
-    "prepublish": "npm run-script ci",
-    "test": "node_modules/.bin/gulp test",
-    "ci": "node_modules/.bin/gulp build && npm test"
+    "test": "node_modules/.bin/gulp test"
   }
 }
