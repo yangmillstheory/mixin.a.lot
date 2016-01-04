@@ -1,49 +1,49 @@
 "use strict";
-let gulp = require('gulp');
-let tslint = require('gulp-tslint');
-let ts = require('gulp-typescript');
-let del = require('del');
-let mocha = require('gulp-mocha');
+var gulp = require('gulp');
+var tslint = require('gulp-tslint');
+var ts = require('gulp-typescript');
+var del = require('del');
+var mocha = require('gulp-mocha');
 
 
-const SRC = {
+var SRC = {
   base: 'src',
-  ts() {
+  ts: function() {
     return [
-      `${this.base}/**/*.ts`,
-      `!${this.base}/**/*.spec.ts`
+      this.base + '/**/*.ts',
+      '!' + this.base + '/**/*.spec.ts'
     ];
   },
-  spec() {
-    return [`${this.base}/**/*.spec.ts`]
+  spec: function() {
+    return [this.base + '/**/*.spec.ts']
   },
-  all() {
+  all: function() {
     return this.ts().concat(this.spec())
   }
 };
 
-const BUILD = {
+var BUILD = {
   base: 'build',
-  js() {
+  js: function() {
     return [
-      `${this.base}/**/*.js`,
-      `!${this.base}/**/*.spec.js`
+      this.base + '/**/*.js',
+      '!' + this.base + '/**/*.spec.js'
     ];
   },
-  spec() {
-    return [`${this.base}/**/*.spec.js`]
+  spec: function() {
+    return [this.base + '/**/*.spec.js']
   }
 };
 
-const DIST = {base: 'dist'};
+var DIST = {base: 'dist'};
 
-const TS_PROJECT = ts.createProject('tsconfig.json', {
+var TS_PROJECT = ts.createProject('tsconfig.json', {
   typescript: require('typescript'),
 });
 
 //////////
 // compile
-gulp.task('compile:ts', () => {
+gulp.task('compile:ts', function() {
   return gulp
     .src(SRC.ts())
     .pipe(ts(TS_PROJECT))
@@ -52,7 +52,7 @@ gulp.task('compile:ts', () => {
     .pipe(gulp.dest(DIST.base));
 });
 
-gulp.task('compile:spec', () => {
+gulp.task('compile:spec', function() {
   return gulp
     .src(SRC.spec())
     // swallow compiler errors/warnings, since we abuse the API here
@@ -65,7 +65,7 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 
 ///////
 // lint
-let tslint_stream = (glob, rules) => {
+let tslint_stream = function(glob, rules) {
   let configuration = {
     tslint: require('tslint')
   };
@@ -80,11 +80,11 @@ let tslint_stream = (glob, rules) => {
     }));
 }
 
-gulp.task('lint:ts', (done) => {
+gulp.task('lint:ts', function(done) {
   return tslint_stream(SRC.ts());
 });
 
-gulp.task('lint:spec', (done) => {
+gulp.task('lint:spec', function(done) {
   return tslint_stream(SRC.spec(), {
     // tslint.json overrides
     'no-null-keyword': false,
@@ -93,17 +93,17 @@ gulp.task('lint:spec', (done) => {
 
 ////////
 // clean
-gulp.task('clean', (done) => {
+gulp.task('clean', function(done) {
   del([
-    `${DIST.base}/**/*`,
-    `${BUILD.base}/**/*`
+    DIST.base + '/**/*',
+    BUILD.base + '/**/*'
   ], {force: true}, done);
 });
 
 
 ///////
 // test
-gulp.task('test', () => {
+gulp.task('test', function() {
   return gulp.src(BUILD.spec())
     .pipe(mocha({reporter: 'dot', ui: 'bdd'}));
 });
@@ -112,7 +112,7 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 
 //////
 // dev
-gulp.task('watch', () => {
+gulp.task('watch', function() {
   gulp.watch(
     SRC.spec(), 
     gulp.series('compile:spec', 'lint:spec', 'test'));
