@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import {OptionType, option_type_of} from './types';
-import {value_error} from '../errors';
 
 
 const DEFAULT_MIX_OPTIONS: IMixOptions = {
@@ -13,14 +12,14 @@ const DEFAULT_MIX_OPTIONS: IMixOptions = {
 
 let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
   if (!_.isPlainObject(advice)) {
-    throw value_error(
+    throw new Error(
       `${key}: expected dict of mixin methods to callbacks`);
   }
   _.forOwn(advice, (callback: Function, method_name: string) => {
     if (!_.isFunction(callback)) {
-      throw value_error(`callback for ${method_name} isn't a function`);
+      throw new Error(`callback for ${method_name} isn't a function`);
     } else if (!_.isFunction(mixin[method_name])) {
-      throw value_error(`${method_name} isn't a method on ${mixin}`);
+      throw new Error(`${method_name} isn't a method on ${mixin}`);
     }
   });
 };
@@ -32,12 +31,12 @@ let assert_mixing_advice = (key: string, advice): void => {
 };
 
 let assert_omits = (omits: string[], mixin: Mixin): void => {
-  if (!Array.isArray(omits)) {
-    throw value_error('Expected omits option to be a nonempty Array');
+  if (!Array.isArray(omits) || _.isEmpty(omits)) {
+    throw new Error('Expected omits option to be a nonempty Array');
   }
   let diff = _.difference(omits, mixin.mixin_keys);
   if (diff.length) {
-    throw value_error(`Some omit keys aren't in mixin: ${diff}`);
+    throw new Error(`Some omit keys aren't in mixin: ${diff}`);
   }
 };
 

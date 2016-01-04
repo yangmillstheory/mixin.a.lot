@@ -1,6 +1,5 @@
 import {is_mixin} from './mixin';
 import {parse_options} from './options';
-import {value_error} from './errors';
 import * as _ from 'lodash';
 
 
@@ -28,7 +27,7 @@ export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
   let mixing_args = Array.prototype.splice.call(arguments, 3);
   let mixing_keys = _.difference(mixin.mixin_keys, omits);
   if (_.isEmpty(mixing_keys)) {
-    throw value_error('All mixin keys have been omitted!');
+    throw new Error('All mixin keys have been omitted!');
   }
   pre_mixing_advice.apply(target, mixing_args);
   _.each(mixing_keys, key => {

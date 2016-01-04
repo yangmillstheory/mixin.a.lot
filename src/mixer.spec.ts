@@ -4,9 +4,6 @@ import {expect} from 'chai';
 import {default_mixin} from './spec-utils';
 import {mix} from './mixer';
 import {spy, stub} from 'sinon';
-// import {
-//   not_implemented_error
-// } from './errors';
 
 describe('mixing', () => {
 
@@ -50,13 +47,13 @@ describe('mixing', () => {
     expect(target.qux).to.equal('baz');
   });
 
-  describe('mixing hooks', () => {
+  describe('mixing advice', () => {
 
     beforeEach(() => {
       this.mixin = default_mixin();
     });
 
-    it('should throw an error with non-Function options  mixing hooks', () => {
+    it('should throw an error with non-Function options mixing advice', () => {
       let mix_opts = {pre_mixing_advice: 1};
 
       expect(() => {
@@ -72,7 +69,7 @@ describe('mixing', () => {
 
     describe('pre_mixing_advice', () => {
 
-      it('should invoke an options pre-mixing hook', () => {
+      it('should call an options pre-mixing advice', () => {
         let mix_opts = {pre_mixing_advice: _.noop};
         spy(mix_opts, 'pre_mixing_advice');
 
@@ -83,7 +80,7 @@ describe('mixing', () => {
         expect(mix_opts.pre_mixing_advice.calledOn(target)).to.be.ok;
       });
 
-      it('should invoke an options pre-mixing hook before mixing in', () => {
+      it('should call an options pre-mixing advice before mixing in', () => {
         let mix_opts = {pre_mixing_advice: _.noop};
         let error = new Error;
         let threw = false;
@@ -94,7 +91,7 @@ describe('mixing', () => {
 
         try {
           mix(target, this.mixin, mix_opts, 'arg1', 'arg2');
-        } catch (error) {
+        } catch (e) {
           threw = true;
         } finally {
           expect(threw).to.be.ok;
@@ -102,6 +99,99 @@ describe('mixing', () => {
           expect(mix_opts.pre_mixing_advice.calledWith('arg1', 'arg2'));
         }
       });
+
+    });
+
+    describe('post_mixing_advice', () => {
+
+      it('should call an options post-mixing advice with the target context', () => {
+        let mix_opts = {post_mixing_advice: _.noop};
+        spy(mix_opts, 'post_mixing_advice');
+
+        let target = {};
+        mix(target, this.mixin, mix_opts, 'arg1', 'arg2');
+
+        expect(mix_opts.post_mixing_advice.calledWith('arg1', 'arg2')).to.be.ok;
+        expect(mix_opts.post_mixing_advice.calledOn(target)).to.be.ok;
+      });
+
+      it('should call an options post-mixing advice after mixing in', () => {
+        let mix_opts = {post_mixing_advice: _.noop};
+        let error = new Error;
+        let threw = false;
+
+        stub(mix_opts, 'post_mixing_advice').throws(error);
+        expect(this.mixin.bar).to.equal(1);
+
+        let target = {};
+
+        try {
+          mix(target, this.mixin, mix_opts, 'arg1', 'arg2');
+        } catch (e) {
+          threw = true;
+        } finally {
+          expect(threw).to.be.ok;
+          expect(target.bar).to.equal(1);
+        }
+      });
+
+    });
+
+  });
+
+  describe('mix options', () => {
+
+    beforeEach(() => {
+      this.mixin = default_mixin();
+    });
+
+    describe('omitting mixin methods', () => {
+
+      it('should omit some mixin keys', () => {
+        let target = {};
+        mix(target, this.mixin, {omits: ['bar']});
+
+        expect(target.bar).to.not.exist;
+        expect(target.baz).to.exist;
+      });
+
+      it('should expect a non-empty Array for omissions', () => {
+        [[], {}, null, 1, 'String'].forEach(omits => {
+          expect(() => {
+            mix({}, this.mixin, {omits});
+          }).to.throw('Expected omits option to be a nonempty Array');
+        });
+      });
+
+      it('should throw an error when omitting a non-existing mixin key', () => {
+        expect(() => {
+          mix({}, this.mixin, {omits: ['non_mixin_key']});
+        }).to.throw("Some omit keys aren't in mixin: non_mixin_key");
+      });
+
+      it('should not mangle the prototype hierarchy when omitting keys', () => {
+        let target = {};
+        target.__proto__ = Object.create({
+          bar() {
+            return 'protobar';
+          }
+        });
+
+        mix(target, this.mixin, {omits: ['bar']});
+
+        expect(target.bar).to.exist;
+        expect(target.bar()).to.equal('protobar');
+      });
+
+      it('should not omit all mixin keys', () => {
+        expect(() => {
+          mix({}, this.mixin, {omits: ['bar', 'baz', 'foo']})
+        }).to.throw('All mixin keys have been omitted!');
+      });
+
+    });
+
+    describe('mixin method advice', () => {
 
     });
 

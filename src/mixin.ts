@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import {value_error, not_mutable_error} from './errors';
 
 
 export class Mixin {
@@ -12,7 +11,7 @@ export class Mixin {
     if (!_.isPlainObject(spec)) {
       throw new TypeError('Expected non-empty object literal');
     } else if (typeof spec.name !== 'string') {
-      throw value_error('Expected String name in mixin spec');
+      throw new Error('Expected String name in mixin spec');
     }
     let mixin_name: string = spec.name;
     let mixin_keys: string[] = _.chain(spec)
@@ -22,7 +21,7 @@ export class Mixin {
       })
       .value();
     if (!mixin_keys.length) {
-      throw value_error('Found nothing to mix in!');
+      throw new Error('Found nothing to mix in!');
     }
     let mixin = new Mixin(mixin_name, mixin_keys);
     _.each(mixin_keys, key => {
@@ -32,7 +31,7 @@ export class Mixin {
           return spec[key];
         },
         set() {
-          throw not_mutable_error(`Cannot change ${key} on ${mixin}`);
+          throw new Error(`Cannot change ${key} on ${mixin}`);
         },
       });
     });
