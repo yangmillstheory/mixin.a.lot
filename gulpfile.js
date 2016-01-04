@@ -73,7 +73,7 @@ var tslint_stream = function(glob, rules) {
     configuration.rules = rules;
   }
   return gulp.src(glob)
-    .pipe(tslint({configuration}))
+    .pipe(tslint({configuration: configuration}))
     .pipe(tslint.report('verbose', {
       summarizeFailureOutput: true,
       emitError: false
