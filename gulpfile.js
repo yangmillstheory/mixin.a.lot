@@ -105,7 +105,7 @@ gulp.task('clean', (done) => {
 // test
 gulp.task('test', () => {
   return gulp.src(BUILD.spec())
-    .pipe(mocha({reporter: 'dot'}));
+    .pipe(mocha({reporter: 'dot', ui: 'bdd'}));
 });
 
 gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
@@ -113,8 +113,12 @@ gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 //////
 // dev
 gulp.task('watch', () => {
-  gulp.watch(SRC.spec(), gulp.series('compile:spec', 'lint:spec', 'test'));
-  gulp.watch(SRC.ts(), gulp.series('compile:ts', 'lint:ts', 'test'));
+  gulp.watch(
+    SRC.spec(), 
+    gulp.series('compile:spec', 'lint:spec', 'test'));
+  gulp.watch(
+    SRC.ts(), 
+    gulp.series('compile:ts', 'lint:ts', 'test'));
 });
 
 gulp.task('dev', gulp.series('compile', 'lint', 'watch'));
