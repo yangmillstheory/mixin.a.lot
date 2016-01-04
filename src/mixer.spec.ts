@@ -69,7 +69,7 @@ describe('mixing', () => {
 
     describe('pre_mixing_advice', () => {
 
-      it('should call an options pre-mixing advice', () => {
+      it('should call an options pre-mixing advice on the target', () => {
         let mix_opts = {pre_mixing_advice: _.noop};
         spy(mix_opts, 'pre_mixing_advice');
 
@@ -104,7 +104,7 @@ describe('mixing', () => {
 
     describe('post_mixing_advice', () => {
 
-      it('should call an options post-mixing advice with the target context', () => {
+      it('should call an options post-mixing advice on the target', () => {
         let mix_opts = {post_mixing_advice: _.noop};
         spy(mix_opts, 'post_mixing_advice');
 
@@ -244,38 +244,46 @@ describe('mixing', () => {
         });
       });
 
-      it('should call pre_method_advice before the method', () => {
-        stub(this.mixin, 'baz', before_value => {
-          return [before_value];
+      it('should call pre_method_advice before the method on the target', () => {
+        stub(this.mixin, 'baz', value => {
+          return [value];
         });
 
-        let target = {};
-        mix(target, this.mixin, {
+        let options = {
           pre_method_advice: {
             baz() {
               return 'before_baz';
             },
           },
-        });
+        };
+        spy(options.pre_method_advice, 'baz');
+
+        let target = {};
+        mix(target, this.mixin, options);
 
         expect(target.baz()).to.deep.equal(['before_baz']);
+        expect(options.pre_method_advice.baz.calledOn(target)).to.be.ok;
       });
 
-      it('should call post_method_advice after the method', () => {
+      it('should call post_method_advice after the method on the target', () => {
         stub(this.mixin, 'baz', baz => {
           return ['baz'];
         });
 
-        let target = {};
-        mix(target, this.mixin, {
+        let options = {
           post_method_advice: {
             baz(baz) {
               return baz.concat(['after_baz']);
             },
           },
-        });
+        };
+        spy(options.post_method_advice, 'baz');
+
+        let target = {};
+        mix(target, this.mixin, options);
 
         expect(target.baz()).to.deep.equal(['baz', 'after_baz']);
+        expect(options.post_method_advice.baz.calledOn(target)).to.be.ok;
       });
 
     });
