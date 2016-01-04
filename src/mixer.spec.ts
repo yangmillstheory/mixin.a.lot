@@ -7,7 +7,7 @@ import {spy, stub} from 'sinon';
 
 describe('mixing', () => {
 
-  it('should throw an error when mixing non-Mixins', () => {
+  it('should expect Mixins', () => {
     [1, 'String', [], {}].forEach(non_Mixin => {
       expect(() => {
         mix({}, non_Mixin);
@@ -15,7 +15,7 @@ describe('mixing', () => {
     });
   });
 
-  it('should throw an error when mixing into invalid targets', () => {
+  it('should expect valid targets', () => {
     [1, 'string', true, null, undefined].forEach(target => {
       expect(() => {
         mix(target, default_mixin());
@@ -53,7 +53,7 @@ describe('mixing', () => {
       this.mixin = default_mixin();
     });
 
-    it('should throw an error with non-Function options mixing advice', () => {
+    it('should expect functions as mixing advice', () => {
       let mix_opts = {pre_mixing_advice: 1};
 
       expect(() => {
@@ -163,7 +163,7 @@ describe('mixing', () => {
         });
       });
 
-      it('should throw an error when omitting a non-existing mixin key', () => {
+      it('should expect omission keys that are in the mixin', () => {
         expect(() => {
           mix({}, this.mixin, {omits: ['non_mixin_key']});
         }).to.throw("Some omit keys aren't in mixin: non_mixin_key");
@@ -217,6 +217,65 @@ describe('mixing', () => {
             mix({}, this.mixin, {pre_method_advice});
           }).to.throw(TypeError, "pre_method_advice for method_1 isn't a function");
         });
+      });
+
+      it('should expect methods that are in the mixin', () => {
+        [
+          {
+            pre_method_advice: {
+              baz: _.noop,    // valid method
+              non_existent_method_1: _.noop,  // invalid
+              non_existent_method_2: _.noop,  // invalid
+            },
+            not_in_mixin: 'non_existent_method_1',
+          },
+          {
+            pre_method_advice: {
+              baz: _.noop, // valid method
+              foo: _.noop, // non-method property
+            },
+            not_in_mixin: 'foo',
+          },
+        ].forEach(fixture => {
+          let {pre_method_advice, not_in_mixin} = fixture;
+          expect(() => {
+            mix({}, this.mixin, {pre_method_advice});
+          }).to.throw(`${not_in_mixin} isn't a method on ${this.mixin}`);
+        });
+      });
+
+      it('should call pre_method_advice before the method', () => {
+        stub(this.mixin, 'baz', before_value => {
+          return [before_value];
+        });
+
+        let target = {};
+        mix(target, this.mixin, {
+          pre_method_advice: {
+            baz() {
+              return 'before_baz';
+            },
+          },
+        });
+
+        expect(target.baz()).to.deep.equal(['before_baz']);
+      });
+
+      it('should call post_method_advice after the method', () => {
+        stub(this.mixin, 'baz', baz => {
+          return ['baz'];
+        });
+
+        let target = {};
+        mix(target, this.mixin, {
+          post_method_advice: {
+            baz(baz) {
+              return baz.concat(['after_baz']);
+            },
+          },
+        });
+
+        expect(target.baz()).to.deep.equal(['baz', 'after_baz']);
       });
 
     });
