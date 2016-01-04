@@ -101,20 +101,20 @@ gulp.task('clean', (done) => {
 
 ///////
 // test
-gulp.task('test', (done) => {
+gulp.task('test', () => {
   return gulp.src(BUILD.spec())
-    .pipe(mocha({ui: 'bdd'}))
-    .once('error', () => {
-      done();
-      process.exit(1);
-    })
-    .once('end', () => {
-      done();
-      process.exit();
-    });
+    .pipe(mocha({ui: 'bdd', reporter: 'dot'}))
 });
-
 
 gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
 
-gulp.task('build', gulp.series(gulp.parallel('clean', 'lint'), 'compile'));
+//////
+// dev
+gulp.task('watch', () => {
+  gulp.watch(SRC.spec(), gulp.series('compile:spec', 'lint:spec', 'test'));
+  gulp.watch(SRC.ts(), gulp.series('compile:ts', 'lint:ts', 'test'));
+});
+
+gulp.task('dev', gulp.series('compile', 'lint', 'test', 'watch'));
+
+gulp.task('build', gulp.series(gulp.parallel('clean', 'compile'), 'lint'));

@@ -62,4 +62,4 @@ export var make_mixin = (spec: IMixinSpec, freeze: boolean = false): Mixin => {
 
 export var is_mixin = (thing) => {
   return thing instanceof Mixin;
-}
+};
