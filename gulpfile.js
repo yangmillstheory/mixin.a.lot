@@ -55,6 +55,7 @@ gulp.task('compile:ts', () => {
 gulp.task('compile:spec', () => {
   return gulp
     .src(SRC.spec())
+    // swallow compiler errors/warnings, since we abuse the API here
     .pipe(ts(TS_PROJECT, undefined, ts.reporter.nullReporter))
     .js
     .pipe(gulp.dest(BUILD.base));
