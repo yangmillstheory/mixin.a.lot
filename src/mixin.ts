@@ -36,7 +36,7 @@ export class Mixin {
       });
     });
     if (freeze) {
-      return Object.freeze(mixin);
+      Object.freeze(mixin);
     }
     return mixin;
   }
@@ -55,7 +55,7 @@ export class Mixin {
 Object.freeze(Mixin);
 Object.freeze(Mixin.prototype);
 
-export var make_mixin = (spec: IMixinSpec, freeze: boolean = false): Mixin => {
+export var make_mixin = (spec: IMixinSpec, freeze: boolean = true): Mixin => {
     return Mixin.from_pojo(spec, freeze);
 };
 

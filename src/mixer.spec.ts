@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import {make_mixin, mix} from './index';
-import {default_mixin} from './spec-utils';
+import {default_mixin_spec} from './spec-utils';
 
 describe('mixing', () => {
 
@@ -17,16 +17,20 @@ describe('mixing', () => {
   it('should expect valid targets', () => {
     [1, 'string', true, null, undefined].forEach(target => {
       expect(() => {
-        mix(target, default_mixin());
+        mix(target, make_mixin(default_mixin_spec()));
       }).to.throw(TypeError, `Expected non-null object or function, got ${target}`);
     });
   });
 
   it('should mix into the target', () => {
-    let mixin = default_mixin();
+    // need to stub the mixin spec;
+    // it's tough to stub the mixin since it's immutable
+    let mixin_spec = default_mixin_spec();
+    stub(mixin_spec, 'baz').returns(['baz']);
+
+    let mixin = make_mixin(mixin_spec);
     let target = {};
 
-    stub(mixin, 'baz').returns(['baz']);
     mix(target, mixin);
 
     expect(target.bar).to.equal(1);
@@ -49,7 +53,7 @@ describe('mixing', () => {
   describe('mixing advice', () => {
 
     beforeEach(() => {
-      this.mixin = default_mixin();
+      this.mixin = make_mixin(default_mixin_spec());
     });
 
     it('should expect functions as mixing advice', () => {
@@ -141,7 +145,10 @@ describe('mixing', () => {
   describe('mix options', () => {
 
     beforeEach(() => {
-      this.mixin = default_mixin();
+      // need to hold onto mixin_spec for stubbing;
+      // it's tough to stub the mixin since it's immutable
+      this.mixin_spec = default_mixin_spec();
+      this.mixin = make_mixin(this.mixin_spec);
     });
 
     describe('omitting mixin methods', () => {
@@ -244,7 +251,7 @@ describe('mixing', () => {
       });
 
       it('should call pre_method_advice before the method on the target', () => {
-        stub(this.mixin, 'baz', value => {
+        stub(this.mixin_spec, 'baz', value => {
           return [value];
         });
 
@@ -265,7 +272,7 @@ describe('mixing', () => {
       });
 
       it('should call post_method_advice after the method on the target', () => {
-        stub(this.mixin, 'baz', baz => {
+        stub(this.mixin_spec, 'baz', baz => {
           return ['baz'];
         });
 
