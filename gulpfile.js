@@ -65,8 +65,8 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 
 ///////
 // lint
-let tslint_stream = function(glob, rules) {
-  let configuration = {
+var tslint_stream = function(glob, rules) {
+  var configuration = {
     tslint: require('tslint')
   };
   if (rules) {
