@@ -12,12 +12,12 @@ const DEFAULT_MIX_OPTIONS: IMixOptions = {
 
 let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
   if (!_.isPlainObject(advice)) {
-    throw new Error(
+    throw new TypeError(
       `${key}: expected dict of mixin methods to callbacks`);
   }
   _.forOwn(advice, (callback: Function, method_name: string) => {
     if (!_.isFunction(callback)) {
-      throw new Error(`callback for ${method_name} isn't a function`);
+      throw new TypeError(`${key} for ${method_name} isn't a function`);
     } else if (!_.isFunction(mixin[method_name])) {
       throw new Error(`${method_name} isn't a method on ${mixin}`);
     }
@@ -32,7 +32,7 @@ let assert_mixing_advice = (key: string, advice): void => {
 
 let assert_omits = (omits: string[], mixin: Mixin): void => {
   if (!Array.isArray(omits) || _.isEmpty(omits)) {
-    throw new Error('Expected omits option to be a nonempty Array');
+    throw new TypeError('Expected omits option to be a nonempty Array');
   }
   let diff = _.difference(omits, mixin.mixin_keys);
   if (diff.length) {

@@ -159,7 +159,7 @@ describe('mixing', () => {
         [[], {}, null, 1, 'String'].forEach(omits => {
           expect(() => {
             mix({}, this.mixin, {omits});
-          }).to.throw('Expected omits option to be a nonempty Array');
+          }).to.throw(TypeError, 'Expected omits option to be a nonempty Array');
         });
       });
 
@@ -174,7 +174,7 @@ describe('mixing', () => {
         target.__proto__ = Object.create({
           bar() {
             return 'protobar';
-          }
+          },
         });
 
         mix(target, this.mixin, {omits: ['bar']});
@@ -185,7 +185,7 @@ describe('mixing', () => {
 
       it('should not omit all mixin keys', () => {
         expect(() => {
-          mix({}, this.mixin, {omits: ['bar', 'baz', 'foo']})
+          mix({}, this.mixin, {omits: ['bar', 'baz', 'foo']});
         }).to.throw('All mixin keys have been omitted!');
       });
 
@@ -193,8 +193,35 @@ describe('mixing', () => {
 
     describe('mixin method advice', () => {
 
+      it('should expect a map of mixin method names to functions', () => {
+        ['String', 1, null, [], true].forEach(pre_method_advice => {
+          expect(() => {
+            mix({}, this.mixin, {pre_method_advice});
+          }).to.throw(
+            TypeError,
+            'pre_method_advice: expected dict of mixin methods to callbacks');
+        });
+      });
+
+      it('should expect functions as values in method advice', () => {
+        [
+          {method_1: 1},
+          {
+            method_1: true,
+            method_2: _.noop,
+          },
+          {method_1: null},
+          {method_1: 'string'},
+        ].forEach(pre_method_advice => {
+          expect(() => {
+            mix({}, this.mixin, {pre_method_advice});
+          }).to.throw(TypeError, "pre_method_advice for method_1 isn't a function");
+        });
+      });
+
     });
 
   });
 
 });
+
