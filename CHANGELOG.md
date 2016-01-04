@@ -2,6 +2,24 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.0.1]
+### BREAKING CHANGES
+
+In `mixin_a_lot.make_mixin(Object mixin_properties, [Boolean freeze])`, `mixin_properties` no longer takes pre/post mixing hooks; 
+since those functions should only ever be invoked once, they should be passed as callback(s) in the `options` in `mixin_a_lot.mix(target, mixin, options)`.  
+
+New mix option aliases:
+
+* `pre_method_advice` for `premixing_hook`, et. al.
+* `pre_mixing_advice` for `before_hook`, et. al.
+* `post_method_advice` for `postmixing_hook`, et. al.
+* `post_mixing_advice` for `after_hook`, et. al.
+
+Remove ability to specify pre/post mixing hooks within the `Mixin` instance. This should be specified
+in the options to `mixin_a_lot.mix`, so to reduce complexity and sources of truth for the same behavior.
+
+Furthermore, it doesn't quite have these properties in the mixin, which is just a simple container for shared data/behavior.
+
 ## [3.0.1]
 ### BREAKING CHANGES
 Removed deprecated API:

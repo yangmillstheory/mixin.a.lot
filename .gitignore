@@ -1,6 +1,9 @@
 .idea
+.vscode
 
+typings
 node_modules
 dist
+build
 
 *.log
