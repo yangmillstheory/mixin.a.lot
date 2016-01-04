@@ -57,13 +57,13 @@ export var option_type_of = (key: string): OptionType => {
     return (option_key.primary === key) || (key in option_key.aliases);
   };
   if (specifies_option(PRE_METHOD_ADVICE_KEY)) {
-    return OptionType.PRE_MIXING_ADVICE;
-  } else if (specifies_option(PRE_MIXING_ADVICE_KEY)) {
     return OptionType.PRE_METHOD_ADVICE;
+  } else if (specifies_option(PRE_MIXING_ADVICE_KEY)) {
+    return OptionType.PRE_MIXING_ADVICE;
   } else if (specifies_option(POST_METHOD_ADVICE_KEY)) {
-    return OptionType.POST_MIXING_ADVICE;
-  } else if (specifies_option(POST_MIXING_ADVICE_KEY)) {
     return OptionType.POST_METHOD_ADVICE;
+  } else if (specifies_option(POST_MIXING_ADVICE_KEY)) {
+    return OptionType.POST_MIXING_ADVICE;
   } else if (specifies_option(OMITS_KEY)) {
     return OptionType.OMITS;
   } else {

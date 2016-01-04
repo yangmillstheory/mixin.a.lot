@@ -12,7 +12,7 @@ export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
   if (target === undefined) {
     throw new TypeError(USAGE());
   } else if (!(_.isFunction(target) || _.isObject(target))) {
-    throw new TypeError(target);
+    throw new TypeError(USAGE(target));
   }
   if (!is_mixin(mixin)) {
     throw new TypeError('Expected a Mixin instance');
@@ -25,7 +25,7 @@ export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
     pre_mixing_advice, post_mixing_advice,
     omits,
   } = parse_options(options, mixin);
-  let mixing_args = Array.prototype.splice.call(arguments, 2);
+  let mixing_args = Array.prototype.splice.call(arguments, 3);
   let mixing_keys = _.difference(mixin.mixin_keys, omits);
   if (_.isEmpty(mixing_keys)) {
     throw value_error('All mixin keys have been omitted!');

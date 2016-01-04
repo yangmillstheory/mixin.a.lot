@@ -86,6 +86,7 @@ gulp.task('lint:ts', (done) => {
 gulp.task('lint:spec', (done) => {
   return tslint_stream(SRC.spec(), {
     // tslint.json overrides
+    'no-null-keyword': false,
   });
 });
 
@@ -103,7 +104,7 @@ gulp.task('clean', (done) => {
 // test
 gulp.task('test', () => {
   return gulp.src(BUILD.spec())
-    .pipe(mocha({ui: 'bdd', reporter: 'dot'}))
+    .pipe(mocha({reporter: 'dot'}));
 });
 
 gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
@@ -115,6 +116,6 @@ gulp.task('watch', () => {
   gulp.watch(SRC.ts(), gulp.series('compile:ts', 'lint:ts', 'test'));
 });
 
-gulp.task('dev', gulp.series('compile', 'lint', 'test', 'watch'));
+gulp.task('dev', gulp.series('compile', 'lint', 'watch'));
 
 gulp.task('build', gulp.series(gulp.parallel('clean', 'compile'), 'lint'));
