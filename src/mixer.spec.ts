@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
-import {make_mixin} from './mixin';
+import {make_mixin} from './index';
 import {expect} from 'chai';
 import {default_mixin} from './spec-utils';
-import {mix} from './mixer';
+import {mix} from './index';
 import {spy, stub} from 'sinon';
 
 describe('mixing', () => {
