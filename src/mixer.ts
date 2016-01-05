@@ -1,10 +1,10 @@
-import {is_mixin} from './mixin';
+import {Mixin, is_mixin} from './mixin';
 import {parse_options} from './options';
 import * as _ from 'lodash';
 
 
 const USAGE = (target?): string => {
-    return `Expected non-null object or function, got ${target}`;
+  return `Expected non-null object or function, got ${target}`;
 };
 
 export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
@@ -30,7 +30,7 @@ export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
     throw new Error('All mixin keys have been omitted!');
   }
   pre_mixing_advice.apply(target, mixing_args);
-  _.each(mixing_keys, key => {
+  _.each(mixing_keys, (key: string) => {
     if (pre_method_advice[key]) {
       let bound_advice = pre_method_advice[key].bind(target);
       let mixin_method = mixin[key];
