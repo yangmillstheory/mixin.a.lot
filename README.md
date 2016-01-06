@@ -136,7 +136,9 @@ Optional arguments to the mixing callbacks are passed starting with the third pa
 
 Given the following setup:
 
-    var m = require('mixin-a-lot');
+```javascript
+var m = require('mixin-a-lot');
+```
 
 ### <a name="mix"></a> m.mix({Object|Function} target, Object mixin, [Object options], [...mixing_arguments])
 
