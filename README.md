@@ -31,7 +31,9 @@ Get the latest build:
 
 Import the module:
 
-    var mixin_a_lot = require('mixin-a-lot');
+```javascript
+var mixin_a_lot = require('mixin-a-lot');
+```
 
 A mixin is just a plain old JavaScript object. 
 
