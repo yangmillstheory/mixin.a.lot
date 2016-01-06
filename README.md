@@ -49,28 +49,29 @@ You don't actually need to hold onto it; it's just useful for the exposition her
 ### Mixing
 
 Mix it into your object, function or function prototype.
+```javascript
+var MyLogger = function() {};
 
-    var MyLogger = function() {};
+// mix into the Function
+mixin_a_lot.mix(MyLogger, logger);
+MyLogger.log(...);
 
-    // mix into the Function
-    mixin_a_lot.mix(MyLogger, logger);
-    MyLogger.log(...);
-    
-    // or mix into the prototype
-    mixin_a_lot.mix(MyLogger.prototype, logger);
-    var myLogger = new MyLogger
-    myLogger.log(...);
-    
-    // or mix into a random object
-    var thing = {...};
-    mixin_a_lot.mix(thing, logger);
-    thing.log(...);
+// or mix into the prototype
+mixin_a_lot.mix(MyLogger.prototype, logger);
+var myLogger = new MyLogger
+myLogger.log(...);
+
+// or mix into a random object
+var thing = {...};
+mixin_a_lot.mix(thing, logger);
+thing.log(...);
+```
 
 ### <a name="mix-options"></a> Mix options
 
 A subset of mixin methods/properties can be omitted (but not all):
 
-```
+```javascript
 var mixee = {...};
 mixin_a_lot.mix(mixee, mixin, {
     omits: ['logname']
@@ -80,7 +81,7 @@ mixee.logname // undefined
 
 ### <a name="mixin-method-advice"></a> Mixin Method Advice
 
-You can [advise](https://en.wikipedia.org/wiki/Advice_(programming) any mixin method. It'll always be called on the target context.
+You can [advise](https://en.wikipedia.org/wiki/Advice_(programming)) any mixin method. It'll always be called on the target context.
 
 Return values are propagated accordingly when advising:
 
