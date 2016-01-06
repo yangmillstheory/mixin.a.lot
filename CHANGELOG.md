@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.0.0]
 ### BREAKING CHANGES
 
+Removed dependency on lodash.
+
 To reduce complexity `mixin_a_lot.make_mixin(...)` has been removed; there's no reason for callers to hold onto a `Mixin`, since it provides
 no new material data or behavior beyond immutability, and this can easily be done with `Object.freeze(...)`.
 
