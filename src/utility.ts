@@ -67,7 +67,7 @@ export var is_empty = (thing: any[]) => {
 
 export var compose = (f: Function, g: Function): Function => {
   return function(...args) {
-    return g(f(...args));
+    return f(g(...args));
   };
 };
 

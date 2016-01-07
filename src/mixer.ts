@@ -40,11 +40,11 @@ export var mix = function(target, mixin: Mixin, options?: IMixOptions) {
     if (pre_method_advice[key]) {
       let bound_advice = pre_method_advice[key].bind(target);
       let mixin_method = mixin[key];
-      target[key] = compose(bound_advice, mixin_method);
+      target[key] = compose(mixin_method, bound_advice);
     } else if (post_method_advice[key]) {
       let bound_advice = post_method_advice[key].bind(target);
       let mixin_method = mixin[key];
-      target[key] = compose(mixin_method, bound_advice);
+      target[key] = compose(bound_advice, mixin_method);
     } else {
       target[key] = mixin[key];
     }
