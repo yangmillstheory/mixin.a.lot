@@ -41,13 +41,14 @@ var logger = {
 };
 
 ```
+You don't actually need to hold onto it; it's just useful for the exposition here.
+
 Import the module:
 
 ```javascript
 var mixin_a_lot = require('mixin-a-lot');
 ```
 
-You don't actually need to hold onto it; it's just useful for the exposition here.
 
 ### Mixing
 
