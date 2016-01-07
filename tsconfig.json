@@ -8,8 +8,5 @@
     "moduleResolution": "node",
     "listFiles": true
   },
-  "exclude": [
-    "node_modules",
-    "typings"
-  ]
+  "exclude": ["node_modules"]
 }
