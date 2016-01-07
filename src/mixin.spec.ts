@@ -1,4 +1,7 @@
-import * as _ from 'lodash';
+import {
+  is_function,
+  noop,
+} from './utility';
 import {expect} from 'chai';
 import {make_mixin} from './index';
 
@@ -50,16 +53,16 @@ describe('making a mixin', () => {
   });
 
   it('should allow adding but not modifying the mixin if freeze = false', () => {
-    let mixin = make_mixin({name: 'Example', foo: _.noop}, false);
+    let mixin = make_mixin({name: 'Example', foo: noop}, false);
 
     delete mixin.name;
     delete mixin.foo;
 
-    mixin.bar = _.noop;
+    mixin.bar = noop;
 
     expect(mixin.name).to.equal('Example');
-    expect(_.isFunction(mixin.foo)).to.be.ok;
-    expect(_.isFunction(mixin.bar)).to.be.ok;
+    expect(is_function(mixin.foo)).to.be.ok;
+    expect(is_function(mixin.bar)).to.be.ok;
   });
 
   describe('Mixin', () => {
