@@ -51,9 +51,6 @@
     "tslint": "^3.2.1",
     "typescript": "^1.7.5"
   },
-  "dependencies": {
-    "lodash": "^3.10.1"
-  },
   "scripts": {
     "test": "node_modules/.bin/gulp test"
   }
