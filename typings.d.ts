@@ -1,6 +1,4 @@
 declare module 'mixin_a_lot' {
-  export function make(spec: IMixinSpec): Mixin;
-
   export function mix(target, mixin: Mixin, options: IMixOptions);
 }
 
