@@ -18,7 +18,10 @@
     "karma",
     "mocha",
     "npm",
-    "typescript"
+    "typescript",
+    "aspect",
+    "advice",
+    "aspect-oriented"
   ],
   "author": {
     "name": "Victor Alvarez",
