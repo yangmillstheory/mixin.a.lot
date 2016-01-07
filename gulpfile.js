@@ -70,19 +70,18 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 ///////
 // lint
 var tslint_stream = function(glob, rules) {
-  var configuration = {
-    tslint: require('tslint')
-  };
-  if (rules) {
-    configuration.rules = rules;
-  }
   return gulp.src(glob)
-    .pipe(tslint({configuration: configuration}))
+    .pipe(tslint({
+      configuration: {
+        tslint: require('tslint'),
+        rules: rules,
+      } 
+    }))
     .pipe(tslint.report('verbose', {
       summarizeFailureOutput: true,
       emitError: false
     }));
-}
+};
 
 gulp.task('lint:ts', function(done) {
   return tslint_stream(SRC.ts());
