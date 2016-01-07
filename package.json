@@ -28,7 +28,7 @@
     "node": ">=0.10.0"
   },
   "main": "dist/index.js",
-  "typings": "src/typings.d.ts",
+  "typings": "typings.d.ts",
   "files": [
     "dist/**/*.js",
     "LICENSE.md",

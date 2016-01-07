@@ -7,7 +7,7 @@ var mocha = require('gulp-mocha');
 
 
 var typings = function() {
-  return ['typings/tsd.d.ts', 'src.d.ts/**/*.d.ts'];
+  return ['typings/tsd.d.ts', 'typings.d.ts'];
 };
 
 var SRC = {
