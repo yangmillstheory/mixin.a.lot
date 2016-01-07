@@ -5,7 +5,7 @@ import {
 } from './utility';
 
 
-export class Mixin {
+class Mixin {
 
   public mixin_keys: string[];
 

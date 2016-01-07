@@ -1,4 +1,4 @@
-import {Mixin, is_mixin} from './mixin';
+import {is_mixin} from './mixin';
 import {parse_options} from './options';
 import {
   compose,
