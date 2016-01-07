@@ -1,4 +1,8 @@
-import * as _ from 'lodash';
+import {
+  is_empty,
+  is_plain_object,
+  is_string,
+} from './utility';
 
 
 export class Mixin {
@@ -8,23 +12,21 @@ export class Mixin {
   private name: string;
 
   public static from_pojo(spec: IMixinSpec, freeze: boolean): Mixin {
-    if (!_.isPlainObject(spec)) {
+    if (!is_plain_object(spec)) {
       throw new TypeError('Expected non-empty object literal');
-    } else if (typeof spec.name !== 'string') {
+    } else if (!is_string(spec.name)) {
       throw new Error('Expected String name in mixin spec');
     }
     let mixin_name: string = spec.name;
-    let mixin_keys: string[] = _.chain(spec)
-      .keys()
-      .select(mixin_key => {
+    let mixin_keys: string[] = Object.keys(spec)
+      .filter(mixin_key => {
           return mixin_key !== 'name';
-      })
-      .value();
-    if (!mixin_keys.length) {
+      });
+    if (is_empty(mixin_keys)) {
       throw new Error('Found nothing to mix in!');
     }
     let mixin = new Mixin(mixin_name, mixin_keys);
-    _.each(mixin_keys, key => {
+    mixin_keys.forEach(key => {
       Object.defineProperty(mixin, key, {
         enumerable: true,
         get() {
