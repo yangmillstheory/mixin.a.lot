@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import {noop} from './utility';
 import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import {make_mixin, mix} from './index';
@@ -73,7 +73,7 @@ describe('mixing', () => {
     describe('pre_mixing_advice', () => {
 
       it('should call an options pre-mixing advice on the target', () => {
-        let mix_opts = {pre_mixing_advice: _.noop};
+        let mix_opts = {pre_mixing_advice: noop};
         spy(mix_opts, 'pre_mixing_advice');
 
         let target = {};
@@ -84,7 +84,7 @@ describe('mixing', () => {
       });
 
       it('should call an options pre-mixing advice before mixing in', () => {
-        let mix_opts = {pre_mixing_advice: _.noop};
+        let mix_opts = {pre_mixing_advice: noop};
         let error = new Error;
         let threw = false;
         let target = {};
@@ -108,7 +108,7 @@ describe('mixing', () => {
     describe('post_mixing_advice', () => {
 
       it('should call an options post-mixing advice on the target', () => {
-        let mix_opts = {post_mixing_advice: _.noop};
+        let mix_opts = {post_mixing_advice: noop};
         spy(mix_opts, 'post_mixing_advice');
 
         let target = {};
@@ -119,7 +119,7 @@ describe('mixing', () => {
       });
 
       it('should call an options post-mixing advice after mixing in', () => {
-        let mix_opts = {post_mixing_advice: _.noop};
+        let mix_opts = {post_mixing_advice: noop};
         let error = new Error;
         let threw = false;
 
@@ -214,7 +214,7 @@ describe('mixing', () => {
           {method_1: 1},
           {
             method_1: true,
-            method_2: _.noop,
+            method_2: noop,
           },
           {method_1: null},
           {method_1: 'string'},
@@ -229,16 +229,16 @@ describe('mixing', () => {
         [
           {
             pre_method_advice: {
-              baz: _.noop,    // valid method
-              non_existent_method_1: _.noop,  // invalid
-              non_existent_method_2: _.noop,  // invalid
+              baz: noop,    // valid method
+              non_existent_method_1: noop,  // invalid
+              non_existent_method_2: noop,  // invalid
             },
             not_in_mixin: 'non_existent_method_1',
           },
           {
             pre_method_advice: {
-              baz: _.noop, // valid method
-              foo: _.noop, // non-method property
+              baz: noop, // valid method
+              foo: noop, // non-method property
             },
             not_in_mixin: 'foo',
           },
