@@ -3,8 +3,6 @@
     "target": "es5",
     "module": "commonjs",
     "noImplicitAny": false,
-    "outDir": "build",
-    "rootDir": "src",
     "moduleResolution": "node",
     "listFiles": true
   },
