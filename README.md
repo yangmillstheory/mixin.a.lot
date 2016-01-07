@@ -29,21 +29,22 @@ Get the latest build:
 
     $ npm install mixin-a-lot
 
-Import the module:
-
-```javascript
-var mixin_a_lot = require('mixin-a-lot');
-```
 
 A mixin is just a plain old JavaScript object. 
 
 ```javascript
-var logger = mixin_a_lot.make_mixin({
+var logger = {
     logname: "Default Logname",
     log: function(log_object) {
         ...
     },
-});
+};
+
+```
+Import the module:
+
+```javascript
+var mixin_a_lot = require('mixin-a-lot');
 ```
 
 You don't actually need to hold onto it; it's just useful for the exposition here.
