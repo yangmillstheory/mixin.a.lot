@@ -148,7 +148,7 @@ Get the source:
 Install dependencies:
 
     $ cd mixin.a.lot && sudo npm install
-    $ node_modules/.bin/tsd install # optional - install type definitions
+    $ node_modules/.bin/tsd install
 
 Develop (watch for changes and execute tests):
 
