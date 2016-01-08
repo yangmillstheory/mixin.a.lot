@@ -1,14 +1,5 @@
 declare module 'mixin_a_lot' {
-  export function mix(target, mixin: Mixin, options: IMixOptions);
-}
-
-declare class Mixin {
-  public mixin_keys: string[];
-}
-
-declare interface IMixinSpec {
-  name: string;
-  [key: string]: any;
+  export function mix(target, mixin: Object, options?: IMixOptions);
 }
 
 declare interface IMixOptions {
