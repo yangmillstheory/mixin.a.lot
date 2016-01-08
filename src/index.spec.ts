@@ -1,23 +1,23 @@
 import {noop} from './utility';
 import {expect} from 'chai';
 import {spy, stub} from 'sinon';
-import {make_mixin, mix} from './index';
-import {default_mixin_spec} from './spec-utils';
+import {mix} from './index';
+import {default_mixin} from './spec-utils';
 
 describe('mixing', () => {
 
-  it('should expect Mixins', () => {
-    [1, 'String', [], {}].forEach(non_Mixin => {
+  it('should expect plain old javascript objects', () => {
+    [1, 'String', [], noop].forEach(thing => {
       expect(() => {
-        mix({}, non_Mixin);
-      }).to.throw(TypeError, 'Expected a Mixin instance');
+        mix({}, thing);
+      }).to.throw(TypeError, 'Expected mixin to be an object literal');
     });
   });
 
   it('should expect valid targets', () => {
     [1, 'string', true, null, undefined].forEach(target => {
       expect(() => {
-        mix(target, make_mixin(default_mixin_spec()));
+        mix(target, default_mixin());
       }).to.throw(TypeError, `Expected non-null object or function, got ${target}`);
     });
   });
@@ -25,11 +25,9 @@ describe('mixing', () => {
   it('should mix into the target', () => {
     // need to stub the mixin spec;
     // it's tough to stub the mixin since it's immutable
-    let mixin_spec = default_mixin_spec();
-    stub(mixin_spec, 'baz').returns(['baz']);
-
-    let mixin = make_mixin(mixin_spec);
     let target = {};
+    let mixin = default_mixin();
+    stub(mixin, 'baz').returns(['baz']);
 
     mix(target, mixin);
 
@@ -38,8 +36,8 @@ describe('mixing', () => {
   });
 
   it('should be order-dependent', () => {
-    let mixin_1 = make_mixin({name: 'mixin_1', foo: 'bar1', baz: 'qux'});
-    let mixin_2 = make_mixin({name: 'mixin_2', foo: 'bar2', qux: 'baz'});
+    let mixin_1 = {name: 'mixin_1', foo: 'bar1', baz: 'qux'};
+    let mixin_2 = {name: 'mixin_2', foo: 'bar2', qux: 'baz'};
     let target = {};
 
     mix(target, mixin_1);
@@ -53,7 +51,7 @@ describe('mixing', () => {
   describe('mixing advice', () => {
 
     beforeEach(() => {
-      this.mixin = make_mixin(default_mixin_spec());
+      this.mixin = default_mixin();
     });
 
     it('should expect functions as mixing advice', () => {
@@ -145,10 +143,7 @@ describe('mixing', () => {
   describe('mix options', () => {
 
     beforeEach(() => {
-      // need to hold onto mixin_spec for stubbing;
-      // it's tough to stub the mixin since it's immutable
-      this.mixin_spec = default_mixin_spec();
-      this.mixin = make_mixin(this.mixin_spec);
+      this.mixin = default_mixin();
     });
 
     describe('omitting mixin methods', () => {
@@ -251,7 +246,7 @@ describe('mixing', () => {
       });
 
       it('should call pre_method_advice before the method on the target', () => {
-        stub(this.mixin_spec, 'baz', value => {
+        stub(this.mixin, 'baz', value => {
           return [value];
         });
 
@@ -272,7 +267,7 @@ describe('mixing', () => {
       });
 
       it('should call post_method_advice after the method on the target', () => {
-        stub(this.mixin_spec, 'baz', baz => {
+        stub(this.mixin, 'baz', baz => {
           return ['baz'];
         });
 

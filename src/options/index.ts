@@ -18,7 +18,7 @@ const DEFAULT_MIX_OPTIONS: IMixOptions = {
   post_method_advice: {},
 };
 
-let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
+let assert_method_advice = (key: string, advice, mixin: Object): void => {
   if (!is_plain_object(advice)) {
     throw new TypeError(
       `${key}: expected dict of mixin methods to callbacks`);
@@ -38,17 +38,17 @@ let assert_mixing_advice = (key: string, advice): void => {
   }
 };
 
-let assert_omits = (omits: string[], mixin: Mixin): void => {
+let assert_omits = (omits: string[], mixin: Object): void => {
   if (!Array.isArray(omits) || is_empty(omits)) {
     throw new TypeError('Expected omits option to be a nonempty Array');
   }
-  let diff = diff_arrays(omits, mixin.mixin_keys);
+  let diff = diff_arrays(omits, Object.getOwnPropertyNames(mixin));
   if (!is_empty(diff)) {
     throw new Error(`Some omit keys aren't in mixin: ${diff}`);
   }
 };
 
-export var parse_options = (options: Object, mixin: Mixin): IMixOptions => {
+export var parse_options = (options: Object, mixin: Object): IMixOptions => {
   if (!is_plain_object(options)) {
     throw new TypeError('Expected options dictionary');
   }
