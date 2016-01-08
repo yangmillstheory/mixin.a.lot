@@ -4,31 +4,31 @@
 
 [![Join the chat at https://gitter.im/yangmillstheory/mixin.a.lot](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yangmillstheory/mixin.a.lot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## What is it?
 
-**mixin.a.lot** is an [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin library implemented in [TypeScript](http://www.typescriptlang.org/) with no runtime dependencies.
+An [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin library implemented in [TypeScript](http://www.typescriptlang.org/) with no runtime dependencies.
 
 You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
 
-Goals for library:
+## Why use it?
 
-1. no dependencies
-2. mixin clients should be able to customize mixin methods without calls to `super`
-3. mixin clients should have their prototype chain modified
+1. It has no dependencies
+2. You can use it without your protoype chain being mangled
+3. You can opt-out of some mixin functionality
+4. You can [advise](https://en.wikipedia.org/wiki/Advice_(programming) the mixing process
+3. You can advise individual mixin methods
 
-Goals for users:
-
-1. should be able to opt-out of some mixin functionality
-2. should be able to advise the mixing process
-3. should be able to advise individual mixin methods
-
-## Usage & Examples
-
-### Install
-
-Get the latest build:
+## Install
 
     $ npm install mixin-a-lot
+    
+## Usage & Examples
 
+Import the module:
+
+```javascript
+var mixin_a_lot = require('mixin-a-lot');
+```
 
 A mixin is just a plain old JavaScript object. 
 
@@ -41,16 +41,7 @@ var logger = {
 };
 
 ```
-You don't actually need to hold onto it; it's just useful for the exposition here.
-
-Import the module:
-
-```javascript
-var mixin_a_lot = require('mixin-a-lot');
-```
-
-
-### Mixing
+(You don't actually need to hold onto it; it's just useful for the exposition here.)
 
 Mix it into your object, function or function prototype.
 ```javascript
@@ -71,8 +62,6 @@ mixin_a_lot.mix(thing, logger);
 thing.log(...);
 ```
 
-### <a name="mix-options"></a> Mix options
-
 A subset of mixin methods/properties can be omitted (but not all):
 
 ```javascript
@@ -82,8 +71,6 @@ mixin_a_lot.mix(mixee, mixin, {
 });
 mixee.logname // undefined
 ```
-
-### <a name="mixin-method-advice"></a> Mixin Method Advice
 
 You can [advise](https://en.wikipedia.org/wiki/Advice_(programming)) any mixin method. It'll always be called on the target context.
 
@@ -102,6 +89,7 @@ var pre_log = function(error) {
     serialized = this._serialize_error(error);
     return {level: level, serialized_error: serialized};
 };
+
 mixin_a_lot.mix(MyLogger, mixin, {
     pre_method_advice: {log: pre_log, ...}
 });
@@ -111,14 +99,13 @@ mixin_a_lot.mix(MyLogger, mixin, {
 var post_log = function(log_return_value) {
     // do something with the return value of .log()
 };
+
 mixin_a_lot.mix(MyLogger.prototype, logger, {
     post_method_advice: {log: post_log}
 });
 ```
 
-### <a name="mixing-advice"></a> Mixing Advice
-
-Users can specify pre- and post- mixing callbacks called before and after mixing (resp.) with the target context.
+You can advise the mixing process.
 
 ```javascript
 mixin_a_lot.mix(MyLogger.prototype, mixin, {
@@ -130,9 +117,7 @@ mixin_a_lot.mix(MyLogger.prototype, mixin, {
 }, 'arg1', 'arg2');
 ```
 
-Like [above](#mixin-method-advice), `this` in mixing callbacks always points to the mix target.
-
-Optional arguments to the mixing callbacks are passed starting with the third parameter.
+Optional arguments to the mixing advice are passed starting with the third parameter.
 
 ## API
 
@@ -144,11 +129,11 @@ var m = require('mixin-a-lot');
 
 ### <a name="mix"></a> m.mix({Object|Function} target, Object mixin, [Object options], [...mixing_arguments])
 
-Mix properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. Optional `options` can be an object literal conforming to the following schema:
+Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with:
 
 * `omits`: `Array` of `Strings` which are properties of `mixin` to exclude from mixing
-* `pre_method_advice`, `post_method_advice`: object literal mapping mixin method names to callbacks, which are invoked on before or after the mixin method on `target`, [as above](#mixin-method-advice).
-* `pre_mixing_advice`, `post_mixing_advice`: callbacks that fire before and after the mixing process. `mixing_arguments` can be passed variadically to these.
+* `pre_method_advice`, `post_method_advice`: object literal mapping mixin method names to callbacks, which are invoked before or after the mixin method on `target`
+* `pre_mixing_advice`, `post_mixing_advice`: callbacks that fire before and after the mixing process. `mixing_arguments` can be passed variadically to these
 
 ## Development
 
@@ -173,4 +158,4 @@ To see all the available tasks:
 
 ## License
 
-MIT © 2015, Victor Alvarez
+MIT © 2016, Victor Alvarez
