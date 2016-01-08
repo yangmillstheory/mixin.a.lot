@@ -13,8 +13,8 @@ const PRE_METHOD_ADVICE_KEY: IOptionKey = {
   ],
 };
 
-const PRE_MIXING_ADVICE_KEY: IOptionKey = {
-  primary: 'pre_mixing_advice',
+const PRE_MIXING_HOOK_KEY: IOptionKey = {
+  primary: 'pre_mixing_hook',
   aliases: [
     'premixing_hook',
     'premixing',
@@ -30,8 +30,8 @@ const POST_METHOD_ADVICE_KEY: IOptionKey = {
   ],
 };
 
-const POST_MIXING_ADVICE_KEY: IOptionKey = {
-  primary: 'post_mixing_advice',
+const POST_MIXING_HOOK_KEY: IOptionKey = {
+  primary: 'post_mixing_hook',
   aliases: [
     'postmixing_hook',
     'postmixing',
@@ -40,33 +40,37 @@ const POST_MIXING_ADVICE_KEY: IOptionKey = {
 };
 
 const OMITS_KEY: IOptionKey = {
-  primary: 'omits',
-  aliases: [],
+  primary: 'omit',
+  aliases: ['omits'],
 };
 
 export enum OptionType {
   PRE_METHOD_ADVICE,
-  PRE_MIXING_ADVICE,
+  PRE_MIXING_HOOK,
   POST_METHOD_ADVICE,
-  POST_MIXING_ADVICE,
-  OMITS
+  POST_MIXING_HOOK,
+  OMIT
 }
 
-export var option_type_of = (key: string): OptionType => {
-  let specifies_option = (option_key: IOptionKey) => {
-    return (option_key.primary === key) || (key in option_key.aliases);
-  };
-  if (specifies_option(PRE_METHOD_ADVICE_KEY)) {
-    return OptionType.PRE_METHOD_ADVICE;
-  } else if (specifies_option(PRE_MIXING_ADVICE_KEY)) {
-    return OptionType.PRE_MIXING_ADVICE;
-  } else if (specifies_option(POST_METHOD_ADVICE_KEY)) {
-    return OptionType.POST_METHOD_ADVICE;
-  } else if (specifies_option(POST_MIXING_ADVICE_KEY)) {
-    return OptionType.POST_MIXING_ADVICE;
-  } else if (specifies_option(OMITS_KEY)) {
-    return OptionType.OMITS;
-  } else {
-    return undefined;
-  }
+export var Option = {
+  from_key: (key: string): OptionType => {
+    let specifies_option = (option_key: IOptionKey) => {
+      return (option_key.primary === key) || (key in option_key.aliases);
+    };
+    if (specifies_option(PRE_METHOD_ADVICE_KEY)) {
+      return OptionType.PRE_METHOD_ADVICE;
+    } else if (specifies_option(PRE_MIXING_HOOK_KEY)) {
+      return OptionType.PRE_MIXING_HOOK;
+    } else if (specifies_option(POST_METHOD_ADVICE_KEY)) {
+      return OptionType.POST_METHOD_ADVICE;
+    } else if (specifies_option(POST_MIXING_HOOK_KEY)) {
+      return OptionType.POST_MIXING_HOOK;
+    } else if (specifies_option(OMITS_KEY)) {
+      return OptionType.OMIT;
+    } else {
+      return undefined;
+    }
+  },
+
+  Type: OptionType,
 };

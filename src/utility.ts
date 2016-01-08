@@ -19,9 +19,11 @@ export var for_own = function(iteratee, iterator: (value, key: string) => void) 
   }
 };
 
-export var copy_object = (target, source) => {
-  for_own(source, (value, key: string) => {
-    target[key] = value;
+export var copy_object = (target, ...sources) => {
+  sources.forEach(source => {
+    for_own(source, (value, key: string) => {
+      target[key] = value;
+    });
   });
   return target;
 };

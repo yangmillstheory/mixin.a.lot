@@ -7,18 +7,23 @@ import {
   is_plain_object,
   noop,
 } from '../utility';
-import {OptionType, option_type_of} from './types';
+import {Option} from './types';
 
 
-const DEFAULT_MIX_OPTIONS: IMixOptions = {
-  omits: [],
-  pre_mixing_advice: noop,
+// internal representation of options for the mixing process;
+// includes options specified in a Mixin as well as a MixOptions
+interface IMixOptions extends MixOptions, Mixin {}
+
+
+const DEFAULT_IMIX_OPTIONS: IMixOptions = {
+  omit: [],
   pre_method_advice: {},
-  post_mixing_advice: noop,
+  pre_mixing_hook: noop,
   post_method_advice: {},
+  post_mixing_hook: noop,
 };
 
-let assert_method_advice = (key: string, advice, mixin: Object): void => {
+let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
   if (!is_plain_object(advice)) {
     throw new TypeError(
       `${key}: expected dict of mixin methods to callbacks`);
@@ -32,48 +37,49 @@ let assert_method_advice = (key: string, advice, mixin: Object): void => {
   });
 };
 
-let assert_mixing_advice = (key: string, advice): void => {
-  if (!is_function(advice)) {
+let assert_mixing_hook = (key: string, hook): void => {
+  if (!is_function(hook)) {
     throw new TypeError(`Expected a function for ${key}`);
   }
 };
 
-let assert_omits = (omits: string[], mixin: Object): void => {
-  if (!Array.isArray(omits) || is_empty(omits)) {
-    throw new TypeError('Expected omits option to be a nonempty Array');
+let assert_omit = (omit: string[], mixin: Mixin): void => {
+  if (!Array.isArray(omit) || is_empty(omit)) {
+    throw new TypeError('Expected omit option to be a nonempty Array');
   }
-  let diff = diff_arrays(omits, Object.getOwnPropertyNames(mixin));
+  let diff = diff_arrays(omit, Object.getOwnPropertyNames(mixin));
   if (!is_empty(diff)) {
     throw new Error(`Some omit keys aren't in mixin: ${diff}`);
   }
 };
 
-export var parse_options = (options: Object, mixin: Object): IMixOptions => {
+export var parse_imix_options = (options: Object, mixin: Mixin): IMixOptions => {
   if (!is_plain_object(options)) {
     throw new TypeError('Expected options dictionary');
   }
-  let parsed: IMixOptions = copy_object({}, DEFAULT_MIX_OPTIONS);
-  for_own(options, (value, key: string) => {
-    switch (option_type_of(key)) {
-      case (OptionType.PRE_METHOD_ADVICE):
+  let parsed: IMixOptions = copy_object({}, DEFAULT_IMIX_OPTIONS);
+  let mixing_data = copy_object({}, options, mixin);
+  for_own(mixing_data, (value, key: string) => {
+    switch (Option.from_key(key)) {
+      case (Option.Type.PRE_METHOD_ADVICE):
         assert_method_advice(key, value, mixin);
         parsed.pre_method_advice = value;
         break;
-      case (OptionType.PRE_MIXING_ADVICE):
-        assert_mixing_advice(key, value);
-        parsed.pre_mixing_advice = value;
+      case (Option.Type.PRE_MIXING_HOOK):
+        assert_mixing_hook(key, value);
+        parsed.pre_mixing_hook = value;
         break;
-      case (OptionType.POST_METHOD_ADVICE):
+      case (Option.Type.POST_METHOD_ADVICE):
         assert_method_advice(key, value, mixin);
         parsed.post_method_advice = value;
         break;
-      case (OptionType.POST_MIXING_ADVICE):
-        assert_mixing_advice(key, value);
-        parsed.post_mixing_advice = value;
+      case (Option.Type.POST_MIXING_HOOK):
+        assert_mixing_hook(key, value);
+        parsed.post_mixing_hook = value;
         break;
-      case (OptionType.OMITS):
-        assert_omits(value, mixin);
-        parsed.omits = value;
+      case (Option.Type.OMIT):
+        assert_omit(value, mixin);
+        parsed.omit = value;
         break;
     }
   });

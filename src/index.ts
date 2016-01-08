@@ -1,4 +1,4 @@
-import {parse_options} from './options';
+import {parse_imix_options} from './options';
 import {
   compose,
   diff_arrays,
@@ -13,7 +13,7 @@ const USAGE = (target?): string => {
   return `Expected non-null object or function, got ${target}`;
 };
 
-let mix = function(target, mixin: Object, options?: IMixOptions) {
+export var mix = function(target, mixin: Mixin, options?: MixOptions) {
   if (target === undefined) {
     throw new TypeError(USAGE());
   } else if (!(is_function(target) || is_object(target))) {
@@ -27,15 +27,14 @@ let mix = function(target, mixin: Object, options?: IMixOptions) {
   }
   let {
     pre_method_advice, post_method_advice,
-    pre_mixing_advice, post_mixing_advice,
-    omits,
-  } = parse_options(options, mixin);
-  let mixing_args = Array.prototype.splice.call(arguments, 3);
-  let mixing_keys = diff_arrays(Object.getOwnPropertyNames(mixin), omits);
+    pre_mixing_hook, post_mixing_hook,
+    omit,
+  } = parse_imix_options(options, mixin);
+  let mixing_keys = diff_arrays(Object.getOwnPropertyNames(mixin), omit);
   if (is_empty(mixing_keys)) {
     throw new Error('All mixin keys have been omitted!');
   }
-  pre_mixing_advice.apply(target, mixing_args);
+  pre_mixing_hook.apply(target);
   mixing_keys.forEach((key: string) => {
     if (pre_method_advice[key]) {
       let bound_advice = pre_method_advice[key].bind(target);
@@ -49,8 +48,6 @@ let mix = function(target, mixin: Object, options?: IMixOptions) {
       target[key] = mixin[key];
     }
   });
-  post_mixing_advice.apply(target, mixing_args);
+  post_mixing_hook.apply(target);
   return target;
 };
-
-export {mix};
