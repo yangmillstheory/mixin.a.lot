@@ -90,7 +90,7 @@ var pre_log = function(error) {
     return {level: level, serialized_error: serialized};
 };
 
-mixin_a_lot.mix(MyLogger, mixin, {
+mixin_a_lot.mix(MyLogger, logger, {
     pre_method_advice: {log: pre_log, ...}
 });
 
@@ -108,11 +108,13 @@ mixin_a_lot.mix(MyLogger.prototype, logger, {
 You can advise the mixing process.
 
 ```javascript
-mixin_a_lot.mix(MyLogger.prototype, mixin, {
+mixin_a_lot.mix(MyLogger.prototype, logger, {
     post_mixing_advice: function(arg1, arg2) {
-        // do something useful; finalize the mixing.
         // `this` points to Thing.prototype; additional
         // arguments can be specified variadically
+        if (!this.hasOwnProperty('logfilePath')) {
+          this.logfilePath = './logs/nodeserver.log';
+        }
     };
 }, 'arg1', 'arg2');
 ```
