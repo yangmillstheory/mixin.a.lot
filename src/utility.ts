@@ -1,3 +1,6 @@
+///////////////////
+// arrays & objects
+
 export var diff_arrays = (array1: any[], array2: any[]): any[] => {
   let diff = [];
   for (let value of array1) {
@@ -23,14 +26,18 @@ export var copy_object = (target, source) => {
   return target;
 };
 
+
+////////////////
+// type-checking
+
 export var is_function = (thing) => {
   return typeof thing === 'function';
 };
 
-// slightly modified from:
-// 
-//    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
 export var is_plain_object = (thing) => {
+  // slightly modified from:
+  // 
+  //    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
   let is_object_like = () => {
     return !!thing && typeof thing === 'object';
   };
@@ -64,6 +71,10 @@ export var is_string = (thing) => {
 export var is_empty = (thing: any[]) => {
   return thing.length === 0;
 };
+
+
+////////////
+// functions
 
 export var compose = (f: Function, g: Function): Function => {
   return function(...args) {
