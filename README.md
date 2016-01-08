@@ -15,7 +15,7 @@ You can run it in [node](https://nodejs.org/), or in the [browser](http://browse
 1. It has no dependencies
 2. You can use it without your protoype chain being mangled
 3. You can opt-out of some mixin functionality
-4. You can [advise](https://en.wikipedia.org/wiki/Advice_(programming) the mixing process
+4. You can [advise](https://en.wikipedia.org/wiki/Advice_(programming)) the mixing process
 3. You can advise individual mixin methods
 
 ## Install
