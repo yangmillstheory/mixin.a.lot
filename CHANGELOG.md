@@ -5,23 +5,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.0.0]
 ### BREAKING CHANGES
 
-Removed dependency on lodash.
+Removed dependency on [lodash](http://lodash.com/).
 
-To reduce complexity `mixin_a_lot.make_mixin(...)` has been removed; there's no reason for callers to hold onto a `Mixin`, since it provides
-no new material data or behavior beyond immutability, and this can easily be done with `Object.freeze(...)`.
+To reduce complexity, `mixin_a_lot.make_mixin(...)` has been removed. There's no reason for callers to hold onto a `Mixin`, since it provides
+no new material data or behavior beyond immutability, and that can already easily be done with `Object.freeze(...)`.
+
+`pre_mixing_hook`, `post_mixing_hook` have been moved completely to the mixin object, and are no longer specified via the options hash. 
+It makes sense to have this in the mixin since the primary use case is for initializing or finalizing the mixing based on the mix target.  
 
 New mix option aliases for `mixin_a_lot.mix(...)`:
 
-* `pre_method_advice` for `premixing_hook`, et. al.
-* `pre_mixing_advice` for `before_hook`, et. al.
-* `post_method_advice` for `postmixing_hook`, et. al.
-* `post_mixing_advice` for `after_hook`, et. al.
+* `pre_method_advice` for `before_hook`, et. al.
+* `pre_mixing_hook` for `premixing_hook`, et. al.
+* `post_method_advice` for `after_hook`, et. al.
+* `post_mixing_hook` for `postmixing_hook`, et. al.
 
 The signature of `mixin_a_lot.mix` has changed to take a plain JavaScript object instead of a `Mixin`:
 
     mixin_a_lot.mix(target: Object, mixin: Object, options?: Object, ...mixing_args?: any[]); 
     
-`pre_mixing_advice` and `post_mixing_advice` can no longer be specified on the mixin. For simplicity, it should only be specified on the `options` object.
+`pre_mixing_hook` and `post_mixing_hook` can no longer be specified on the mixin. For simplicity, it should only be specified on the `options` object.
 
 ## [3.0.1]
 ### BREAKING CHANGES
