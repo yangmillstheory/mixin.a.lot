@@ -1,14 +1,19 @@
 ///////////////////
 // arrays & objects
 
-export var diff_arrays = (array1: any[], array2: any[]): any[] => {
-  let diff = [];
-  for (let value of array1) {
-    if (array2.indexOf(value) === -1) {
-      diff.push(value);
+export var diff_arrays = (minuend: any[], ...subtrahends: (any[])[]): any[] => {
+  let diff_two_arrays = (a1: any[], a2: any[]): any[] => {
+    let diff = [];
+    for (let value of a1) {
+      if (a2.indexOf(value) === -1) {
+        diff.push(value);
+      }
     }
-  }
-  return diff;
+    return diff;
+  };
+  return subtrahends.reduce((diff_so_far, subtrahend) => {
+    return diff_two_arrays(diff_so_far, subtrahend);
+  }, minuend);
 };
 
 export var for_own = function(iteratee, iterator: (value, key: string) => void) {
