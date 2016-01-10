@@ -23,7 +23,7 @@ const DEFAULT_IMIX_OPTIONS: IMixOptions = {
   post_mixing_hook: NOOP,
 };
 
-let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
+let assert_method_advice = (key: string, advice: Object, mixin: Mixin): void => {
   if (!is_plain_object(advice)) {
     throw new TypeError(
       `${key}: expected dict of mixin methods to callbacks`);
@@ -37,7 +37,7 @@ let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
   });
 };
 
-let assert_mixing_hook = (key: string, hook): void => {
+let assert_mixing_hook = (key: string, hook: Function): void => {
   if (!is_function(hook)) {
     throw new TypeError(`Expected a function for ${key}`);
   }
