@@ -13,7 +13,7 @@ const USAGE = (target?): string => {
   return `Expected non-null object or function, got ${target}`;
 };
 
-export var mix = function(target, mixin: Mixin, options?: MixOptions) {
+export var mix = function(target, mixin: Mixin, options: MixOptions = {}) {
   if (target === undefined) {
     throw new TypeError(USAGE());
   } else if (!(is_function(target) || is_object(target))) {
@@ -21,9 +21,6 @@ export var mix = function(target, mixin: Mixin, options?: MixOptions) {
   }
   if (!is_plain_object(mixin)) {
     throw new TypeError('Expected mixin to be an object literal');
-  }
-  if (options === undefined) {
-    options = {};
   }
   let {
     pre_method_advice, post_method_advice,
@@ -38,7 +35,7 @@ export var mix = function(target, mixin: Mixin, options?: MixOptions) {
   if (is_empty(mixing_keys)) {
     throw new Error('All mixin keys have been omitted!');
   }
-  pre_mixing_hook.apply(target);
+  pre_mixing_hook.call(target);
   mixing_keys.forEach((key: string) => {
     if (pre_method_advice[key]) {
       let bound_advice = pre_method_advice[key].bind(target);
@@ -52,6 +49,6 @@ export var mix = function(target, mixin: Mixin, options?: MixOptions) {
       target[key] = mixin[key];
     }
   });
-  post_mixing_hook.apply(target);
+  post_mixing_hook.call(target);
   return target;
 };
