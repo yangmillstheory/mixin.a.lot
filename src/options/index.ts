@@ -5,7 +5,7 @@ import {
   is_function,
   is_empty,
   is_plain_object,
-  noop,
+  NOOP,
 } from '../utility';
 import {Option} from './types';
 
@@ -18,9 +18,9 @@ interface IMixOptions extends MixOptions, Mixin {}
 const DEFAULT_IMIX_OPTIONS: IMixOptions = {
   omit: [],
   pre_method_advice: {},
-  pre_mixing_hook: noop,
+  pre_mixing_hook: NOOP,
   post_method_advice: {},
-  post_mixing_hook: noop,
+  post_mixing_hook: NOOP,
 };
 
 let assert_method_advice = (key: string, advice, mixin: Mixin): void => {
