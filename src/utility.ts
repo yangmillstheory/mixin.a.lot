@@ -56,7 +56,7 @@ export var is_plain_object = (thing) => {
   if (is_function(thing.constructor)) {
     proto = Object.getPrototypeOf(thing);
   }
-  if (proto === null) {
+  if (!proto) {
     return true;
   }
   let func_to_string = Function.prototype.toString;
