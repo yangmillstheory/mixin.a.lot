@@ -31,12 +31,13 @@
     "node": ">=0.10.0"
   },
   "main": "dist/index.js",
-  "typings": "typings.d.ts",
+  "typings": "mixin-a-lot.d.ts",
   "files": [
     "dist/**/*.js",
-    "typings.d.ts",
+    "mixin-a-lot.d.ts",
     "LICENSE.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "README.md"
   ],
   "license": "MIT",
   "bugs": {
