@@ -15,13 +15,18 @@ You can run it in [node](https://nodejs.org/), or in the [browser](http://browse
 1. It has no dependencies.
 2. You can compose mixin methods with your own functions.
 3. You can advise the mixing process.
-4. You can use it without your protoype chain being mangled. 
-5. You can opt-out of some mixin functionality.
+4. You can opt-out of some mixin functionality.
 
 ## Install
 
 ```shell
 $ npm i mixin-a-lot
+```
+
+If you want type definitions
+
+```shell
+$ tsd link
 ```
     
 ## Usage & Examples
@@ -63,7 +68,7 @@ mixin_a_lot.mix(thing, logger);
 thing.log(...);
 ```
 
-A subset of mixin methods/properties can be omitted (but not all):
+Opt-out of some methods/properties:
 
 ```javascript
 let mixee = {
@@ -82,7 +87,7 @@ mixee.some_method // 'own implementation'
 
 You can compose against mixin methods; the context will always be the target.
 
-Return values are propagated when advising.
+Return values are propagated when composing.
 
 ```javascript
 // the return value from this hook is passed to logger.log
