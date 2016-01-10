@@ -32,6 +32,9 @@
   },
   "main": "dist/index.js",
   "typings": "mixin-a-lot.d.ts",
+  "typescript": {
+    "definition": "mixin-a-lot.d.ts"
+  },
   "files": [
     "dist/**/*.js",
     "mixin-a-lot.d.ts",
