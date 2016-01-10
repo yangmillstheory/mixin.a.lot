@@ -37,7 +37,7 @@ Import the module:
 import {mix} from 'mixin-a-lot';
 ```
 
-### Mixing
+#### Mixing
 
 A mixin is just a plain old JavaScript object. 
 
@@ -60,6 +60,7 @@ let logger = {
 ```
 
 Mix it into your object, function or prototype.
+
 ```javascript
 class MyLogger {};
 
@@ -78,11 +79,11 @@ mixin_a_lot.mix(thing, logger);
 thing.log(...);
 ```
 
-### Advising Mixin Behavior
+#### Advising Mixin Behavior
 
-You can pre/post-compose against mixin methods; the context will always be the target.
+Customize shared behavior.
 
-Return values are propagated when composing. Use it as an adapter:
+Return values are propagated when advising, so you can write adapters.
 
 ```javascript
 let myLogger = {};
@@ -110,9 +111,9 @@ myLogger.log(new IOError('error connecting to DB'));    // 'Default Logger: erro
 myLogger.log(null, 'request @ /user/:id from ${user}'); // 'Default Logger: info: request @ /user/:id from yangmillstheory'
 ```
 
-### Advising Mixing
+#### Advising Mixing
 
-You can also advise the mixing process via the mixin. It's a good chance to run validations or set default properties.
+This is a good chance to run validations or set default properties.
 
 ```javascript
 let myLogger = {};
@@ -130,7 +131,7 @@ logger.post_mixing_hook = function(target) {
 mixin_a_lot.mix(myLogger, logger);
 ```
 
-### Opting out
+#### Opting out
 
 You want some shared data or behavior, but not all of it.
 
@@ -150,7 +151,7 @@ Given
 import {mix} from 'mixin-a-lot';
 ```
 
-### <a name="mix"></a> mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
+#### <a name="mix"></a> mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
 
 Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with
 
