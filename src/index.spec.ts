@@ -66,14 +66,15 @@ describe('mixing', () => {
 
     describe('pre_mixing_hook', () => {
 
-      it('should call it on the target', () => {
+      it('should call it on the mixin with the target as a parameter', () => {
         let target = {};
         let mixin = default_mixin({
           pre_mixing_hook: spy()
         });
         mix(target, mixin);
 
-        expect(mixin.pre_mixing_hook.calledOn(target)).to.be.true;
+        expect(mixin.pre_mixing_hook.calledOn(mixin)).to.be.true;
+        expect(mixin.pre_mixing_hook.calledWithExactly(target)).to.be.true;
       });
 
       it('should call it before mixing in', () => {
@@ -111,14 +112,15 @@ describe('mixing', () => {
 
     describe('post_mixing_hook', () => {
 
-      it('should call it on the target', () => {
+      it('should call it on the mixin with the target as a parameter', () => {
         let target = {};
         let mixin = default_mixin({
           post_mixing_hook: spy()
         });
         mix(target, mixin);
 
-        expect(mixin.post_mixing_hook.calledOn(target)).to.be.true;
+        expect(mixin.post_mixing_hook.calledOn(mixin)).to.be.true;
+        expect(mixin.post_mixing_hook.calledWithExactly(target)).to.be.true;
       });
 
       it('should call it after mixing in', () => {

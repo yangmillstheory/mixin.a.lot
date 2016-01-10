@@ -35,7 +35,7 @@ export var mix = function(target, mixin: Mixin, options: MixOptions = {}) {
   if (is_empty(mixing_keys)) {
     throw new Error('All mixin keys have been omitted!');
   }
-  pre_mixing_hook.call(target);
+  pre_mixing_hook.call(mixin, target);
   mixing_keys.forEach((key: string) => {
     if (pre_method_advice[key]) {
       let bound_advice = pre_method_advice[key].bind(target);
@@ -49,6 +49,6 @@ export var mix = function(target, mixin: Mixin, options: MixOptions = {}) {
       target[key] = mixin[key];
     }
   });
-  post_mixing_hook.call(target);
+  post_mixing_hook.call(mixin, target);
   return target;
 };
