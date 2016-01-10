@@ -30,7 +30,11 @@ export var mix = function(target, mixin: Mixin, options?: MixOptions) {
     pre_mixing_hook, post_mixing_hook,
     omit,
   } = parse_imix_options(options, mixin);
-  let mixing_keys = diff_arrays(Object.getOwnPropertyNames(mixin), omit);
+  let mixing_keys = diff_arrays(
+    Object.getOwnPropertyNames(mixin).filter(key => {
+      return (mixin[key] !== pre_mixing_hook) && (mixin[key] !== post_mixing_hook);
+    }),
+    omit);
   if (is_empty(mixing_keys)) {
     throw new Error('All mixin keys have been omitted!');
   }
