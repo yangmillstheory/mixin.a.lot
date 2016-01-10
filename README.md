@@ -41,12 +41,17 @@ A mixin is just a plain old JavaScript object.
 
 ```javascript
 let logger = {
-    logname: null,
-    log: function(log_object) {
-        ...
-    },
+  logname: 'default_logger',
+  logdir: '/logs/',
+  log: function(log_event) {
+    let {level, message} = log_event;
+    if (level === 'info') {
+      this.inf_log.write(this.logname + ':' + level + ':' + message);
+    } else if (level === 'error') {
+      this.err_log.write(this.logname + ':' + level + ':' + message); 
+    }
+  },
 };
-
 ```
 
 Mix it into your object, function or prototype.
@@ -71,51 +76,41 @@ thing.log(...);
 Opt-out of some methods/properties:
 
 ```javascript
-let mixee = {
-  ...,
-  some_method: function() {
-    console.log('own implementation');
-  },
-  ...
-};
-
 mixin_a_lot.mix(mixee, mixin, {
-  omit: ['some_method']
+  omit: ['method1', 'method2']
 });
-mixee.some_method // 'own implementation'
+mixee.method1 // undefined
+mixee.method2 // undefined
 ```
 
-You can compose against mixin methods; the context will always be the target.
+You can pre/post-compose against mixin methods; the context will always be the target.
 
-Return values are propagated when composing.
+Return values are propagated when composing. Use it as an adapter:
 
 ```javascript
-// the return value from this hook is passed to logger.log
+let myLogger = {};
+
+// the return value is passed to logger.log
 // 'this' is the MyLogger function.
-let pre_log = function(message, error) {
+let pre_log = function(error, message) {
   let level;
-  if (error instanceof CriticalError) {
-    level = 'critical';
-  } else if (error instanceof SyntaxError) {
+  if (!error) {
+    level = 'info';
+  } else if (error instanceof IOError) {
     level = 'error';
-  } ...
-  return {level: level, message: message, error: error};
-};
-
-mixin_a_lot.mix(MyLogger, logger, {
-    pre_method_advice: {log: pre_log, ...}
-});
-
-// return value from logger.log is passed;
-// 'this' is a MyLogger instance now
-let post_log = function(log_return_value) {
-  // do something with the return value of .log()
+    message = message || error.message;
+  }
+  return {level, message};
 };
 
 mixin_a_lot.mix(MyLogger.prototype, logger, {
-  pre_method_advice: {log: pre_log},
-  post_method_advice: {log: post_log},
+  pre_method_advice: {
+    log: pre_log,
+  },
 });
+
+myLogger.log(new IOError('error connecting to DB'));    // 'Default Logger: error: error connecting to DB' 
+myLogger.log(null, 'request @ /user/:id from ${user}'); // 'Default Logger: info: request @ /user/:id from yangmillstheory'
 ```
 
 You can also advise the mixing process via the mixin. It's a good chance to run validations or set default properties.
@@ -123,22 +118,22 @@ You can also advise the mixing process via the mixin. It's a good chance to run 
 
 ```javascript
 let myLogger = {};
- 
+
 logger.pre_mixing_hook = function() {
-  if (!this.logname) {
-    this.logname = 'Default Logger';
+  if (typeof this.logname !== 'string') {
+    throw new TypeError(`Expected string logname; got ${this.logname}`);
   }
 };
 
 logger.post_mixing_hook = function() {
-  if (!this.logfile_path) {
-    this.logfile_path = './logs/nodeserver.log';
-  }
+  this.err_log = `this.logdir/${this.logname}.err`;
+  this.inf_log = `this.logdir/${this.logname}.log`;
 };
 
-mixin_a_lot.mix(myLogger, logger);
+mixin_a_lot.mix(MyLogger.prototype, logger);
 
-myLogger.log('Hello, World!'); // logs 'Default Logger: Hello, World!' to ./logs/nodeserver.log
+myLogger.err_log // /logs/default_logger.err
+myLogger.inf_log // /logs/default_logger.log
 ```
 
 ## API
