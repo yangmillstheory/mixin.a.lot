@@ -1,4 +1,4 @@
- # mixin.a.lot
+# mixin.a.lot
 
 [![Build Status](https://travis-ci.org/yangmillstheory/mixin.a.lot.svg?branch=master)](https://travis-ci.org/yangmillstheory/mixin.a.lot)
 
