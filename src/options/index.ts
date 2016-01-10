@@ -53,29 +53,17 @@ let assert_omit = (omit: string[], mixin: Mixin): void => {
   }
 };
 
-export var parse_imix_options = (options: Object, mixin: Mixin): IMixOptions => {
-  if (!is_plain_object(options)) {
-    throw new TypeError('Expected options dictionary');
-  }
-  let parsed: IMixOptions = copy_object({}, DEFAULT_IMIX_OPTIONS);
-  let mixing_data = copy_object({}, options, mixin);
-  for_own(mixing_data, (value, key: string) => {
+let parse_inline_options = (mixin: Mixin, options: Object,
+                            parsed: IMixOptions): void => {
+  for_own(options, (value, key: string) => {
     switch (Option.from_key(key)) {
       case (Option.Type.PRE_METHOD_ADVICE):
         assert_method_advice(key, value, mixin);
         parsed.pre_method_advice = value;
         break;
-      case (Option.Type.PRE_MIXING_HOOK):
-        assert_mixing_hook(key, value);
-        parsed.pre_mixing_hook = value;
-        break;
       case (Option.Type.POST_METHOD_ADVICE):
         assert_method_advice(key, value, mixin);
         parsed.post_method_advice = value;
-        break;
-      case (Option.Type.POST_MIXING_HOOK):
-        assert_mixing_hook(key, value);
-        parsed.post_mixing_hook = value;
         break;
       case (Option.Type.OMIT):
         assert_omit(value, mixin);
@@ -83,5 +71,29 @@ export var parse_imix_options = (options: Object, mixin: Mixin): IMixOptions => 
         break;
     }
   });
+};
+
+let parse_mixins_options = (mixin: Mixin, parsed: IMixOptions): void => {
+  for_own(mixin, (value, key: string) => {
+    switch (Option.from_key(key)) {
+      case (Option.Type.PRE_MIXING_HOOK):
+        assert_mixing_hook(key, value);
+        parsed.pre_mixing_hook = value;
+        break;
+      case (Option.Type.POST_MIXING_HOOK):
+        assert_mixing_hook(key, value);
+        parsed.post_mixing_hook = value;
+        break;
+    }
+  });
+};
+
+export var parse_imix_options = (options: Object, mixin: Mixin): IMixOptions => {
+  if (!is_plain_object(options)) {
+    throw new TypeError('Expected options dictionary');
+  }
+  let parsed: IMixOptions = copy_object({}, DEFAULT_IMIX_OPTIONS);
+  parse_inline_options(mixin, options, parsed);
+  parse_mixins_options(mixin, parsed);
   return parsed;
 };
