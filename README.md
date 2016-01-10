@@ -52,6 +52,8 @@ let logger = {
       fs.writeFile(this.inf_log, this.logname + ':' + level + ':' + message);
     } else if (level === 'error') {
       fs.writeFile(this.err_log, this.logname + ':' + level + ':' + message); 
+    } else {
+      throw new Error('Expected info or error level, got ' + level);
     }
   },
 };
