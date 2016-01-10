@@ -35,7 +35,7 @@ import {mix} from 'mixin-a-lot';
 A mixin is just a plain old JavaScript object. 
 
 ```javascript
-let acts_as_logger = {
+let logger = {
     logname: null,
     log: function(log_object) {
         ...
@@ -49,17 +49,17 @@ Mix it into your object, function or prototype.
 class MyLogger {};
 
 // mix into the Function
-mixin_a_lot.mix(MyLogger, acts_as_logger);
+mixin_a_lot.mix(MyLogger, logger);
 MyLogger.log(...);
 
 // or mix into the prototype
-mixin_a_lot.mix(MyLogger.prototype, acts_as_logger);
+mixin_a_lot.mix(MyLogger.prototype, logger);
 let myLogger = new MyLogger
 myLogger.log(...);
 
 // or mix into a random object
 let thing = {...};
-mixin_a_lot.mix(thing, acts_as_logger);
+mixin_a_lot.mix(thing, logger);
 thing.log(...);
 ```
 
@@ -97,17 +97,17 @@ let pre_log = function(message, error) {
   return {level: level, message: message, error: error};
 };
 
-mixin_a_lot.mix(MyLogger, acts_as_logger, {
+mixin_a_lot.mix(MyLogger, logger, {
     pre_method_advice: {log: pre_log, ...}
 });
 
-// return value from acts_as_logger.log is passed;
+// return value from logger.log is passed;
 // 'this' is a MyLogger instance now
 let post_log = function(log_return_value) {
   // do something with the return value of .log()
 };
 
-mixin_a_lot.mix(MyLogger.prototype, acts_as_logger, {
+mixin_a_lot.mix(MyLogger.prototype, logger, {
   pre_method_advice: {log: pre_log},
   post_method_advice: {log: post_log},
 });
@@ -119,19 +119,19 @@ You can also advise the mixing process via the mixin. It's a good chance to run 
 ```javascript
 let myLogger = {};
  
-acts_as_logger.pre_mixing_hook = function() {
+logger.pre_mixing_hook = function() {
   if (!this.logname) {
     this.logname = 'Default Logger';
   }
 };
 
-acts_as_logger.post_mixing_hook = function() {
+logger.post_mixing_hook = function() {
   if (!this.logfile_path) {
     this.logfile_path = './logs/nodeserver.log';
   }
 };
 
-mixin_a_lot.mix(myLogger, acts_as_logger);
+mixin_a_lot.mix(myLogger, logger);
 
 myLogger.log('Hello, World!'); // logs 'Default Logger: Hello, World!' to ./logs/nodeserver.log
 ```
