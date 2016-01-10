@@ -126,4 +126,4 @@ gulp.task('watch', function() {
 
 gulp.task('dev', gulp.series('compile', 'lint', 'watch'));
 
-gulp.task('build', gulp.series(gulp.parallel('clean', 'compile'), 'lint'));
+gulp.task('build', gulp.series('clean', 'compile', 'lint'));
