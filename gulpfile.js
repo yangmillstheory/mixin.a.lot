@@ -108,7 +108,7 @@ gulp.task('clean', function(done) {
 // test
 gulp.task('test', function() {
   return gulp.src(BUILD.spec())
-    .pipe(mocha({reporter: 'dot', ui: 'bdd'}));
+    .pipe(mocha({ui: 'bdd'}));
 });
 
 gulp.task('lint', gulp.parallel('lint:ts', 'lint:spec'));
