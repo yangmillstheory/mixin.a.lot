@@ -116,7 +116,12 @@ myLogger.log(null, 'request @ /user/:id from ${user}'); // 'Default Logger: info
 This is a good chance to run validations or set default properties.
 
 ```javascript
-let myLogger = {};
+// mixins/logger.js
+let loggers = [];
+
+let logger = {
+  // ...
+};
 
 logger.pre_mixing_hook = function() {
   if (typeof this.logname !== 'string') {
@@ -125,10 +130,9 @@ logger.pre_mixing_hook = function() {
 };
 
 logger.post_mixing_hook = function(target) {
-  this.loggers.push(target);
+  // track the target
+  loggers.push(target);
 };
-
-mixin_a_lot.mix(myLogger, logger);
 ```
 
 #### Opting out
