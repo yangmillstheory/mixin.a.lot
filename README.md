@@ -128,9 +128,9 @@ logger.post_mixing_hook = function(target) {
 mixin_a_lot.mix(myLogger, logger);
 ```
 
-### Opting out of shared data/behavior
+### Opting out
 
-Opt-out of some methods/properties:
+You want some shared data or behavior, but not all of it.
 
 ```javascript
 mixin_a_lot.mix(mixee, mixin, {
