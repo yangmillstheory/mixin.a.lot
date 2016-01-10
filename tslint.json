@@ -2,7 +2,7 @@
   "rules": {
     "align": [
       true,
-      "arguments",
+      "parameters",
       "statements"
     ],
     "ban": false,
