@@ -149,13 +149,7 @@ mixee.method2 // undefined
 
 ## API
 
-Given
-
-```javascript
-import {mix} from 'mixin-a-lot';
-```
-
-#### <a name="mix"></a> mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
+#### <a name="mix"></a>mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
 
 Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with
 
