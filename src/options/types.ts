@@ -68,7 +68,7 @@ export var Option = {
     } else if (specifies_option(OMITS_KEY)) {
       return OptionType.OMIT;
     } else {
-      return undefined;
+      return null;
     }
   },
 
