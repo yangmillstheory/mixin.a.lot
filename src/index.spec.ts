@@ -1,4 +1,3 @@
-import {noop} from './utility';
 import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import {mix} from './index';
@@ -7,14 +6,14 @@ import {default_mixin} from './spec-utils';
 describe('mixing', () => {
 
   it('should expect plain old javascript objects', () => {
-    [1, 'String', [], noop].forEach(thing => {
+    [1, 'String', [], new Function()].forEach(thing => {
       expect(() => {
         mix({}, thing);
       }).to.throw(TypeError, 'Expected mixin to be an object literal');
     });
   });
 
-  it('should expect valid targets', () => {
+  it('should objects or function targets', () => {
     [1, 'string', true, null, undefined].forEach(target => {
       expect(() => {
         mix(target, default_mixin());
@@ -23,8 +22,6 @@ describe('mixing', () => {
   });
 
   it('should mix into the target', () => {
-    // need to stub the mixin spec;
-    // it's tough to stub the mixin since it's immutable
     let target = {};
     let mixin = default_mixin();
     stub(mixin, 'baz').returns(['baz']);
@@ -35,7 +32,7 @@ describe('mixing', () => {
     expect(target.baz()).to.deep.equal(['baz']);
   });
 
-  it('should be order-dependent', () => {
+  it('should mix in order', () => {
     let mixin_1 = {name: 'mixin_1', foo: 'bar1', baz: 'qux'};
     let mixin_2 = {name: 'mixin_2', foo: 'bar2', qux: 'baz'};
     let target = {};
@@ -50,88 +47,109 @@ describe('mixing', () => {
 
   describe('mixing advice', () => {
 
-    beforeEach(() => {
-      this.mixin = default_mixin();
-    });
-
     it('should expect functions as mixing advice', () => {
-      this.mixin.pre_mixing_hook = 1;
+      let mixin = default_mixin();
+      mixin.pre_mixing_hook = 1;
 
       expect(() => {
-        mix({}, this.mixin);
+        mix({}, mixin);
       }).to.throw(TypeError, 'Expected a function for pre_mixing_hook');
 
-      delete this.mixin.pre_mixing_hook;
-      this.mixin.post_mixing_hook = [];
+      mixin = default_mixin({
+        post_mixing_hook: []
+      });
 
       expect(() => {
-        mix({}, this.mixin);
+        mix({}, mixin);
       }).to.throw(TypeError, 'Expected a function for post_mixing_hook');
     });
 
     describe('pre_mixing_hook', () => {
 
-      it('should call an options pre-mixing advice on the target', () => {
-        let mix_opts = {pre_mixing_hook: noop};
-        spy(mix_opts, 'pre_mixing_hook');
-
+      it('should call it on the target', () => {
         let target = {};
-        mix(target, this.mixin, mix_opts);
+        let mixin = default_mixin({
+          pre_mixing_hook: spy()
+        });
+        mix(target, mixin);
 
-        expect(mix_opts.pre_mixing_hook.calledOn(target)).to.be.ok;
+        expect(mixin.pre_mixing_hook.calledOn(target)).to.be.true;
       });
 
-      it('should call an options pre-mixing advice before mixing in', () => {
-        let mix_opts = {pre_mixing_hook: noop};
+      it('should call it before mixing in', () => {
         let error = new Error;
         let threw = false;
         let target = {};
+        let pre_mixing_hook = stub();
+        pre_mixing_hook.throws(error);
 
-        stub(mix_opts, 'pre_mixing_hook').throws(error);
-        expect(this.mixin.foo).to.exist;
+        let mixin = default_mixin({pre_mixing_hook});
+        expect(mixin.foo).to.exist;
 
         try {
-          mix(target, this.mixin, mix_opts);
+          mix(target, mixin);
         } catch (e) {
           threw = true;
         } finally {
-          expect(threw).to.be.ok;
+          expect(threw).to.be.true;
           expect(target.foo).not.to.exist; // wasn't mixed in!
         }
+      });
+
+      it('should not mix it into the target', () => {
+        let target = {};
+        let mixin = default_mixin({
+          pre_mixing_hook: new Function()
+        });
+
+        mix(target, mixin);
+
+        expect(target.pre_mixing_hook).to.be.undefined;
       });
 
     });
 
     describe('post_mixing_hook', () => {
 
-      it('should call an options post-mixing advice on the target', () => {
-        let mix_opts = {post_mixing_hook: noop};
-        spy(mix_opts, 'post_mixing_hook');
-
+      it('should call it on the target', () => {
         let target = {};
-        mix(target, this.mixin, mix_opts);
+        let mixin = default_mixin({
+          post_mixing_hook: spy()
+        });
+        mix(target, mixin);
 
-        expect(mix_opts.post_mixing_hook.calledOn(target)).to.be.ok;
+        expect(mixin.post_mixing_hook.calledOn(target)).to.be.true;
       });
 
-      it('should call an options post-mixing advice after mixing in', () => {
-        let mix_opts = {post_mixing_hook: noop};
+      it('should call it after mixing in', () => {
         let error = new Error;
         let threw = false;
-
-        stub(mix_opts, 'post_mixing_hook').throws(error);
-        expect(this.mixin.bar).to.equal(1);
-
         let target = {};
+        let post_mixing_hook = stub();
+        post_mixing_hook.throws(error);
+
+        let mixin = default_mixin({post_mixing_hook});
+        expect(mixin.bar).to.equal(1);
 
         try {
-          mix(target, this.mixin, mix_opts, 'arg1', 'arg2');
+          mix(target, mixin);
         } catch (e) {
           threw = true;
         } finally {
-          expect(threw).to.be.ok;
-          expect(target.bar).to.equal(1);
+          expect(threw).to.be.true;
+          expect(target.bar).to.equal(1); // was mixed in before throwing
         }
+      });
+
+      it('should not mix it into the target', () => {
+        let target = {};
+        let mixin = default_mixin({
+          post_mixing_hook: new Function()
+        });
+
+        mix(target, mixin);
+
+        expect(target.post_mixing_hook).to.be.undefined;
       });
 
     });
@@ -207,7 +225,7 @@ describe('mixing', () => {
           {method_1: 1},
           {
             method_1: true,
-            method_2: noop,
+            method_2: new Function(),
           },
           {method_1: null},
           {method_1: 'string'},
@@ -222,16 +240,16 @@ describe('mixing', () => {
         [
           {
             pre_method_advice: {
-              baz: noop,    // valid method
-              non_existent_method_1: noop,  // invalid
-              non_existent_method_2: noop,  // invalid
+              baz: new Function(),    // valid method
+              non_existent_method_1: new Function(),  // invalid
+              non_existent_method_2: new Function(),  // invalid
             },
             not_in_mixin: 'non_existent_method_1',
           },
           {
             pre_method_advice: {
-              baz: noop, // valid method
-              foo: noop, // non-method property
+              baz: new Function(), // valid method
+              foo: new Function(), // non-method property
             },
             not_in_mixin: 'foo',
           },
@@ -261,7 +279,7 @@ describe('mixing', () => {
         mix(target, this.mixin, options);
 
         expect(target.baz()).to.deep.equal(['before_baz']);
-        expect(options.pre_method_advice.baz.calledOn(target)).to.be.ok;
+        expect(options.pre_method_advice.baz.calledOn(target)).to.be.true;
       });
 
       it('should call post_method_advice after the method on the target', () => {
@@ -282,7 +300,7 @@ describe('mixing', () => {
         mix(target, this.mixin, options);
 
         expect(target.baz()).to.deep.equal(['baz', 'after_baz']);
-        expect(options.post_method_advice.baz.calledOn(target)).to.be.ok;
+        expect(options.post_method_advice.baz.calledOn(target)).to.be.true;
       });
 
     });
