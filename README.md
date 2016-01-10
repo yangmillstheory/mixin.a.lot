@@ -6,14 +6,14 @@
 
 ## What is it?
 
-A small composable JavaScript mixin API.
+A small aspect-oriented JavaScript mixin API.
 
 You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
 
 ## Why use it?
 
 1. It has no dependencies.
-2. You can compose mixin methods with your own functions.
+2. You can advise mixin methods with your own functions.
 3. You can advise the mixing process.
 4. You can opt-out of some mixin functionality.
 
@@ -29,7 +29,7 @@ If you want type definitions
 $ tsd link
 ```
     
-## Usage & Examples
+## Examples
 
 Import the module:
 
@@ -37,18 +37,21 @@ Import the module:
 import {mix} from 'mixin-a-lot';
 ```
 
+### Mixing
+
 A mixin is just a plain old JavaScript object. 
 
 ```javascript
 let logger = {
-  logname: 'default_logger',
-  logdir: '/logs/',
+  logname: null,
+  err_log: '/logs/app.err',
+  inf_log: '/logs/app.log',
   log: function(log_event) {
     let {level, message} = log_event;
     if (level === 'info') {
-      this.inf_log.write(this.logname + ':' + level + ':' + message);
+      fs.writeFile(this.inf_log, this.logname + ':' + level + ':' + message);
     } else if (level === 'error') {
-      this.err_log.write(this.logname + ':' + level + ':' + message); 
+      fs.writeFile(this.err_log, this.logname + ':' + level + ':' + message); 
     }
   },
 };
@@ -58,11 +61,11 @@ Mix it into your object, function or prototype.
 ```javascript
 class MyLogger {};
 
-// mix into the Function
+// mix into a Function
 mixin_a_lot.mix(MyLogger, logger);
 MyLogger.log(...);
 
-// or mix into the prototype
+// or mix into its prototype
 mixin_a_lot.mix(MyLogger.prototype, logger);
 let myLogger = new MyLogger
 myLogger.log(...);
@@ -73,15 +76,7 @@ mixin_a_lot.mix(thing, logger);
 thing.log(...);
 ```
 
-Opt-out of some methods/properties:
-
-```javascript
-mixin_a_lot.mix(mixee, mixin, {
-  omit: ['method1', 'method2']
-});
-mixee.method1 // undefined
-mixee.method2 // undefined
-```
+### Advising Mixin Behavior
 
 You can pre/post-compose against mixin methods; the context will always be the target.
 
@@ -113,27 +108,36 @@ myLogger.log(new IOError('error connecting to DB'));    // 'Default Logger: erro
 myLogger.log(null, 'request @ /user/:id from ${user}'); // 'Default Logger: info: request @ /user/:id from yangmillstheory'
 ```
 
-You can also advise the mixing process via the mixin. It's a good chance to run validations or set default properties.
+### Advising Mixing
 
+You can also advise the mixing process via the mixin. It's a good chance to run validations or set default properties.
 
 ```javascript
 let myLogger = {};
 
 logger.pre_mixing_hook = function() {
   if (typeof this.logname !== 'string') {
-    throw new TypeError(`Expected string logname; got ${this.logname}`);
+    throw new TypeError('Expected string logname; got ' + this.logname);
   }
 };
 
-logger.post_mixing_hook = function() {
-  this.err_log = `this.logdir/${this.logname}.err`;
-  this.inf_log = `this.logdir/${this.logname}.log`;
+logger.post_mixing_hook = function(target) {
+  this.loggers.push(target);
 };
 
-mixin_a_lot.mix(MyLogger.prototype, logger);
+mixin_a_lot.mix(myLogger, logger);
+```
 
-myLogger.err_log // /logs/default_logger.err
-myLogger.inf_log // /logs/default_logger.log
+### Opting out of shared data/behavior
+
+Opt-out of some methods/properties:
+
+```javascript
+mixin_a_lot.mix(mixee, mixin, {
+  omit: ['method1', 'method2']
+});
+mixee.method1 // undefined
+mixee.method2 // undefined
 ```
 
 ## API
@@ -149,11 +153,11 @@ import {mix} from 'mixin-a-lot';
 Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with
 
 * `omit`: `Array` of `Strings` which are properties of `mixin` to exclude from mixing
-* `pre_method_advice`, `post_method_advice`: object literal mapping mixin method names to callbacks, which are invoked before or after the mixin method on `target`
+* `pre_method_advice`, `post_method_advice`: a map of mixin method names to callbacks, invoked before or after the mixin method on `target`
 
 `mixin` can have special properties
 
-* `pre_mixing_hook`, `post_mixing_hook`: callbacks that fire before and after the mixing process
+* `pre_mixing_hook`, `post_mixing_hook`: callbacks invoked before or after the mixing process with `target` as the argument
 
 These properties will not be copied into `target`.
 
