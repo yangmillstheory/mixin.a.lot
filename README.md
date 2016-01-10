@@ -1,4 +1,4 @@
-# mixin.a.lot
+ # mixin.a.lot
 
 [![Build Status](https://travis-ci.org/yangmillstheory/mixin.a.lot.svg?branch=master)](https://travis-ci.org/yangmillstheory/mixin.a.lot)
 
@@ -6,34 +6,36 @@
 
 ## What is it?
 
-An [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin library implemented in [TypeScript](http://www.typescriptlang.org/) with no runtime dependencies.
+A small [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin api implemented in [TypeScript](http://www.typescriptlang.org/) with no runtime dependencies.
 
 You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
 
 ## Why use it?
 
-1. It has no dependencies
-2. You can use it without your protoype chain being mangled
-3. You can opt-out of some mixin functionality
-4. You can [advise](https://en.wikipedia.org/wiki/Advice_(programming)) the mixing process
-3. You can advise individual mixin methods
+1. It has no dependencies.
+2. You can compose mixin methods with your own functions.
+3. You can use it without your protoype chain being mangled. 
+4. You can opt-out of some mixin functionality .
+3. You can advise the mixing process.
 
 ## Install
 
-    $ npm install mixin-a-lot
+```shell
+$ npm i mixin-a-lot
+```
     
 ## Usage & Examples
 
 Import the module:
 
 ```javascript
-var mixin_a_lot = require('mixin-a-lot');
+import {mix} from 'mixin-a-lot';
 ```
 
 A mixin is just a plain old JavaScript object. 
 
 ```javascript
-var acts_as_logger = {
+let acts_as_logger = {
     logname: null,
     log: function(log_object) {
         ...
@@ -41,11 +43,10 @@ var acts_as_logger = {
 };
 
 ```
-(You don't actually need to hold onto it; it's just useful for the exposition here.)
 
-Mix it into your object, function or function prototype.
+Mix it into your object, function or prototype.
 ```javascript
-var MyLogger = function() {};
+class MyLogger {};
 
 // mix into the Function
 mixin_a_lot.mix(MyLogger, acts_as_logger);
@@ -53,11 +54,11 @@ MyLogger.log(...);
 
 // or mix into the prototype
 mixin_a_lot.mix(MyLogger.prototype, acts_as_logger);
-var myLogger = new MyLogger
+let myLogger = new MyLogger
 myLogger.log(...);
 
 // or mix into a random object
-var thing = {...};
+let thing = {...};
 mixin_a_lot.mix(thing, acts_as_logger);
 thing.log(...);
 ```
@@ -65,23 +66,30 @@ thing.log(...);
 A subset of mixin methods/properties can be omitted (but not all):
 
 ```javascript
-var mixee = {...};
-mixin_a_lot.mix(mixee, acts_as_logger, {
+let mixee = {
+  ...,
+  some_method: function() {
+    console.log('own implementation');
+  },
+  ...
+};
+
+mixin_a_lot.mix(mixee, mixin, {
   omit: ['some_method']
 });
-mixee.some_method // undefined
+mixee.some_method // 'own implementation'
 ```
 
-You can [advise](https://en.wikipedia.org/wiki/Advice_(programming)) any mixin method. It'll always be called on the target context.
+You can compose against mixin methods; the context will always be the target.
 
-Return values are propagated accordingly when advising:
+Return values are propagated when advising.
 
 ```javascript
 // the return value from this hook is passed to logger.log
 // 'this' is the MyLogger function.
-var pre_log = function(message, error) {
-  var level, serialized;
-  if (error instanceof Critical) {
+let pre_log = function(message, error) {
+  let level;
+  if (error instanceof CriticalError) {
     level = 'critical';
   } else if (error instanceof SyntaxError) {
     level = 'error';
@@ -93,22 +101,23 @@ mixin_a_lot.mix(MyLogger, acts_as_logger, {
     pre_method_advice: {log: pre_log, ...}
 });
 
-// return value from log is passed here;
+// return value from acts_as_logger.log is passed;
 // 'this' is a MyLogger instance now
-var post_log = function(log_return_value) {
+let post_log = function(log_return_value) {
   // do something with the return value of .log()
 };
 
 mixin_a_lot.mix(MyLogger.prototype, acts_as_logger, {
-  post_method_advice: {log: post_log}
+  pre_method_advice: {log: pre_log},
+  post_method_advice: {log: post_log},
 });
 ```
 
-You can advise the mixing process via the mixin.
+You can also advise the mixing process via the mixin. It's a good chance to run validations or set default properties.
 
 
 ```javascript
-var myLogger = {};
+let myLogger = {};
  
 acts_as_logger.pre_mixing_hook = function() {
   if (!this.logname) {
@@ -129,19 +138,25 @@ myLogger.log('Hello, World!'); // logs 'Default Logger: Hello, World!' to ./logs
 
 ## API
 
-Given the following setup:
+Given
 
 ```javascript
-var m = require('mixin-a-lot');
+import {mix} from 'mixin-a-lot';
 ```
 
-### <a name="mix"></a> m.mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
+### <a name="mix"></a> mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
 
-Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with:
+Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with
 
 * `omit`: `Array` of `Strings` which are properties of `mixin` to exclude from mixing
 * `pre_method_advice`, `post_method_advice`: object literal mapping mixin method names to callbacks, which are invoked before or after the mixin method on `target`
-* `pre_mixing_hook`, `post_mixing_hook`: callbacks that fire before and after the mixing process, specified as functions on `mixin`
+
+`mixin` can have special properties
+
+* `pre_mixing_hook`, `post_mixing_hook`: callbacks that fire before and after the mixing process
+
+These properties will not be copied into `target`.
+
 
 ## Development
 
@@ -149,7 +164,7 @@ Mix own properties from `mixin` into `target`, which should be a non-null `Objec
 
 Get the source:
 
-    $ git clone git@github.com:yangmillstheory/mixin.a.lot.git
+    $ git clone git@github.com:username/mixin.a.lot.git
 
 Install dependencies:
 
@@ -163,6 +178,7 @@ Develop (watch for changes and execute tests):
 To see all the available tasks:
 
     $ ./node_modules/.bin/gulp -T
+
 
 ## License
 
