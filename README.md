@@ -6,7 +6,7 @@
 
 ## What is it?
 
-A small [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin api implemented in [TypeScript](http://www.typescriptlang.org/) with no runtime dependencies.
+A small composable JavaScript mixin API.
 
 You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
 
@@ -14,9 +14,9 @@ You can run it in [node](https://nodejs.org/), or in the [browser](http://browse
 
 1. It has no dependencies.
 2. You can compose mixin methods with your own functions.
-3. You can use it without your protoype chain being mangled. 
-4. You can opt-out of some mixin functionality .
 3. You can advise the mixing process.
+4. You can use it without your protoype chain being mangled. 
+5. You can opt-out of some mixin functionality.
 
 ## Install
 
