@@ -37,6 +37,7 @@
   },
   "files": [
     "dist/**/*.js",
+    "!dist/spec-utils.js",
     "mixin-a-lot.d.ts",
     "LICENSE.md",
     "CHANGELOG.md",
