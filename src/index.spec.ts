@@ -2,6 +2,7 @@ import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import {mix} from './index';
 import {logger_mixin} from './spec-utils';
+import {is_string} from './utility';
 
 describe('mixing', () => {
 
@@ -76,17 +77,27 @@ describe('mixing', () => {
     describe('pre_mixing_hook', () => {
 
       it('should call it on the mixin with the target as a parameter', () => {
-        let target = {};
+        let mixee = {logname: 1};
         let mixin = logger_mixin({
-          pre_mixing_hook: spy()
+          pre_mixing_hook(target) {
+            if (!is_string(target.logname)) {
+              throw new TypeError(`Expected string logname; got ${target.logname}`);
+            }
+          },
         });
-        mix(target, mixin);
+        spy(mixin, 'pre_mixing_hook');
+
+        expect(() => {
+          mix(mixee, mixin);
+        }).to.throw(`Expected string logname; got 1`);
 
         expect(mixin.pre_mixing_hook.calledOn(mixin)).to.be.true;
-        expect(mixin.pre_mixing_hook.calledWithExactly(target)).to.be.true;
+        expect(mixin.pre_mixing_hook.calledWithExactly(mixee)).to.be.true;
+        expect(mixee.log).not.to.exist; // nothing mixed in
       });
 
       it('should call it before mixing in', () => {
+        // can't spy on "mixing in" part since that's internal to .mix()
         let error = new Error;
         let threw = false;
         let target = {};
@@ -122,14 +133,22 @@ describe('mixing', () => {
     describe('post_mixing_hook', () => {
 
       it('should call it on the mixin with the target as a parameter', () => {
-        let target = {};
+        let mixee = {};
+        let loggers = [];
         let mixin = logger_mixin({
-          post_mixing_hook: spy()
+          post_mixing_hook(target) {
+            loggers.push(target);
+          },
         });
-        mix(target, mixin);
+        spy(mixin, 'post_mixing_hook');
+
+        mix(mixee, mixin);
 
         expect(mixin.post_mixing_hook.calledOn(mixin)).to.be.true;
-        expect(mixin.post_mixing_hook.calledWithExactly(target)).to.be.true;
+        expect(mixin.post_mixing_hook.calledWithExactly(mixee)).to.be.true;
+
+        expect(mixin.log).to.exist; // mixing was successful
+        expect(loggers).to.contain(mixee);
       });
 
       it('should call it after mixing in', () => {
@@ -361,6 +380,11 @@ describe('mixing', () => {
         });
 
         it('should adapt to the mixin method', () => {
+          interface ILogResult {
+            error: boolean;
+            message: string;
+          }
+
           let mock_console = {
             log: spy(),
             info: spy(),
@@ -370,7 +394,7 @@ describe('mixing', () => {
           let options: IMixOptions = {
             post_method_advice: {
               // log to console too
-              log(log_result: {error: boolean, message: string}): void {
+              log(log_result: ILogResult): void {
                 if (log_result.error) {
                   mock_console.error(log_result.message);
                 }
@@ -379,16 +403,16 @@ describe('mixing', () => {
             },
           };
 
-          stub(this.mixin, 'log', function(error: Error, message: string): {
-            error: boolean,
-            message: string,
-          } {
-            mock_console.log(`${this.logname}:${message}`);
-            return {
-              error: !!error,
-              message,
-            };
-          });
+          stub(
+            this.mixin,
+            'log',
+            function(error: Error, message: string): ILogResult {
+              mock_console.log(`${this.logname}:${message}`);
+              return {
+                error: !!error,
+                message,
+              };
+            });
 
           let target = {
             logname: 'console_logger'
@@ -405,7 +429,6 @@ describe('mixing', () => {
         });
 
       });
-
 
     });
 
