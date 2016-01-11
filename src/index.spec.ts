@@ -203,11 +203,12 @@ describe('mixing', () => {
 
       it('should not change the prototype chain when omitting keys', () => {
         let target = {};
-        Object.setPrototypeOf(target, {
+
+        target.__proto__ = {
           log() {
             return 'protolog';
           },
-        });
+        };
 
         mix(target, this.mixin, {omit: ['log']});
 
