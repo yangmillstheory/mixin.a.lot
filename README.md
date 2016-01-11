@@ -72,15 +72,15 @@ Take
 
 ```javascript
 let logger_mixin = {
-  err_log: '/logs/app.err',
-  inf_log: '/logs/app.log',
+  errLog: '/logs/app.err',
+  infLog: '/logs/app.log',
   
   log: function(log_event) {
     let {error, message} = log_event;
     if (error) {
-      fs.writeFile(this.err_log, this.logname + ':' + level + ':' + message); 
+      fs.writeFile(this.errLog, this.logname + ':' + level + ':' + message); 
     } else {
-      fs.writeFile(this.inf_log, this.logname + ':' + level + ':' + message);
+      fs.writeFile(this.infLog, this.logname + ':' + level + ':' + message);
     }
   },
 };
@@ -95,7 +95,7 @@ let logger = {
   logname: 'prefix_logger'
 };
 
-let prefix_message = function(error, message) {
+let prefixMessage = function(error, message) {
   let prefix;
   if (!error) {
     prefix = 'INFO';
@@ -109,8 +109,8 @@ let prefix_message = function(error, message) {
 };
 
 mix(logger, logger_mixin, {
-  pre_method_advice: {
-    log: prefix_message,
+  preMethodAdvice: {
+    log: prefixMessage,
   },
 });
 
@@ -123,35 +123,38 @@ myLogger.log(null, 'request @ /user/:id from ${user}');
 
 Adapters will be called on the target context or after the mixin method.
  
-An example of an post-mixin-method adapter can be seen [here](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L363). It logs messages written to disk to `console` too. 
+An example of an post-mixin-method adapter can be seen in the tests. It logs all messages written to disk to the `console` as well. 
 
 #### Pre/post Mixing Hooks
 
 Each mixin can specify pre/post-mixing procedures. 
 
-This is a good place to run validations, set some default properties, or run finalizing routines.
+This is a good place to run pre-mix validations, finalizing routines, or set some default properties.
 
 ```javascript
-// mixins/logger.js
+// shared/mixins/logger.js
 let loggers = new WeakSet(); // ES6 only
 
 let logger_mixin = {
-  // as before
-};
-
-logger.pre_mixing_hook = function() {
-  if (typeof this.logname !== 'string') {
-    throw new TypeError(`Expected string logname; got ${this.logname}`);
-  }
-};
-
-logger.post_mixing_hook = function(target) {
-  // track all loggers, for example
-  loggers.add(target);
+  // ...
+  // properties as before
+  // ...
+  
+  // new
+  preMixingHook() {
+    if (typeof this.logname !== 'string') {
+      throw new TypeError(`Expected string logname; got ${this.logname}`);
+    }
+  },
+  
+  // new
+  postMixingHook(target) {
+    loggers.add(target);
+  },
 };
 ```
 
-#### Opting out
+#### Opting out or overriding
 
 You want some shared data or behavior, but not all of it.
 
@@ -194,7 +197,6 @@ target.say() // 'target'
 mix(target, mixin);
 target.say() // 'mixin'
 ```
-
 
 **[Tests for all these examples can be found here.](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts)**
 
