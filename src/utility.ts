@@ -83,9 +83,9 @@ export var is_empty = (thing: any[]) => {
 ////////////
 // functions
 
-export var compose = (f: Function, g: Function): Function => {
-  return function(...args) {
-    return f(g(...args));
+export var compose = (f: Function, g: Function, context: Object): Function => {
+  return function() {
+    return f.call(context, g.apply(context, [].slice.call(arguments)));
   };
 };
 
