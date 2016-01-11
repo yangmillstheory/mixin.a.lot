@@ -6,16 +6,18 @@ interface IOptionKey {
 }
 
 const PRE_METHOD_ADVICE_KEY: IOptionKey = {
-  primary: 'pre_method_advice',
+  primary: 'preMethodAdvice',
   aliases: [
+    'pre_method_advice',
     'before_hook',
     'hook_before',
   ],
 };
 
 const PRE_MIXING_HOOK_KEY: IOptionKey = {
-  primary: 'pre_mixing_hook',
+  primary: 'preMixingHook',
   aliases: [
+    'pre_mixing_hook',
     'premixing_hook',
     'premixing',
     'premix',
@@ -23,16 +25,18 @@ const PRE_MIXING_HOOK_KEY: IOptionKey = {
 };
 
 const POST_METHOD_ADVICE_KEY: IOptionKey = {
-  primary: 'post_method_advice',
+  primary: 'preMethodAdvice',
   aliases: [
+    'post_method_advice',
     'after_hook',
     'hook_after',
   ],
 };
 
 const POST_MIXING_HOOK_KEY: IOptionKey = {
-  primary: 'post_mixing_hook',
+  primary: 'postMixingHook',
   aliases: [
+    'post_mixing_hook',
     'postmixing_hook',
     'postmixing',
     'postmix',
@@ -55,7 +59,7 @@ export enum OptionType {
 export var Option = {
   from_key: (key: string): OptionType => {
     let specifies_option = (option_key: IOptionKey) => {
-      return (option_key.primary === key) || (key in option_key.aliases);
+      return (option_key.primary === key) || (option_key.aliases.indexOf(key) > -1);
     };
     if (specifies_option(PRE_METHOD_ADVICE_KEY)) {
       return OptionType.PRE_METHOD_ADVICE;
