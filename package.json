@@ -1,6 +1,6 @@
 {
   "name": "mixin-a-lot",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "A minimalist aspect-oriented JavaScript mixin framework.",
   "repository": {
     "type": "git",
