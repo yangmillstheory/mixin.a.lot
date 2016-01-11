@@ -6,16 +6,16 @@
 
 ## What is it?
 
-A small aspect-oriented JavaScript mixin API.
+A small [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin API.
 
 You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
 
 ## Why use it?
 
-1. It has no dependencies.
-2. You can advise mixin methods with your own functions.
-3. You can advise the mixing process.
-4. You can opt-out of some mixin functionality.
+- You can advise mixin behavior with your own functions.
+- You can advise the mixing process with your own functions.
+- You can opt-out of mixin data and behavior.
+- It has no dependencies.
 
 ## Install
 
@@ -41,81 +41,96 @@ import {mix} from 'mixin-a-lot';
 
 A mixin is just a plain old JavaScript object. 
 
-```javascript
-let logger = {
-  err_log: '/logs/app.err',
-  inf_log: '/logs/app.log',
-  log: function(log_event) {
-    let {level, message} = log_event;
-    if (level === 'info') {
-      fs.writeFile(this.inf_log, this.logname + ':' + level + ':' + message);
-    } else if (level === 'error') {
-      fs.writeFile(this.err_log, this.logname + ':' + level + ':' + message); 
-    } else {
-      throw new Error('Expected info or error level, got ' + level);
-    }
-  },
-};
-```
-
 Mix it into your object, function or prototype.
 
 ```javascript
-class MyLogger {};
+class Thing {};
 
-// mix into a Function
-mixin_a_lot.mix(MyLogger, logger);
-MyLogger.log(...);
-
-// or mix into its prototype
-mixin_a_lot.mix(MyLogger.prototype, logger);
-let myLogger = new MyLogger
-myLogger.log(...);
-
-// or mix into a random object
-let thing = {...};
-mixin_a_lot.mix(thing, logger);
-thing.log(...);
-```
-
-#### Advising Mixin Behavior
-
-Customize shared behavior.
-
-Return values are propagated when advising, so you can write adapters.
-
-```javascript
-let myLogger = {};
-
-// the return value is passed to logger.log
-// 'this' is the MyLogger function.
-let pre_log = function(error, message) {
-  let level;
-  if (!error) {
-    level = 'info';
-    if (!message) {
-      throw new Error('Got no error, expected message');
-    }
-  } else if (error instanceof IOError) {
-    level = 'error';
-    message = message || error.message;
+let mixin = {
+  shared() {
+    // ...
   }
-  return {level, message};
 };
 
-mixin_a_lot.mix(MyLogger.prototype, logger, {
+// mix into a Function
+mixin_a_lot.mix(Thing, mixin);
+Thing.shared(...);
+
+// or mix into its prototype
+mixin_a_lot.mix(Thing.prototype, mixin);
+new Thing().shared();
+
+// or mix into a random object
+let object = {...};
+mixin_a_lot.mix(object, mixin);
+object.shared();
+```
+
+Any mixed-in functions will always be called on the target context.
+
+#### Adapters
+
+Take
+
+```javascript
+let logger_mixin = {
+  err_log: '/logs/app.err',
+  inf_log: '/logs/app.log',
+  
+  log: function(log_event) {
+    let {error, message} = log_event;
+    if (error) {
+      fs.writeFile(this.err_log, this.logname + ':' + level + ':' + message); 
+    } else {
+      fs.writeFile(this.inf_log, this.logname + ':' + level + ':' + message);
+    }
+  },
+};
+```
+
+as a starting point.
+
+You can write adapters to mixin methods.
+
+```javascript
+let logger = {
+  logname: 'prefix_logger'
+}
+
+let prefix_message = function(error, message) {
+  let prefix;
+  if (!error) {
+    prefix = 'INFO';
+  } else {
+    prefix = 'ERROR';
+    if (!message) {
+      message = error.message;
+    }
+  }
+  return {error: !!error, message: `${prefix}:${message}`};
+};
+
+mixin_a_lot.mix(logger, logger_mixin, {
   pre_method_advice: {
-    log: pre_log,
+    log: prefix_message,
   },
 });
 
-myLogger.log(new IOError('error connecting to DB'));    // 'Default Logger: error: error connecting to DB' 
-myLogger.log(null, 'request @ /user/:id from ${user}'); // 'Default Logger: info: request @ /user/:id from yangmillstheory'
+// writes 'prefix_logger:ERROR:error connecting to DB' to /logs/app.err
+myLogger.log(new IOError('error connecting to DB'));
+ 
+// writes 'prefix_logger:INFO:request @ /user/:id from yangmillstheory' to /logs/app.log
+myLogger.log(null, 'request @ /user/:id from ${user}'); 
 ```
 
-#### Advising Mixing
+Adapters will be called on the target context [before](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L286) 
+or [after](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L344) the mixin method.
+ 
+An example of an adapter from the mixin method can be seen [here](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L363). 
 
-This is a good chance to run validations or set default properties.
+#### Pre/post Mixing Hooks
+
+This is a good place to run validations or set some default properties.
 
 ```javascript
 // mixins/logger.js
@@ -142,14 +157,25 @@ logger.post_mixing_hook = function(target) {
 You want some shared data or behavior, but not all of it.
 
 ```javascript
-mixin_a_lot.mix(mixee, mixin, {
+mixin_a_lot.mix(mixee, {
+  method1() {
+    // ...
+  },
+  
+  method2() {
+    // ...
+  },
+  
+  foo: true,
+}, {
   omit: ['method1', 'method2']
 });
 mixee.method1 // undefined
 mixee.method2 // undefined
+mixee.foo     // true
 ```
 
-Or, you want to preserve some data or behavior.
+Or, you want to override some data or behavior.
 
 ```javascript
 let mixin = {
@@ -165,22 +191,25 @@ let target = {
 mixin_a_lot.mix(target, mixin, {omit: ['name']});
 target.say() // 'target'
 
-mixin_a_lot.mix(target, mixin); // probably not what you want
+// probably not what you want
+mixin_a_lot.mix(target, mixin);
 target.say() // 'mixin'
 ```
 
 ## API
 
-#### <a name="mix"></a>mix({Object|Function} target, Mixin mixin, [Object options], [...mixing_arguments])
+#### <a name="mix"></a>mix(target: Object, mixin: IMixin, [options: Object], [...mixing_arguments: any[]])
 
-Mix own properties from `mixin` into `target`, which should be a non-null `Object` or `Function`. `options` can be an object literal with
+Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
-* `omit`: `Array` of `Strings` which are properties of `mixin` to exclude from mixing
-* `pre_method_advice`, `post_method_advice`: a map of mixin method names to callbacks, invoked before or after the mixin method on `target`
+* `omit`: `Array` of `String` which are property names of `mixin` to exclude from mixing
+* `pre_method_advice`: object literal with each key the name of a mixin method and each value a function that's an adapter to that method
+* `post_method_advice`: object literal with each key the name of a mixin method and each value a function that's an adapter from that method
 
-`mixin` can have special properties
+`mixin` can have two special properties
 
-* `pre_mixing_hook`, `post_mixing_hook`: callbacks invoked before or after the mixing process with `target` as the argument
+* `pre_mixing_hook`: function invoked on `mixin` immediately before mixing with `target` as the argument
+* `post_mixing_hook`: function invoked on `mixin` immediately after mixing (but before `mix` returns) with `target` as the argument
 
 These properties will not be copied into `target`.
 
@@ -196,7 +225,6 @@ Get the source:
 Install dependencies:
 
     $ cd mixin.a.lot && sudo npm install
-    $ node_modules/.bin/tsd install
 
 Develop (watch for changes and execute tests):
 
