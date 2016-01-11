@@ -1,12 +1,9 @@
 import {copy_object} from './utility';
 
-
-export var default_mixin = (props: Object = {}) => {
+export var logger_mixin = (extensions: Object = {}) => {
   return copy_object(
     {
-      foo: 'foo',
-      bar: 1,
-      baz: new Function(),
+      log: new Function(),
     },
-    props);
+    extensions);
 };
