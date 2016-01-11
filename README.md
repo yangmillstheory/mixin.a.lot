@@ -93,7 +93,7 @@ You can write adapters to mixin methods.
 ```javascript
 let logger = {
   logname: 'prefix_logger'
-}
+};
 
 let prefix_message = function(error, message) {
   let prefix;
