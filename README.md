@@ -39,9 +39,7 @@ import {mix} from 'mixin-a-lot';
 
 #### Mixing
 
-A mixin is just a plain old JavaScript object. 
-
-Mix it into your object, function or prototype.
+A mixin is just a plain old JavaScript object. Mix it into your object, function or prototype.
 
 ```javascript
 class Thing {};
@@ -126,29 +124,29 @@ myLogger.log(null, 'request @ /user/:id from ${user}');
 Adapters will be called on the target context [before](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L286) 
 or [after](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L344) the mixin method.
  
-An example of an adapter from the mixin method can be seen [here](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L363). 
+An example of an post-mixin-method adapter can be seen [here](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L363). It logs messages written to disk to `console` too. 
 
 #### Pre/post Mixing Hooks
 
-This is a good place to run validations or set some default properties.
+Each mixin specify pre/post-mixing procedures. This is a good place to run validations or set some default properties.
 
 ```javascript
 // mixins/logger.js
-let loggers = [];
+let loggers = new WeakSet(); // ES6 only
 
-let logger = {
-  // ...
+let logger_mixin = {
+  // as before
 };
 
 logger.pre_mixing_hook = function() {
   if (typeof this.logname !== 'string') {
-    throw new TypeError('Expected string logname; got ' + this.logname);
+    throw new TypeError(`Expected string logname; got ${this.logname}`);
   }
 };
 
 logger.post_mixing_hook = function(target) {
-  // track the target
-  loggers.push(target);
+  // track all loggers, for example
+  loggers.add(target);
 };
 ```
 
@@ -202,13 +200,13 @@ target.say() // 'mixin'
 
 Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
-* `omit`: `Array` of `String` which are property names of `mixin` to exclude from mixing
-* `pre_method_advice`: object literal with each key the name of a mixin method and each value a function that's an adapter to that method
-* `post_method_advice`: object literal with each key the name of a mixin method and each value a function that's an adapter from that method
+* `omit`: array of strings which are property names of `mixin` to exclude from mixing
+* `pre_method_advice`: object literal mapping mixin method names to adapters to them
+* `post_method_advice`: object literal mapping mixin method names to adapters from them
 
 `mixin` can have two special properties
 
-* `pre_mixing_hook`: function invoked on `mixin` immediately before mixing with `target` as the argument
+* `pre_mixing_hook`: function invoked on `mixin` immediately before mixing (but after `mix` is called) with `target` as the argument
 * `post_mixing_hook`: function invoked on `mixin` immediately after mixing (but before `mix` returns) with `target` as the argument
 
 These properties will not be copied into `target`.
@@ -224,7 +222,7 @@ Get the source:
 
 Install dependencies:
 
-    $ cd mixin.a.lot && sudo npm install
+    $ cd mixin.a.lot && sudo npm i
 
 Develop (watch for changes and execute tests):
 
