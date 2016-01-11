@@ -1,6 +1,6 @@
 interface IOptionKey {
   // the primary internal identifier for an option key;
-  // must be kept in sync with the type definition MixOptions
+  // must be kept in sync with the type definition IMixOptions
   primary: string;
   aliases: string[];
 }

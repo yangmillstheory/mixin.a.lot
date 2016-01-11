@@ -1,4 +1,4 @@
-import {parse_imix_options} from './options';
+import {parse_ioptions} from './options';
 import {
   compose,
   diff_arrays,
@@ -26,8 +26,7 @@ export var mix = function(target, mixin: Mixin, options: MixOptions = {}) {
     pre_method_advice, post_method_advice,
     pre_mixing_hook, post_mixing_hook,
     omit,
-  } = parse_imix_options(options, mixin);
-  let mixing_keys = diff_arrays(
+  } = parse_ioptions(options, mixin);
     Object.getOwnPropertyNames(mixin).filter(key => {
       return (mixin[key] !== pre_mixing_hook) && (mixin[key] !== post_mixing_hook);
     }),
