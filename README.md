@@ -51,16 +51,16 @@ let mixin = {
 };
 
 // mix into a Function
-mixin_a_lot.mix(Thing, mixin);
+mix(Thing, mixin);
 Thing.shared(...);
 
 // or mix into its prototype
-mixin_a_lot.mix(Thing.prototype, mixin);
+mix(Thing.prototype, mixin);
 new Thing().shared();
 
 // or mix into a random object
 let object = {...};
-mixin_a_lot.mix(object, mixin);
+mix(object, mixin);
 object.shared();
 ```
 
@@ -108,7 +108,7 @@ let prefix_message = function(error, message) {
   return {error: !!error, message: `${prefix}:${message}`};
 };
 
-mixin_a_lot.mix(logger, logger_mixin, {
+mix(logger, logger_mixin, {
   pre_method_advice: {
     log: prefix_message,
   },
@@ -156,7 +156,7 @@ logger.post_mixing_hook = function(target) {
 You want some shared data or behavior, but not all of it.
 
 ```javascript
-mixin_a_lot.mix(mixee, {
+mix(mixee, {
   method1() {
     // ...
   },
@@ -187,11 +187,11 @@ let target = {
   name: 'target'
 };
 
-mixin_a_lot.mix(target, mixin, {omit: ['name']});
+mix(target, mixin, {omit: ['name']});
 target.say() // 'target'
 
 // probably not what you want
-mixin_a_lot.mix(target, mixin);
+mix(target, mixin);
 target.say() // 'mixin'
 ```
 
