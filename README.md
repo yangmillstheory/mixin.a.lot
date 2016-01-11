@@ -123,7 +123,13 @@ myLogger.log(null, 'request @ /user/:id from ${user}');
 
 Adapters will be called on the target context or after the mixin method.
  
-An example of an post-mixin-method adapter can be seen in the tests. It logs all messages written to disk to the `console` as well. 
+An example of an post-mixin-method adapter can be seen in the tests. It logs all messages written to disk to the `console` as well.
+ 
+Adapters can be chained, to give an execution flow like
+
+```
+pre_method_advice -> mixin_method -> post_method_advice
+```
 
 #### Pre/post Mixing Hooks
 
