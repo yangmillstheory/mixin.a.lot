@@ -43,7 +43,6 @@ A mixin is just a plain old JavaScript object.
 
 ```javascript
 let logger = {
-  logname: null,
   err_log: '/logs/app.err',
   inf_log: '/logs/app.log',
   log: function(log_event) {
@@ -94,6 +93,9 @@ let pre_log = function(error, message) {
   let level;
   if (!error) {
     level = 'info';
+    if (!message) {
+      throw new Error('Got no error, expected message');
+    }
   } else if (error instanceof IOError) {
     level = 'error';
     message = message || error.message;
@@ -145,6 +147,26 @@ mixin_a_lot.mix(mixee, mixin, {
 });
 mixee.method1 // undefined
 mixee.method2 // undefined
+```
+
+Or, you want to preserve some data or behavior.
+
+```javascript
+let mixin = {
+  name: 'mixin'
+  say() {
+    console.log(this.name);
+  },
+};
+let target = {
+  name: 'target'
+};
+
+mixin_a_lot.mix(target, mixin, {omit: ['name']});
+target.say() // 'target'
+
+mixin_a_lot.mix(target, mixin); // probably not what you want
+target.say() // 'mixin'
 ```
 
 ## API
