@@ -4,15 +4,15 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 declare module 'mixin_a_lot' {
-  export function mix(target: Object|Function, mixin: Mixin, options?: MixOptions);
+  export function mix(target: Object|Function, mixin: IMixin, options?: IMixOptions);
 }
 
-declare interface Mixin extends Object {
+declare interface IMixin extends Object {
   pre_mixing_hook?: Function;
   post_mixing_hook?: Function;
 }
 
-declare interface MixOptions {
+declare interface IMixOptions {
   omit?: string[];
   pre_method_advice?: {
     [method: string]: Function
