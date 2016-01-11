@@ -3,7 +3,7 @@
 // snake-case for internal use
 interface IMixin {
   pre_mixing_hook?: Function;
-  post_mixing_hook: Function;
+  post_mixing_hook?: Function;
 }
 
 interface IMixOptions {
