@@ -3,8 +3,8 @@
 // Definitions by: Victor Alvarez <https://github.com/yangmillstheory>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-declare module 'mixin_a_lot' {
-  export function mix(target: Object|Function, mixin: IMixin, options?: IMixOptions);
+declare module 'mixin-a-lot' {
+  export function mix(target: Object, mixin: IMixin, options?: IMixOptions);
 }
 
 declare interface IMixin extends Object {
