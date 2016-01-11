@@ -20,6 +20,8 @@ interface IMixJoint {
 }
 
 export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
+  ////////////////////////////
+  // setup & pre-mixing checks
   if (target === undefined) {
     throw new TypeError(USAGE());
   } else if (!(is_function(target) || is_object(target))) {
@@ -41,23 +43,26 @@ export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
   if (is_empty(keys_to_mix_in)) {
     throw new Error('All mixin keys have been omitted!');
   }
+
+  ////////////////////
+  // initialize mixing
   pre_mixing_hook.call(mixin, target);
+
+  //////////////
+  // perform mix
   let mix_joints: IMixJoint[] = [];
   keys_to_mix_in.forEach((key: string) => {
     let advice = pre_method_advice[key] || post_method_advice[key];
     if (advice) {
-      // defer binding the composite methods until
-      // after all other data/behavior have been mixed in
-      mix_joints.push({
-        advice,
-        method: mixin[key],
-        key: key,
-      });
+      // defer attaching advice until all other
+      // data/behavior have been mixed in
+      mix_joints.push({key, advice, method: mixin[key]});
     } else  {
       target[key] = mixin[key];
     }
   });
   mix_joints.forEach(composite => {
+    // attach advice now
     let {advice, method, key} = composite;
     if (pre_method_advice[key]) {
       target[key] = compose(method, advice, target);
@@ -65,6 +70,9 @@ export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
       target[key] = compose(advice, method, target);
     }
   });
+
+  //////////////////
+  // finalize mixing
   post_mixing_hook.call(mixin, target);
   return target;
 };
