@@ -121,14 +121,15 @@ myLogger.log(new IOError('error connecting to DB'));
 myLogger.log(null, 'request @ /user/:id from ${user}'); 
 ```
 
-Adapters will be called on the target context [before](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L286) 
-or [after](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L344) the mixin method.
+Adapters will be called on the target context or after the mixin method.
  
 An example of an post-mixin-method adapter can be seen [here](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts#L363). It logs messages written to disk to `console` too. 
 
 #### Pre/post Mixing Hooks
 
-Each mixin specify pre/post-mixing procedures. This is a good place to run validations or set some default properties.
+Each mixin can specify pre/post-mixing procedures. 
+
+This is a good place to run validations, set some default properties, or run finalizing routines.
 
 ```javascript
 // mixins/logger.js
@@ -193,6 +194,9 @@ target.say() // 'target'
 mixin_a_lot.mix(target, mixin);
 target.say() // 'mixin'
 ```
+
+
+**[Tests for all these examples can be found here.](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts)**
 
 ## API
 
