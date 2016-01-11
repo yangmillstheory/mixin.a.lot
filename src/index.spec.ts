@@ -300,131 +300,180 @@ describe('mixing', () => {
         });
       });
 
-      describe('pre_method_advice', () => {
+      describe('adapters', () => {
 
-        it('should be called on the target before the mixin method', () => {
-          let target = {};
-          let pre_advice_spy = spy();
+        describe('pre_method_advice', () => {
 
-          spy(this.mixin, 'log');
+          it('should be called on the target before the mixin method', () => {
+            let target = {};
+            let pre_advice_spy = spy();
 
-          mix(target, this.mixin, {
-            pre_method_advice: {
-              log: pre_advice_spy
-            },
-          });
+            spy(this.mixin, 'log');
 
-          target.log();
-
-          expect(this.mixin.log.calledOnce).to.be.true;
-          expect(pre_advice_spy.calledOnce).to.be.true;
-          expect(pre_advice_spy.calledBefore(this.mixin.log)).to.be.true;
-        });
-
-        it('should be an adapter to the mixin method', () => {
-          let mock_console = {
-            log: spy()
-          };
-
-          let options: IMixOptions = {
-            pre_method_advice: {
-              // prefix every message with ERROR or INFO
-              log(error: Error, message: string): string {
-                if (error) {
-                  return `ERROR:${message}`;
-                }
-                return `INFO:${message}`;
+            mix(target, this.mixin, {
+              pre_method_advice: {
+                log: pre_advice_spy
               },
-            },
-          };
-
-          stub(this.mixin, 'log', function(message: string): void {
-            mock_console.log(`${this.logname}:${message}`);
-          });
-
-          let target = {
-            logname: 'prefixing_logger'
-          };
-          mix(target, this.mixin, options);
-
-          target.log(null, 'A-OK.');
-          expect(mock_console.log.calledWithExactly('prefixing_logger:INFO:A-OK.'))
-            .to.be.true;
-
-          target.log(new Error, 'Uh oh.');
-          expect(mock_console.log.calledWithExactly('prefixing_logger:ERROR:Uh oh.'))
-            .to.be.true;
-        });
-
-      });
-
-      describe('post_method_advice', () => {
-
-        it('should be called on the target after the mixin method', () => {
-          let target = {};
-          let post_advice_spy = spy();
-
-          spy(this.mixin, 'log');
-
-          mix(target, this.mixin, {
-            post_method_advice: {
-              log: post_advice_spy
-            },
-          });
-
-          target.log();
-
-          expect(this.mixin.log.calledOnce).to.be.true;
-          expect(post_advice_spy.calledOnce).to.be.true;
-          expect(post_advice_spy.calledAfter(this.mixin.log)).to.be.true;
-        });
-
-        it('should adapt to the mixin method', () => {
-          interface ILogResult {
-            error: boolean;
-            message: string;
-          }
-
-          let mock_console = {
-            log: spy(),
-            info: spy(),
-            error: spy(),
-          };
-
-          let options: IMixOptions = {
-            post_method_advice: {
-              // log to console too
-              log(log_result: ILogResult): void {
-                if (log_result.error) {
-                  mock_console.error(log_result.message);
-                }
-                mock_console.info(log_result.message);
-              },
-            },
-          };
-
-          stub(
-            this.mixin,
-            'log',
-            function(error: Error, message: string): ILogResult {
-              mock_console.log(`${this.logname}:${message}`);
-              return {
-                error: !!error,
-                message,
-              };
             });
 
-          let target = {
-            logname: 'console_logger'
+            target.log();
+
+            expect(this.mixin.log.calledOnce).to.be.true;
+            expect(pre_advice_spy.calledOnce).to.be.true;
+            expect(pre_advice_spy.calledBefore(this.mixin.log)).to.be.true;
+          });
+
+          it('should be an adapter to the mixin method', () => {
+            let mock_console = {
+              log: spy()
+            };
+
+            let options: IMixOptions = {
+              pre_method_advice: {
+                // prefix every message with ERROR or INFO
+                log(error: Error, message: string): string {
+                  if (error) {
+                    return `ERROR:${message}`;
+                  }
+                  return `INFO:${message}`;
+                },
+              },
+            };
+
+            stub(this.mixin, 'log', function(message: string): void {
+              mock_console.log(`${this.logname}:${message}`);
+            });
+
+            let target = {
+              logname: 'prefixing_logger'
+            };
+            mix(target, this.mixin, options);
+
+            target.log(null, 'A-OK.');
+            expect(mock_console.log.calledWithExactly('prefixing_logger:INFO:A-OK.'))
+              .to.be.true;
+
+            target.log(new Error, 'Uh oh.');
+            expect(mock_console.log.calledWithExactly('prefixing_logger:ERROR:Uh oh.'))
+              .to.be.true;
+          });
+
+        });
+
+        describe('post_method_advice', () => {
+
+          it('should be called on the target after the mixin method', () => {
+            let target = {};
+            let post_advice_spy = spy();
+
+            spy(this.mixin, 'log');
+
+            mix(target, this.mixin, {
+              post_method_advice: {
+                log: post_advice_spy
+              },
+            });
+
+            target.log();
+
+            expect(this.mixin.log.calledOnce).to.be.true;
+            expect(post_advice_spy.calledOnce).to.be.true;
+            expect(post_advice_spy.calledAfter(this.mixin.log)).to.be.true;
+          });
+
+          it('should adapt to the mixin method', () => {
+            interface ILogResult {
+              error: boolean;
+              message: string;
+            }
+
+            let mock_console = {
+              log: spy(),
+              info: spy(),
+              error: spy(),
+            };
+
+            let options: IMixOptions = {
+              post_method_advice: {
+                // log to console too
+                log(log_result: ILogResult): void {
+                  if (log_result.error) {
+                    mock_console.error(log_result.message);
+                  }
+                  mock_console.info(log_result.message);
+                },
+              },
+            };
+
+            stub(
+              this.mixin,
+              'log',
+              function(error: Error, message: string): ILogResult {
+                mock_console.log(`${this.logname}:${message}`);
+                return {
+                  error: !!error,
+                  message,
+                };
+              });
+
+            let target = {
+              logname: 'console_logger'
+            };
+            mix(target, this.mixin, options);
+
+            target.log(null, 'Hello, World!');
+            expect(mock_console.info.calledWithExactly('Hello, World!'))
+              .to.be.true;
+
+            target.log(new Error, 'Something bad happened.');
+            expect(mock_console.error.calledWithExactly('Something bad happened.'))
+              .to.be.true;
+          });
+
+        });
+
+        it('should chain adapters', () => {
+          let mock_console = {
+            log: spy(),
+            error: spy(),
+            info: spy(),
           };
-          mix(target, this.mixin, options);
+          let mixin: IMixin = {
+            baz: 0,
+            method(message: string): string {
+              message = `${message}::${this.baz}::log`;
+              mock_console.log(message);
+              return message;
+            },
+          };
+          let options: IMixOptions = {
+            pre_method_advice: {
+              method(num: number): string {
+                let message = `${num}**info`;
+                mock_console.info(message);
+                return message;
+              },
+            },
 
-          target.log(null, 'Hello, World!');
-          expect(mock_console.info.calledWithExactly('Hello, World!'))
-            .to.be.true;
+            post_method_advice: {
+              method(message: string): string {
+                message = `${message}++post++error`;
+                mock_console.error(message);
+                return message;
+              },
+            },
+          };
 
-          target.log(new Error, 'Something bad happened.');
-          expect(mock_console.error.calledWithExactly('Something bad happened.'))
+          spy(options.pre_method_advice.method);
+          spy(options.post_method_advice.method);
+
+          expect(mix({}, mixin, options).method(999))
+            .to.equal('999**info::0::log++post++error');
+          expect(mock_console.info.calledBefore(mock_console.log));
+          expect(mock_console.log.calledBefore(mock_console.error));
+          expect(
+            options.pre_method_advice.method.calledBefore(
+              options.post_method_advice.method))
             .to.be.true;
         });
 
