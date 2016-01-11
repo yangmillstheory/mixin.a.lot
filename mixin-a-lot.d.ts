@@ -7,17 +7,20 @@ declare module 'mixin-a-lot' {
   export function mix(target: Object, mixin: IMixin, options?: IMixOptions);
 }
 
-declare interface IMixin extends Object {
-  pre_mixing_hook?: Function;
-  post_mixing_hook?: Function;
+declare interface IMixin {
+  preMixingHook?: Function;
+  postMixingHook?: Function;
+
+  [key: string]: any;
 }
 
 declare interface IMixOptions {
   omit?: string[];
-  pre_method_advice?: {
+
+  preMethodAdvice?: {
     [method: string]: Function
   };
-  post_method_advice?: {
+  postMethodAdvice?: {
     [method: string]: Function
   };
 }
