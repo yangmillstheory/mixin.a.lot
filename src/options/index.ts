@@ -1,5 +1,6 @@
+/// <reference path="../index.d.ts" />
 import {
-  copy_object,
+  mix_into,
   diff_arrays,
   for_own,
   is_function,
@@ -91,7 +92,7 @@ export var parse_ioptions = (options: Object, mixin: IMixin): IOptions => {
   if (!is_plain_object(options)) {
     throw new TypeError('Expected options dictionary');
   }
-  let parsed: IOptions = copy_object({}, DEFAULT_IMIX_OPTIONS);
+  let parsed: IOptions = mix_into({}, DEFAULT_IMIX_OPTIONS);
   parse_inline_options(mixin, options, parsed);
   parse_mixins_options(mixin, parsed);
   return parsed;
