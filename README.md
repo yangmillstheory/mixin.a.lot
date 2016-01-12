@@ -42,6 +42,8 @@ import {mix} from 'mixin-a-lot';
 
 A mixin is just a plain old JavaScript object. Mix it into your object, function or prototype.
 
+Any mixed-in functions will always be called on the target context.
+
 ```javascript
 class Person {
   constructor(name) {
@@ -69,8 +71,6 @@ mix(object, named);
 object.sayName(); // 'object'
 ```
 
-Any mixed-in functions will always be called on the target context.
-
 #### Adapters
 
 Take
@@ -81,11 +81,11 @@ let loggerMixin = {
   infLog: '/logs/app.log',
   
   log: function(logEvent) {
-    let {error, message} = logEvent;
-    if (error) {
-      fs.writeFile(this.errLog, `${this.logname}:${level}:${message}`); 
+    let {didError, message} = logEvent;
+    if (didError) {
+      fs.writeFile(this.errLog, `${this.logname}:${message}`); 
     } else {
-      fs.writeFile(this.infLog, `${this.logname}:${level}:${message}`);
+      fs.writeFile(this.infLog, `${this.logname}:${message}`);
     }
   },
 };
@@ -110,7 +110,7 @@ let prefixMessage = function(error, message) {
       message = error.message;
     }
   }
-  return {error: !!error, message: `${prefix}:${message}`};
+  return {didError: !!error, message: `${prefix}:${message}`};
 };
 
 mix(logger, loggerMixin, {
@@ -123,7 +123,7 @@ mix(logger, loggerMixin, {
 myLogger.log(new IOError('error connecting to DB'));
  
 // writes 'prefix_logger:INFO:request @ /user/:id from yangmillstheory' to /logs/app.log
-myLogger.log(null, 'request @ /user/:id from ${user}'); 
+myLogger.log(null, `request @ /user/:id from ${user}`); 
 ```
 
 Adapters are called on the target context before or after the mixin method.
@@ -165,6 +165,8 @@ let loggerMixin = {
 };
 ```
 
+`premix` and `postmix` won't be mixed into the target.
+
 #### Opting out or overriding
 
 You want some shared data or behavior, but not all of it.
@@ -192,7 +194,7 @@ Or, you want to override some data or behavior.
 
 ```javascript
 let named = {
-  name: 'mixin'
+  name: 'mixin',
   sayName() {
     console.log(this.name);
   },
