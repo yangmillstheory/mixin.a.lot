@@ -15,12 +15,11 @@ const PRE_ADAPTERS_KEY: IOptionKey = {
 };
 
 const PRE_MIX_KEY: IOptionKey = {
-  primary: 'preMix',
+  primary: 'premix',
   aliases: [
     'pre_mix',
     'premixing_hook',
     'premixing',
-    'premix',
   ],
 };
 
@@ -34,12 +33,11 @@ const POST_ADAPTERS_KEY: IOptionKey = {
 };
 
 const POST_MIX_KEY: IOptionKey = {
-  primary: 'postMix',
+  primary: 'postmix',
   aliases: [
     'post_mix',
     'postmixing_hook',
     'postmixing',
-    'postmix',
   ],
 };
 
