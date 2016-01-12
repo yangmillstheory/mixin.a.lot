@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.0.0 - 4.0.6]
+## [4.0.0 - 4.0.7]
 ### BREAKING CHANGES
 
 Removed dependency on [lodash](http://lodash.com/).
@@ -12,7 +12,7 @@ To reduce complexity, `mixin_a_lot.make_mixin(...)` has been removed, since `Mix
 Consequently, the signature of `mixin_a_lot.mix` has changed to take a plain JavaScript object instead of a `Mixin`:
 
 ```javascript
-mixin_a_lot.mix(target: Object, mixin: Object, options?: Object, ...mixing_args?: any[]);
+mixin_a_lot.mix(target: Object, mixin: Object, options?: Object);
 ```
 
 `premix` and `postmix` are now specified only on the mixin. Also, they're now invoked on the mixin context with the target as a parameter. This makes sense since their primary use case is for initializing or finalizing the mixing based on the target.  

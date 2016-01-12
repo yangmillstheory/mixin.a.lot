@@ -214,7 +214,7 @@ mixee.sayName() // 'mixin'
 
 ## API
 
-#### <a name="mix"></a>mix(target: Object, mixin: IMixin, [options: Object], [...mixing_arguments: any[]])
+#### <a name="mix"></a>mix(target: Object, mixin: IMixin, options?: Object)
 
 Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
