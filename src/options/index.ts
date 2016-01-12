@@ -25,11 +25,11 @@ const DEFAULT_IMIX_OPTIONS: IOptions = {
 let check_method_adapters = (key: string, adapters: Object, mixin: IMixin): void => {
   if (!is_plain_object(adapters)) {
     throw new TypeError(
-      `${key}: expected dict of mixin methods to callbacks`);
+      `${key}: expected dict of mixin methods to functions`);
   }
   for_own(adapters, (adapter: Function, fn_name: string) => {
     if (!is_function(adapter)) {
-      throw new TypeError(`${key} for ${fn_name} isn't a function`);
+      throw new TypeError(`${key}: value for ${fn_name} isn't a function`);
     } else if (!is_function(mixin[fn_name])) {
       throw new Error(`${fn_name} isn't a method on ${mixin}`);
     }

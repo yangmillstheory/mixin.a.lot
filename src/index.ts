@@ -3,14 +3,13 @@ import {
   compose,
   diff_arrays,
   is_empty,
-  is_function,
   is_object,
   is_plain_object,
 } from './utility';
 
 
 const USAGE = (target?): string => {
-  return `Expected non-null object or function, got ${target}`;
+  return `Expected non-null object, got ${target}`;
 };
 
 interface IAdapting {
@@ -20,12 +19,12 @@ interface IAdapting {
   key: string;
 }
 
-export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
+export var mix = function(target: Object, mixin: IMixin, options: IMixOptions = {}) {
   ////////////////////////////
   // setup & pre-mixing checks
   if (target === undefined) {
     throw new TypeError(USAGE());
-  } else if (!(is_function(target) || is_object(target))) {
+  } else if (!is_object(target)) {
     throw new TypeError(USAGE(target));
   }
   if (!is_plain_object(mixin)) {
