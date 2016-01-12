@@ -8,8 +8,8 @@ declare module 'mixin-a-lot' {
 }
 
 declare interface IMixin {
-  preMix?: Function;
-  postMix?: Function;
+  premix?: Function;
+  postmix?: Function;
 
   [key: string]: any;
 }
