@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.0.0 - 4.0.1]
+## [4.0.0 - 4.0.2]
 ### BREAKING CHANGES
 
 Removed dependency on [lodash](http://lodash.com/).
@@ -15,14 +15,12 @@ Consequently, the signature of `mixin_a_lot.mix` has changed to take a plain Jav
 mixin_a_lot.mix(target: Object, mixin: Object, options?: Object, ...mixing_args?: any[]);
 ```
 
-`pre_mix` and `postMixing_hook` are specified only on the mixin. Also, they're now invoked on the mixin context with the target as a parameter. This makes sense since the primary use case is for initializing or finalizing the mixing based on the mix target.  
+`premix` and `postmix` are now specified only on the mixin. Also, they're now invoked on the mixin context with the target as a parameter. This makes sense since their primary use case is for initializing or finalizing the mixing based on the target.  
 
-New mix option aliases for `mixin_a_lot.mix(...)`
+Hopefully more descriptive option aliases for `mixin_a_lot.mix(...)`.
 
 * `pre_adapters` for `before_hook`, et. al.
-* `pre_mix` for `premixing_hook`, et. al.
 * `post_adapters` for `after_hook`, et. al.
-* `postMixing_hook` for `postmixing_hook`, et. al.
 
 and all their pascalCase equivalents. 
 

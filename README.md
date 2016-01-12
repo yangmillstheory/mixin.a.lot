@@ -4,11 +4,13 @@
 
 [![Join the chat at https://gitter.im/yangmillstheory/mixin.a.lot](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yangmillstheory/mixin.a.lot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+
 ## What is it?
 
 A small [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin API.
 
 You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
+
 
 ## Why use it?
 
@@ -16,6 +18,7 @@ You can run it in [node](https://nodejs.org/), or in the [browser](http://browse
 - You can advise the mixing process with your own functions.
 - You can opt-out of mixin data and behavior.
 - It has no dependencies.
+
 
 ## Install
 
@@ -29,6 +32,7 @@ If you want type definitions
 $ tsd link
 ```
     
+
 ## Examples
 
 Import the module:
@@ -121,21 +125,21 @@ myLogger.log(new IOError('error connecting to DB'));
 myLogger.log(null, 'request @ /user/:id from ${user}'); 
 ```
 
-Adapters will be called on the target context or after the mixin method.
+Adapters are called on the target context before or after the mixin method.
  
-An example of an post-mixin-method adapter can be seen in the tests. It logs all messages written to disk to the `console` as well.
+An example of an post-adapter can be seen in the tests. It logs all messages written to disk to the `console` as well.
  
 Adapters can be chained, to give an execution flow like
 
 ```
-pre_adapters -> mixin_method -> post_adapters
+pre adapter -> mixin method -> post adapter
 ```
 
-#### Pre/post Mixing Hooks
+#### Pre and post mixing routines
 
-Each mixin can specify pre/post-mixing procedures. 
+Each mixin can specify pre and post mix routines. 
 
-This is a good place to run pre-mix validations, finalizing routines, or set some default properties.
+This is a good place to run validation, finalization, or set default properties.
 
 ```javascript
 // shared/mixins/logger.js
@@ -147,14 +151,14 @@ let logger_mixin = {
   // ...
   
   // new
-  preMix() {
+  premix() {
     if (typeof this.logname !== 'string') {
       throw new TypeError(`Expected string logname; got ${this.logname}`);
     }
   },
   
   // new
-  postMix(target) {
+  postmix(target) {
     loggers.add(target);
   },
 };
@@ -176,10 +180,10 @@ mix(mixee, {
   
   foo: true,
 }, {
-  omit: ['method1', 'method2']
+  omit: ['method1']
 });
 mixee.method1 // undefined
-mixee.method2 // undefined
+mixee.method2 // function() { ... }
 mixee.foo     // true
 ```
 
@@ -206,6 +210,7 @@ target.say() // 'mixin'
 
 **[Tests for all these examples can be found here.](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts)**
 
+
 ## API
 
 #### <a name="mix"></a>mix(target: Object, mixin: IMixin, [options: Object], [...mixing_arguments: any[]])
@@ -213,13 +218,13 @@ target.say() // 'mixin'
 Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
 * `omit`: array of strings which are property names of `mixin` to exclude from mixing
-* `pre_adapters`: object literal mapping mixin method names to adapters to them
-* `post_adapters`: object literal mapping mixin method names to adapters from them
+* `pre_adapters`: object literal mapping mixin method names to adapters *to* them
+* `post_adapters`: object literal mapping mixin method names to adapters *from* them
 
 `mixin` can have two special properties
 
-* `pre_mix`: function invoked on `mixin` immediately before mixing (but after `mix` is called) with `target` as the argument
-* `postMixing_hook`: function invoked on `mixin` immediately after mixing (but before `mix` returns) with `target` as the argument
+* `premix`: function called on `mixin` before mixing (but after `mix` is called) with `target` as the argument
+* `postmix`: function called on `mixin` after mixing (but before `mix` returns) with `target` as the argument
 
 These properties will not be copied into `target`.
 
