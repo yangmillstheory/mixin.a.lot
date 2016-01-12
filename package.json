@@ -20,7 +20,8 @@
     "npm",
     "typescript",
     "aspect",
-    "advice",
+    "adapter",
+    "adapters",
     "aspect-oriented"
   ],
   "author": {

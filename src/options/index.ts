@@ -16,28 +16,28 @@ interface IOptions extends IMixOptions, IMixin {}
 
 const DEFAULT_IMIX_OPTIONS: IOptions = {
   omit: [],
-  pre_method_advice: {},
-  pre_mixing_hook: NOOP,
-  post_method_advice: {},
-  post_mixing_hook: NOOP,
+  pre_adapters: {},
+  pre_mix: NOOP,
+  post_adapters: {},
+  post_mix: NOOP,
 };
 
-let check_method_advice = (key: string, advice: Object, mixin: IMixin): void => {
-  if (!is_plain_object(advice)) {
+let check_method_adapters = (key: string, adapters: Object, mixin: IMixin): void => {
+  if (!is_plain_object(adapters)) {
     throw new TypeError(
       `${key}: expected dict of mixin methods to callbacks`);
   }
-  for_own(advice, (callback: Function, method_name: string) => {
-    if (!is_function(callback)) {
-      throw new TypeError(`${key} for ${method_name} isn't a function`);
-    } else if (!is_function(mixin[method_name])) {
-      throw new Error(`${method_name} isn't a method on ${mixin}`);
+  for_own(adapters, (adapter: Function, fn_name: string) => {
+    if (!is_function(adapter)) {
+      throw new TypeError(`${key} for ${fn_name} isn't a function`);
+    } else if (!is_function(mixin[fn_name])) {
+      throw new Error(`${fn_name} isn't a method on ${mixin}`);
     }
   });
 };
 
-let check_mixing_hook = (key: string, hook: Function): void => {
-  if (!is_function(hook)) {
+let check_mixing_fn = (key: string, fn: Function): void => {
+  if (!is_function(fn)) {
     throw new TypeError(`Expected a function for ${key}`);
   }
 };
@@ -56,13 +56,13 @@ let parse_inline_options = (mixin: IMixin, options: Object,
                             parsed: IOptions): void => {
   for_own(options, (value, key: string) => {
     switch (Option.from_key(key)) {
-      case (Option.Type.PRE_METHOD_ADVICE):
-        check_method_advice(key, value, mixin);
-        parsed.pre_method_advice = value;
+      case (Option.Type.PRE_ADAPTERS):
+        check_method_adapters(key, value, mixin);
+        parsed.pre_adapters = value;
         break;
-      case (Option.Type.POST_METHOD_ADVICE):
-        check_method_advice(key, value, mixin);
-        parsed.post_method_advice = value;
+      case (Option.Type.POST_ADAPTERS):
+        check_method_adapters(key, value, mixin);
+        parsed.post_adapters = value;
         break;
       case (Option.Type.OMIT):
         check_omit(value, mixin);
@@ -75,13 +75,13 @@ let parse_inline_options = (mixin: IMixin, options: Object,
 let parse_mixins_options = (mixin: IMixin, parsed: IOptions): void => {
   for_own(mixin, (value, key: string) => {
     switch (Option.from_key(key)) {
-      case (Option.Type.PRE_MIXING_HOOK):
-        check_mixing_hook(key, value);
-        parsed.pre_mixing_hook = value;
+      case (Option.Type.PRE_MIX):
+        check_mixing_fn(key, value);
+        parsed.pre_mix = value;
         break;
-      case (Option.Type.POST_MIXING_HOOK):
-        check_mixing_hook(key, value);
-        parsed.post_mixing_hook = value;
+      case (Option.Type.POST_MIX):
+        check_mixing_fn(key, value);
+        parsed.post_mix = value;
         break;
     }
   });

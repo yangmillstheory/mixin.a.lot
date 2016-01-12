@@ -15,14 +15,14 @@ Consequently, the signature of `mixin_a_lot.mix` has changed to take a plain Jav
 mixin_a_lot.mix(target: Object, mixin: Object, options?: Object, ...mixing_args?: any[]);
 ```
 
-`pre_mixing_hook` and `post_mixing_hook` are specified only on the mixin. Also, they're now invoked on the mixin context with the target as a parameter. This makes sense since the primary use case is for initializing or finalizing the mixing based on the mix target.  
+`pre_mix` and `postMixing_hook` are specified only on the mixin. Also, they're now invoked on the mixin context with the target as a parameter. This makes sense since the primary use case is for initializing or finalizing the mixing based on the mix target.  
 
 New mix option aliases for `mixin_a_lot.mix(...)`
 
-* `pre_method_advice` for `before_hook`, et. al.
-* `pre_mixing_hook` for `premixing_hook`, et. al.
-* `post_method_advice` for `after_hook`, et. al.
-* `post_mixing_hook` for `postmixing_hook`, et. al.
+* `pre_adapters` for `before_hook`, et. al.
+* `pre_mix` for `premixing_hook`, et. al.
+* `post_adapters` for `after_hook`, et. al.
+* `postMixing_hook` for `postmixing_hook`, et. al.
 
 and all their pascalCase equivalents. 
 

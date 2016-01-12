@@ -8,8 +8,8 @@ declare module 'mixin-a-lot' {
 }
 
 declare interface IMixin {
-  preMixingHook?: Function;
-  postMixingHook?: Function;
+  preMix?: Function;
+  postMix?: Function;
 
   [key: string]: any;
 }
@@ -17,10 +17,10 @@ declare interface IMixin {
 declare interface IMixOptions {
   omit?: string[];
 
-  preMethodAdvice?: {
+  preAdapters?: {
     [method: string]: Function
   };
-  postMethodAdvice?: {
+  postAdapters?: {
     [method: string]: Function
   };
 }

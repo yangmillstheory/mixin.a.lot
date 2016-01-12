@@ -109,7 +109,7 @@ let prefixMessage = function(error, message) {
 };
 
 mix(logger, logger_mixin, {
-  preMethodAdvice: {
+  postAdapters: {
     log: prefixMessage,
   },
 });
@@ -128,7 +128,7 @@ An example of an post-mixin-method adapter can be seen in the tests. It logs all
 Adapters can be chained, to give an execution flow like
 
 ```
-pre_method_advice -> mixin_method -> post_method_advice
+pre_adapters -> mixin_method -> post_adapters
 ```
 
 #### Pre/post Mixing Hooks
@@ -147,14 +147,14 @@ let logger_mixin = {
   // ...
   
   // new
-  preMixingHook() {
+  preMix() {
     if (typeof this.logname !== 'string') {
       throw new TypeError(`Expected string logname; got ${this.logname}`);
     }
   },
   
   // new
-  postMixingHook(target) {
+  postMix(target) {
     loggers.add(target);
   },
 };
@@ -213,13 +213,13 @@ target.say() // 'mixin'
 Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
 * `omit`: array of strings which are property names of `mixin` to exclude from mixing
-* `pre_method_advice`: object literal mapping mixin method names to adapters to them
-* `post_method_advice`: object literal mapping mixin method names to adapters from them
+* `pre_adapters`: object literal mapping mixin method names to adapters to them
+* `post_adapters`: object literal mapping mixin method names to adapters from them
 
 `mixin` can have two special properties
 
-* `pre_mixing_hook`: function invoked on `mixin` immediately before mixing (but after `mix` is called) with `target` as the argument
-* `post_mixing_hook`: function invoked on `mixin` immediately after mixing (but before `mix` returns) with `target` as the argument
+* `pre_mix`: function invoked on `mixin` immediately before mixing (but after `mix` is called) with `target` as the argument
+* `postMixing_hook`: function invoked on `mixin` immediately after mixing (but before `mix` returns) with `target` as the argument
 
 These properties will not be copied into `target`.
 

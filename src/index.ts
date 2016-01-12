@@ -13,7 +13,7 @@ const USAGE = (target?): string => {
   return `Expected non-null object or function, got ${target}`;
 };
 
-interface IMixJoint {
+interface IAdapting {
   method: Function;
   pre_adapter: Function;
   post_adapter: Function;
@@ -32,13 +32,15 @@ export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
     throw new TypeError('Expected mixin to be an object literal');
   }
   let {
-    pre_method_advice, post_method_advice,
-    pre_mixing_hook, post_mixing_hook,
+    pre_adapters,
+    pre_mix,
+    post_adapters,
+    post_mix,
     omit,
   } = parse_ioptions(options, mixin);
   let keys_to_mix_in = diff_arrays(
     Object.getOwnPropertyNames(mixin).filter(key => {
-      return (mixin[key] !== pre_mixing_hook) && (mixin[key] !== post_mixing_hook);
+      return (mixin[key] !== pre_mix) && (mixin[key] !== post_mix);
     }),
     omit);
   if (is_empty(keys_to_mix_in)) {
@@ -47,29 +49,29 @@ export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
 
   ////////////////////
   // initialize mixing
-  pre_mixing_hook.call(mixin, target);
+  pre_mix.call(mixin, target);
 
   //////////////
   // perform mix
-  let mix_joints: IMixJoint[] = [];
+  let adaptings: IAdapting[] = [];
   keys_to_mix_in.forEach((key: string) => {
-    let advice = pre_method_advice[key] || post_method_advice[key];
-    if (advice) {
-      // defer attaching advice until all other
+    let adapters = pre_adapters[key] || post_adapters[key];
+    if (adapters) {
+      // defer attaching adapters until all other
       // data/behavior have been mixed in
-      mix_joints.push({
+      adaptings.push({
         key,
-        pre_adapter: pre_method_advice[key],
-        post_adapter: post_method_advice[key],
+        pre_adapter: pre_adapters[key],
+        post_adapter: post_adapters[key],
         method: mixin[key],
       });
     } else  {
       target[key] = mixin[key];
     }
   });
-  mix_joints.forEach(mix_joint => {
-    // attach advice now
-    let {pre_adapter, post_adapter, method, key} = mix_joint;
+  adaptings.forEach(adapting => {
+    // attach adapters now
+    let {pre_adapter, post_adapter, method, key} = adapting;
     if (pre_adapter) {
       target[key] = compose(method, pre_adapter, target);
       if (post_adapter) {
@@ -82,6 +84,6 @@ export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
 
   //////////////////
   // finalize mixing
-  post_mixing_hook.call(mixin, target);
+  post_mix.call(mixin, target);
   return target;
 };

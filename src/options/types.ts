@@ -5,38 +5,38 @@ interface IOptionKey {
   aliases: string[];
 }
 
-const PRE_METHOD_ADVICE_KEY: IOptionKey = {
-  primary: 'preMethodAdvice',
+const PRE_ADAPTERS_KEY: IOptionKey = {
+  primary: 'preAdapters',
   aliases: [
-    'pre_method_advice',
+    'pre_adapters',
     'before_hook',
     'hook_before',
   ],
 };
 
-const PRE_MIXING_HOOK_KEY: IOptionKey = {
-  primary: 'preMixingHook',
+const PRE_MIX_KEY: IOptionKey = {
+  primary: 'preMix',
   aliases: [
-    'pre_mixing_hook',
+    'pre_mix',
     'premixing_hook',
     'premixing',
     'premix',
   ],
 };
 
-const POST_METHOD_ADVICE_KEY: IOptionKey = {
-  primary: 'preMethodAdvice',
+const POST_ADAPTERS_KEY: IOptionKey = {
+  primary: 'postAdapters',
   aliases: [
-    'post_method_advice',
+    'post_adapters',
     'after_hook',
     'hook_after',
   ],
 };
 
-const POST_MIXING_HOOK_KEY: IOptionKey = {
-  primary: 'postMixingHook',
+const POST_MIX_KEY: IOptionKey = {
+  primary: 'postMix',
   aliases: [
-    'post_mixing_hook',
+    'post_mix',
     'postmixing_hook',
     'postmixing',
     'postmix',
@@ -49,10 +49,10 @@ const OMITS_KEY: IOptionKey = {
 };
 
 export enum OptionType {
-  PRE_METHOD_ADVICE,
-  PRE_MIXING_HOOK,
-  POST_METHOD_ADVICE,
-  POST_MIXING_HOOK,
+  PRE_ADAPTERS,
+  PRE_MIX,
+  POST_ADAPTERS,
+  POST_MIX,
   OMIT
 }
 
@@ -61,14 +61,14 @@ export var Option = {
     let specifies_option = (option_key: IOptionKey) => {
       return (option_key.primary === key) || (option_key.aliases.indexOf(key) > -1);
     };
-    if (specifies_option(PRE_METHOD_ADVICE_KEY)) {
-      return OptionType.PRE_METHOD_ADVICE;
-    } else if (specifies_option(PRE_MIXING_HOOK_KEY)) {
-      return OptionType.PRE_MIXING_HOOK;
-    } else if (specifies_option(POST_METHOD_ADVICE_KEY)) {
-      return OptionType.POST_METHOD_ADVICE;
-    } else if (specifies_option(POST_MIXING_HOOK_KEY)) {
-      return OptionType.POST_MIXING_HOOK;
+    if (specifies_option(PRE_ADAPTERS_KEY)) {
+      return OptionType.PRE_ADAPTERS;
+    } else if (specifies_option(PRE_MIX_KEY)) {
+      return OptionType.PRE_MIX;
+    } else if (specifies_option(POST_ADAPTERS_KEY)) {
+      return OptionType.POST_ADAPTERS;
+    } else if (specifies_option(POST_MIX_KEY)) {
+      return OptionType.POST_MIX;
     } else if (specifies_option(OMITS_KEY)) {
       return OptionType.OMIT;
     } else {

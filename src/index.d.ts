@@ -2,16 +2,16 @@
 // extend public API with
 // snake-case for internal use
 interface IMixin {
-  pre_mixing_hook?: Function;
-  post_mixing_hook?: Function;
+  pre_mix?: Function;
+  post_mix?: Function;
 }
 
 interface IMixOptions {
-  pre_method_advice?: {
+  pre_adapters?: {
     [method: string]: Function
   };
 
-  post_method_advice?: {
+  post_adapters?: {
     [method: string]: Function
   };
 }
