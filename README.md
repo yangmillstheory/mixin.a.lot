@@ -113,7 +113,7 @@ let prefixMessage = function(error, message) {
 };
 
 mix(logger, logger_mixin, {
-  postAdapters: {
+  preAdapters: {
     log: prefixMessage,
   },
 });
