@@ -15,7 +15,8 @@ const USAGE = (target?): string => {
 
 interface IMixJoint {
   method: Function;
-  advice: Function;
+  pre_adapter: Function;
+  post_adapter: Function;
   key: string;
 }
 
@@ -56,18 +57,26 @@ export var mix = function(target, mixin: IMixin, options: IMixOptions = {}) {
     if (advice) {
       // defer attaching advice until all other
       // data/behavior have been mixed in
-      mix_joints.push({key, advice, method: mixin[key]});
+      mix_joints.push({
+        key,
+        pre_adapter: pre_method_advice[key],
+        post_adapter: post_method_advice[key],
+        method: mixin[key],
+      });
     } else  {
       target[key] = mixin[key];
     }
   });
-  mix_joints.forEach(composite => {
+  mix_joints.forEach(mix_joint => {
     // attach advice now
-    let {advice, method, key} = composite;
-    if (pre_method_advice[key]) {
-      target[key] = compose(method, advice, target);
-    } else if (post_method_advice[key]) {
-      target[key] = compose(advice, method, target);
+    let {pre_adapter, post_adapter, method, key} = mix_joint;
+    if (pre_adapter) {
+      target[key] = compose(method, pre_adapter, target);
+      if (post_adapter) {
+        target[key] = compose(post_adapter, target[key], target);
+      }
+    } else if (post_adapter) {
+      target[key] = compose(post_adapter, method, target);
     }
   });
 

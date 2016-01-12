@@ -434,17 +434,21 @@ describe('mixing', () => {
 
         it('should chain adapters', () => {
           let mock_console = this.mock_console;
+
           let mixin: IMixin = {
+            initial_message: 'Hello, World!',
+
             log(message: string): string {
               message = `${message}::log`;
               mock_console.log(message);
               return message;
             },
           };
+
           let options: IMixOptions = {
             pre_method_advice: {
-              log(num: number): string {
-                let message = `${num}**info`;
+              log(): string {
+                let message = `${this.initial_message}**info`;
                 mock_console.info(message);
                 return message;
               },
@@ -464,7 +468,7 @@ describe('mixing', () => {
           spy(mixin, 'log');
 
           expect(mix({}, mixin, options).log())
-            .to.equal('info::log++error');
+            .to.equal('Hello, World!**info::log++error');
 
           expect(mock_console.info.calledBefore(mock_console.log));
           expect(mock_console.log.calledBefore(mock_console.error));
