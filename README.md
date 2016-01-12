@@ -9,9 +9,6 @@
 
 A small [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin API.
 
-You can run it in [node](https://nodejs.org/), or in the [browser](http://browserify.org/), and install it via [NPM](https://www.npmjs.com/package/mixin-a-lot).
-
-
 ## Why use it?
 
 - You can advise mixin behavior with your own functions.
@@ -46,30 +43,30 @@ import {mix} from 'mixin-a-lot';
 A mixin is just a plain old JavaScript object. Mix it into your object, function or prototype.
 
 ```javascript
-class Named {
+class Person {
   constructor(name) {
     this.name = name;
   }
 };
 
-let mixin = {
-  say() {
+let named = {
+  sayName() {
     console.log(this.name);
   }
 };
 
 // mix into a Function
-mix(Named, mixin);
-Named.say(); // 'Named'
+mix(Person, named);
+Person.sayName(); // 'Person'
 
 // or mix into its prototype
-mix(Named.prototype, mixin);
-new Named().shared('named'); // 'named' 
+mix(Person.prototype, named);
+new Person('Victor').sayName(); // 'Victor' 
 
 // or mix into a random object
 let object = {name: 'object'};
-mix(object, mixin);
-object.say(); // 'object'
+mix(object, named);
+object.sayName(); // 'object'
 ```
 
 Any mixed-in functions will always be called on the target context.
