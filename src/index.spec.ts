@@ -302,6 +302,14 @@ describe('mixing', () => {
 
       describe('adapters', () => {
 
+        beforeEach(() => {
+          this.mock_console = {
+            info: spy(),
+            error: spy(),
+            log: spy(),
+          };
+        });
+
         describe('pre_method_advice', () => {
 
           it('should be called on the target before the mixin method', () => {
@@ -324,10 +332,7 @@ describe('mixing', () => {
           });
 
           it('should be an adapter to the mixin method', () => {
-            let mock_console = {
-              log: spy()
-            };
-
+            let mock_console = this.mock_console;
             let options: IMixOptions = {
               pre_method_advice: {
                 // prefix every message with ERROR or INFO
@@ -345,16 +350,16 @@ describe('mixing', () => {
             });
 
             let target = {
-              logname: 'prefixing_logger'
+              logname: 'prefix_logger'
             };
             mix(target, this.mixin, options);
 
             target.log(null, 'A-OK.');
-            expect(mock_console.log.calledWithExactly('prefixing_logger:INFO:A-OK.'))
+            expect(mock_console.log.calledWithExactly('prefix_logger:INFO:A-OK.'))
               .to.be.true;
 
             target.log(new Error, 'Uh oh.');
-            expect(mock_console.log.calledWithExactly('prefixing_logger:ERROR:Uh oh.'))
+            expect(mock_console.log.calledWithExactly('prefix_logger:ERROR:Uh oh.'))
               .to.be.true;
           });
 
@@ -382,16 +387,11 @@ describe('mixing', () => {
           });
 
           it('should adapt to the mixin method', () => {
+            let mock_console = this.mock_console;
             interface ILogResult {
               error: boolean;
               message: string;
             }
-
-            let mock_console = {
-              log: spy(),
-              info: spy(),
-              error: spy(),
-            };
 
             let options: IMixOptions = {
               post_method_advice: {
@@ -433,22 +433,17 @@ describe('mixing', () => {
         });
 
         it('should chain adapters', () => {
-          let mock_console = {
-            log: spy(),
-            error: spy(),
-            info: spy(),
-          };
+          let mock_console = this.mock_console;
           let mixin: IMixin = {
-            baz: 0,
-            method(message: string): string {
-              message = `${message}::${this.baz}::log`;
+            log(message: string): string {
+              message = `${message}::log`;
               mock_console.log(message);
               return message;
             },
           };
           let options: IMixOptions = {
             pre_method_advice: {
-              method(num: number): string {
+              log(num: number): string {
                 let message = `${num}**info`;
                 mock_console.info(message);
                 return message;
@@ -456,25 +451,28 @@ describe('mixing', () => {
             },
 
             post_method_advice: {
-              method(message: string): string {
-                message = `${message}++post++error`;
+              log(message: string): string {
+                message = `${message}++error`;
                 mock_console.error(message);
                 return message;
               },
             },
           };
 
-          spy(options.pre_method_advice.method);
-          spy(options.post_method_advice.method);
+          spy(options.pre_method_advice, 'log');
+          spy(options.post_method_advice, 'log');
+          spy(mixin, 'log');
 
-          expect(mix({}, mixin, options).method(999))
-            .to.equal('999**info::0::log++post++error');
+          expect(mix({}, mixin, options).log())
+            .to.equal('info::log++error');
+
           expect(mock_console.info.calledBefore(mock_console.log));
           expect(mock_console.log.calledBefore(mock_console.error));
+
           expect(
-            options.pre_method_advice.method.calledBefore(
-              options.post_method_advice.method))
-            .to.be.true;
+            options.pre_method_advice.log.calledBefore(mixin.log)).to.be.true;
+          expect(
+            mixin.log.calledBefore(options.post_method_advice.log)).to.be.true;
         });
 
       });
