@@ -46,26 +46,30 @@ import {mix} from 'mixin-a-lot';
 A mixin is just a plain old JavaScript object. Mix it into your object, function or prototype.
 
 ```javascript
-class Thing {};
+class Named {
+  constructor(name) {
+    this.name = name;
+  }
+};
 
 let mixin = {
-  shared() {
-    // ...
+  say() {
+    console.log(this.name);
   }
 };
 
 // mix into a Function
-mix(Thing, mixin);
-Thing.shared(...);
+mix(Named, mixin);
+Named.shared(); // 'Named'
 
 // or mix into its prototype
-mix(Thing.prototype, mixin);
-new Thing().shared();
+mix(Named.prototype, mixin);
+new Named().shared('named'); // 'named' 
 
 // or mix into a random object
-let object = {...};
+let object = {name: 'object'};
 mix(object, mixin);
-object.shared();
+object.shared(); // 'object'
 ```
 
 Any mixed-in functions will always be called on the target context.
@@ -75,16 +79,16 @@ Any mixed-in functions will always be called on the target context.
 Take
 
 ```javascript
-let logger_mixin = {
+let loggerMixin = {
   errLog: '/logs/app.err',
   infLog: '/logs/app.log',
   
-  log: function(log_event) {
-    let {error, message} = log_event;
+  log: function(logEvent) {
+    let {error, message} = logEvent;
     if (error) {
-      fs.writeFile(this.errLog, this.logname + ':' + level + ':' + message); 
+      fs.writeFile(this.errLog, `${this.logname}:${level}:${message}`); 
     } else {
-      fs.writeFile(this.infLog, this.logname + ':' + level + ':' + message);
+      fs.writeFile(this.infLog, `${this.logname}:${level}:${message}`);
     }
   },
 };
@@ -112,7 +116,7 @@ let prefixMessage = function(error, message) {
   return {error: !!error, message: `${prefix}:${message}`};
 };
 
-mix(logger, logger_mixin, {
+mix(logger, loggerMixin, {
   preAdapters: {
     log: prefixMessage,
   },
@@ -145,7 +149,7 @@ This is a good place to run validation, finalization, or set default properties.
 // shared/mixins/logger.js
 let loggers = new WeakSet(); // ES6 only
 
-let logger_mixin = {
+let loggerMixin = {
   // ...
   // properties as before
   // ...
@@ -196,16 +200,16 @@ let mixin = {
     console.log(this.name);
   },
 };
-let target = {
-  name: 'target'
+let mixee = {
+  name: 'mixee'
 };
 
-mix(target, mixin, {omit: ['name']});
-target.say() // 'target'
+mix(mixee, mixin, {omit: ['name']});
+mixee.say() // 'mixee'
 
 // probably not what you want
-mix(target, mixin);
-target.say() // 'mixin'
+mix(mixee, mixin);
+mixee.say() // 'mixin'
 ```
 
 **[Tests for all these examples can be found here.](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts)**
