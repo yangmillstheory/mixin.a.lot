@@ -138,7 +138,7 @@ pre adapter -> mixin method -> post adapter
 
 #### Pre and post mixing routines
 
-Each mixin can specify pre and post mix routines. 
+Each mixin can specify pre and post mix routines. The context is the mixin, the argument is the target.
 
 This is a good place to run validation, finalization, or set default properties.
 
@@ -152,9 +152,9 @@ let loggerMixin = {
   // ...
   
   // new
-  premix() {
-    if (typeof this.logname !== 'string') {
-      throw new TypeError(`Expected string logname; got ${this.logname}`);
+  premix(target) {
+    if (typeof target.logname !== 'string') {
+      throw new TypeError(`Expected string logname; got ${target.logname}`);
     }
   },
   
@@ -191,9 +191,9 @@ mixee.foo     // true
 Or, you want to override some data or behavior.
 
 ```javascript
-let mixin = {
+let named = {
   name: 'mixin'
-  say() {
+  sayName() {
     console.log(this.name);
   },
 };
@@ -201,12 +201,12 @@ let mixee = {
   name: 'mixee'
 };
 
-mix(mixee, mixin, {omit: ['name']});
-mixee.say() // 'mixee'
+mix(mixee, named, {omit: ['name']});
+mixee.sayName() // 'mixee'
 
 // probably not what you want
-mix(mixee, mixin);
-mixee.say() // 'mixin'
+mix(mixee, named);
+mixee.sayName() // 'mixin'
 ```
 
 **[Tests for all these examples can be found here.](https://github.com/yangmillstheory/mixin.a.lot/blob/master/src/index.spec.ts)**
