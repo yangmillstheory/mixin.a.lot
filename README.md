@@ -222,8 +222,8 @@ mixee.say() // 'mixin'
 Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
 * `omit`: array of strings which are property names of `mixin` to exclude from mixing
-* `pre_adapters`: object literal mapping mixin method names to adapters *to* them
-* `post_adapters`: object literal mapping mixin method names to adapters *from* them
+* `preAdapters`: object literal mapping mixin method names to adapters *to* them
+* `postAdapters`: object literal mapping mixin method names to adapters *from* them
 
 `mixin` can have two special properties
 
