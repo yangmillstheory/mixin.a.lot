@@ -89,4 +89,4 @@ export var compose = (f: Function, g: Function, context: Object): Function => {
   };
 };
 
-export var NOOP = Object.freeze(new Function());
+export const NOOP = Object.freeze(new Function());
