@@ -60,7 +60,7 @@ let mixin = {
 
 // mix into a Function
 mix(Named, mixin);
-Named.shared(); // 'Named'
+Named.say(); // 'Named'
 
 // or mix into its prototype
 mix(Named.prototype, mixin);
@@ -69,7 +69,7 @@ new Named().shared('named'); // 'named'
 // or mix into a random object
 let object = {name: 'object'};
 mix(object, mixin);
-object.shared(); // 'object'
+object.say(); // 'object'
 ```
 
 Any mixed-in functions will always be called on the target context.
