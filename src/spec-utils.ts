@@ -1,7 +1,7 @@
-import {copy_object} from './utility';
+import {mix_into} from './utility';
 
 export var logger_mixin = (extensions: Object = {}) => {
-  return copy_object(
+  return mix_into(
     {
       log: new Function()
     },

@@ -24,7 +24,7 @@ export var for_own = function(iteratee, iterator: (value, key: string) => void) 
   }
 };
 
-export var copy_object = (target, ...sources) => {
+export var mix_into = (target, ...sources) => {
   sources.forEach(source => {
     for_own(source, (value, key: string) => {
       target[key] = value;
