@@ -7,7 +7,7 @@
 
 ## What is it?
 
-A small [aspect-oriented](https://en.wikipedia.org/wiki/Aspect-oriented_programming) JavaScript mixin API.
+A small composable JavaScript mixin API.
 
 ## Why use it?
 
