@@ -17,10 +17,10 @@ declare interface IMixin {
 declare interface IMixOptions {
   omit?: string[];
 
-  preAdapters?: {
+  adaptTo?: {
     [method: string]: Function
   };
-  postAdapters?: {
+  adaptFrom?: {
     [method: string]: Function
   };
 }
