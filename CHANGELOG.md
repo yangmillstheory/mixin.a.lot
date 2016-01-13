@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.0.0 - 4.0.8]
+## [4.0.0 - 4.0.9]
 ### BREAKING CHANGES
 
 Removed dependency on [lodash](http://lodash.com/).
@@ -19,8 +19,8 @@ mixin_a_lot.mix(target: Object, mixin: Object, options?: Object);
 
 Hopefully more descriptive option aliases for `mixin_a_lot.mix(...)`.
 
-* `pre_adapters` for `before_hook`, et. al.
-* `post_adapters` for `after_hook`, et. al.
+* `adapterTo` for `before_hook`, et. al.
+* `adapterFrom` for `after_hook`, et. al.
 
 and all their pascalCase equivalents. 
 

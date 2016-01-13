@@ -7,11 +7,11 @@ interface IMixin {
 }
 
 interface IMixOptions {
-  pre_adapters?: {
+  adapter_to?: {
     [method: string]: Function
   };
 
-  post_adapters?: {
+  adapter_from?: {
     [method: string]: Function
   };
 }

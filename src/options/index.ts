@@ -17,9 +17,9 @@ interface IOptions extends IMixOptions, IMixin {}
 
 const DEFAULT_IMIX_OPTIONS: IOptions = {
   omit: [],
-  pre_adapters: {},
+  adapter_to: {},
   pre_mix: NOOP,
-  post_adapters: {},
+  adapter_from: {},
   post_mix: NOOP,
 };
 
@@ -57,13 +57,13 @@ let parse_inline_options = (mixin: IMixin, options: Object,
                             parsed: IOptions): void => {
   for_own(options, (value, key: string) => {
     switch (Option.from_key(key)) {
-      case (Option.Type.PRE_ADAPTERS):
+      case (Option.Type.ADAPTER_TO):
         check_method_adapters(key, value, mixin);
-        parsed.pre_adapters = value;
+        parsed.adapter_to = value;
         break;
-      case (Option.Type.POST_ADAPTERS):
+      case (Option.Type.ADAPTER_FROM):
         check_method_adapters(key, value, mixin);
-        parsed.post_adapters = value;
+        parsed.adapter_from = value;
         break;
       case (Option.Type.OMIT):
         check_omit(value, mixin);

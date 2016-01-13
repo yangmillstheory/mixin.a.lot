@@ -93,7 +93,7 @@ let loggerMixin = {
 
 as a starting point.
 
-You can write adapters to mixin methods.
+You can write adapters to and from mixin methods.
 
 ```javascript
 let logger = {
@@ -114,7 +114,7 @@ let prefixMessage = function(error, message) {
 };
 
 mix(logger, loggerMixin, {
-  preAdapters: {
+  adapterTo: {
     log: prefixMessage,
   },
 });
@@ -138,7 +138,7 @@ pre adapter -> mixin method -> post adapter
 
 #### Pre and post mixing routines
 
-Each mixin can specify pre and post mix routines. The context is the mixin, the argument is the target.
+Each mixin can specify pre and post mix routines. Each routine is invoked on the context with the mixin as a target.
 
 This is a good place to run validation, finalization, or set default properties.
 
@@ -221,8 +221,8 @@ mixee.sayName() // 'mixin'
 Mix own properties from `mixin` into `target`. `options` can be an object literal with
 
 * `omit`: array of strings which are property names of `mixin` to exclude from mixing
-* `preAdapters`: object literal mapping mixin method names to adapters *to* them
-* `postAdapters`: object literal mapping mixin method names to adapters *from* them
+* `adapterTo`: object literal mapping mixin method names to adapters *to* them
+* `adapterFrom`: object literal mapping mixin method names to adapters *from* them
 
 `mixin` can have two special properties
 

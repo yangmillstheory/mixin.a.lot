@@ -5,10 +5,11 @@ interface IOptionKey {
   aliases: string[];
 }
 
-const PRE_ADAPTERS_KEY: IOptionKey = {
-  primary: 'preAdapters',
+const ADAPTER_TO_KEY: IOptionKey = {
+  primary: 'adapterTo',
   aliases: [
-    'pre_adapters',
+    'adapter_to',
+    'preAdapters',
     'before_hook',
     'hook_before',
   ],
@@ -23,10 +24,11 @@ const PRE_MIX_KEY: IOptionKey = {
   ],
 };
 
-const POST_ADAPTERS_KEY: IOptionKey = {
-  primary: 'postAdapters',
+const ADAPTER_FROM_KEY: IOptionKey = {
+  primary: 'adapterFrom',
   aliases: [
-    'post_adapters',
+    'adapter_from',
+    'postAdapters',
     'after_hook',
     'hook_after',
   ],
@@ -47,9 +49,9 @@ const OMITS_KEY: IOptionKey = {
 };
 
 export enum OptionType {
-  PRE_ADAPTERS,
+  ADAPTER_TO,
   PRE_MIX,
-  POST_ADAPTERS,
+  ADAPTER_FROM,
   POST_MIX,
   OMIT
 }
@@ -59,12 +61,12 @@ export var Option = {
     let specifies_option = (option_key: IOptionKey) => {
       return (option_key.primary === key) || (option_key.aliases.indexOf(key) > -1);
     };
-    if (specifies_option(PRE_ADAPTERS_KEY)) {
-      return OptionType.PRE_ADAPTERS;
+    if (specifies_option(ADAPTER_TO_KEY)) {
+      return OptionType.ADAPTER_TO;
     } else if (specifies_option(PRE_MIX_KEY)) {
       return OptionType.PRE_MIX;
-    } else if (specifies_option(POST_ADAPTERS_KEY)) {
-      return OptionType.POST_ADAPTERS;
+    } else if (specifies_option(ADAPTER_FROM_KEY)) {
+      return OptionType.ADAPTER_FROM;
     } else if (specifies_option(POST_MIX_KEY)) {
       return OptionType.POST_MIX;
     } else if (specifies_option(OMITS_KEY)) {

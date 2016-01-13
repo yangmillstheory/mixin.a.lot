@@ -31,9 +31,9 @@ export var mix = function(target: Object, mixin: IMixin, options: IMixOptions = 
     throw new TypeError('Expected mixin to be an object literal');
   }
   let {
-    pre_adapters,
+    adapter_to,
     pre_mix,
-    post_adapters,
+    adapter_from,
     post_mix,
     omit,
   } = parse_ioptions(options, mixin);
@@ -54,14 +54,14 @@ export var mix = function(target: Object, mixin: IMixin, options: IMixOptions = 
   // perform mix
   let adaptings: IAdapting[] = [];
   keys_to_mix_in.forEach((key: string) => {
-    let adapters = pre_adapters[key] || post_adapters[key];
+    let adapters = adapter_to[key] || adapter_from[key];
     if (adapters) {
       // defer attaching adapters until all other
       // data/behavior have been mixed in
       adaptings.push({
         key,
-        pre_adapter: pre_adapters[key],
-        post_adapter: post_adapters[key],
+        pre_adapter: adapter_to[key],
+        post_adapter: adapter_from[key],
         method: mixin[key],
       });
     } else  {

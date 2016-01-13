@@ -261,12 +261,12 @@ describe('mixing', () => {
     describe('mixin method adapters', () => {
 
       it('should expect a map of mixin method names to functions', () => {
-        ['String', 1, null, [], true].forEach(pre_adapters => {
+        ['String', 1, null, [], true].forEach(adapter_to => {
           expect(() => {
-            mix({}, this.logger, {pre_adapters});
+            mix({}, this.logger, {adapter_to});
           }).to.throw(
             TypeError,
-            'pre_adapters: expected dict of mixin methods to functions');
+            'adapter_to: expected dict of mixin methods to functions');
         });
       });
 
@@ -278,11 +278,11 @@ describe('mixing', () => {
           {log: 'string'},
         ].forEach(adapters => {
           expect(() => {
-            mix({}, this.logger, {pre_adapters: adapters});
-          }).to.throw(TypeError, "pre_adapters: value for log isn't a function");
+            mix({}, this.logger, {adapter_to: adapters});
+          }).to.throw(TypeError, "adapter_to: value for log isn't a function");
           expect(() => {
-            mix({}, this.logger, {post_adapters: adapters});
-          }).to.throw(TypeError, "post_adapters: value for log isn't a function");
+            mix({}, this.logger, {adapter_from: adapters});
+          }).to.throw(TypeError, "adapter_from: value for log isn't a function");
         });
       });
 
@@ -312,12 +312,12 @@ describe('mixing', () => {
         fixtures.forEach((fixture: IErrorFixture) => {
           expect(() => {
             mix({}, this.logger, {
-              pre_adapters: fixture.adapters
+              adapter_to: fixture.adapters
             });
           }).to.throw(fixture.expected_error);
           expect(() => {
             mix({}, this.logger, {
-              post_adapters: fixture.adapters
+              adapter_from: fixture.adapters
             });
           }).to.throw(fixture.expected_error);
         });
@@ -333,33 +333,33 @@ describe('mixing', () => {
           };
         });
 
-        describe('pre_adapters', () => {
+        describe('adapter_to', () => {
 
           it('should be called on the target before the mixin method', () => {
             let target = {};
-            let pre_log_spy = spy();
+            let pre_log = spy();
 
             spy(this.logger, 'log');
 
             mix(target, this.logger, {
-              pre_adapters: {
-                log: pre_log_spy
+              adapter_to: {
+                log: pre_log
               },
             });
 
             target.log();
 
             expect(this.logger.log.calledOnce).to.be.true;
-            expect(pre_log_spy.calledOnce).to.be.true;
+            expect(pre_log.calledOnce).to.be.true;
 
-            expect(pre_log_spy.calledOn(target)).to.be.true;
-            expect(pre_log_spy.calledBefore(this.logger.log)).to.be.true;
+            expect(pre_log.calledOn(target)).to.be.true;
+            expect(pre_log.calledBefore(this.logger.log)).to.be.true;
           });
 
           it('should be an adapter to the mixin method', () => {
             let mock_console = this.mock_console;
             let options: IMixOptions = {
-              pre_adapters: {
+              adapter_to: {
                 // prefix every message with ERROR or INFO
                 log(error: Error, message: string): string {
                   if (error) {
@@ -393,27 +393,27 @@ describe('mixing', () => {
 
         });
 
-        describe('post_adapters', () => {
+        describe('adapter_from', () => {
 
           it('should be called on the target after the mixin method', () => {
             let target = {};
-            let post_log_spy = spy();
+            let post_log = spy();
 
             spy(this.logger, 'log');
 
             mix(target, this.logger, {
-              post_adapters: {
-                log: post_log_spy
+              adapter_from: {
+                log: post_log
               },
             });
 
             target.log();
 
             expect(this.logger.log.calledOnce).to.be.true;
-            expect(post_log_spy.calledOnce).to.be.true;
+            expect(post_log.calledOnce).to.be.true;
 
-            expect(post_log_spy.calledOn(target)).to.be.true;
-            expect(post_log_spy.calledAfter(this.logger.log)).to.be.true;
+            expect(post_log.calledOn(target)).to.be.true;
+            expect(post_log.calledAfter(this.logger.log)).to.be.true;
           });
 
           it('should adapt to the mixin method', () => {
@@ -440,7 +440,7 @@ describe('mixing', () => {
               });
 
             let options: IMixOptions = {
-              post_adapters: {
+              adapter_from: {
                 // log to console, afterward
                 log(log_result: ILogResult): void {
                   if (log_result.error) {
@@ -481,7 +481,7 @@ describe('mixing', () => {
           });
 
           let options: IMixOptions = {
-            pre_adapters: {
+            adapter_to: {
               log(): string {
                 let message = `${this.initial_message}**info`;
                 mock_console.info(message);
@@ -489,7 +489,7 @@ describe('mixing', () => {
               },
             },
 
-            post_adapters: {
+            adapter_from: {
               log(message: string): string {
                 message = `${message}++error`;
                 mock_console.error(message);
@@ -498,8 +498,8 @@ describe('mixing', () => {
             },
           };
 
-          spy(options.pre_adapters, 'log');
-          spy(options.post_adapters, 'log');
+          spy(options.adapter_to, 'log');
+          spy(options.adapter_from, 'log');
           spy(logger, 'log');
 
           expect(mix({}, logger, options).log())
@@ -509,9 +509,9 @@ describe('mixing', () => {
           expect(mock_console.log.calledBefore(mock_console.error));
 
           expect(
-            options.pre_adapters.log.calledBefore(logger.log)).to.be.true;
+            options.adapter_to.log.calledBefore(logger.log)).to.be.true;
           expect(
-            logger.log.calledBefore(options.post_adapters.log)).to.be.true;
+            logger.log.calledBefore(options.adapter_from.log)).to.be.true;
         });
 
       });
