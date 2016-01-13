@@ -19,10 +19,9 @@
     "mocha",
     "npm",
     "typescript",
-    "aspect",
     "adapter",
     "adapters",
-    "aspect-oriented"
+    "composable"
   ],
   "author": {
     "name": "Victor Alvarez",
