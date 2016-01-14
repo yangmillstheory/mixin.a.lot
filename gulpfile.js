@@ -49,7 +49,7 @@ var TS_PROJECT = ts.createProject('tsconfig.json', {
 // compile
 gulp.task('compile:ts', function() {
   return gulp
-    .src(SRC.ts().concat(typings()), {base: SRC.base})
+    .src(SRC.ts().concat(typings()))
     .pipe(ts(TS_PROJECT))
     .js
     .pipe(gulp.dest(BUILD.base))
@@ -58,7 +58,7 @@ gulp.task('compile:ts', function() {
 
 gulp.task('compile:spec', function() {
   return gulp
-    .src(SRC.spec().concat(typings()))
+    .src(SRC.spec())
     // swallow compiler errors/warnings, since we abuse the API here
     .pipe(ts(TS_PROJECT, undefined, ts.reporter.nullReporter))
     .js
