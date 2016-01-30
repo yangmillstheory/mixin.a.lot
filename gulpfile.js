@@ -69,7 +69,7 @@ gulp.task('compile', gulp.series('compile:ts', 'compile:spec'));
 
 ///////
 // lint
-var tslint_stream = function(glob, rules) {
+var tslintStream = function(glob, rules) {
   return gulp.src(glob)
     .pipe(tslint({
       configuration: {
@@ -84,11 +84,11 @@ var tslint_stream = function(glob, rules) {
 };
 
 gulp.task('lint:ts', function(done) {
-  return tslint_stream(SRC.ts());
+  return tslintStream(SRC.ts());
 });
 
 gulp.task('lint:spec', function(done) {
-  return tslint_stream(SRC.spec(), {
+  return tslintStream(SRC.spec(), {
     // tslint.json overrides
     'no-null-keyword': false,
   });

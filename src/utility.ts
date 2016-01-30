@@ -1,8 +1,8 @@
 ///////////////////
 // arrays & objects
 
-export var diff_arrays = (minuend: any[], ...subtrahends: (any[])[]): any[] => {
-  let diff_two_arrays = (a1: any[], a2: any[]): any[] => {
+export var diffArrays = function(minuend: any[], ...subtrahends: (any[])[]): any[] {
+  let diffTwoArrays = function(a1: any[], a2: any[]): any[] {
     let diff = [];
     for (let value of a1) {
       if (a2.indexOf(value) === -1) {
@@ -11,12 +11,12 @@ export var diff_arrays = (minuend: any[], ...subtrahends: (any[])[]): any[] => {
     }
     return diff;
   };
-  return subtrahends.reduce((diff_so_far, subtrahend) => {
-    return diff_two_arrays(diff_so_far, subtrahend);
+  return subtrahends.reduce((diffSoFar, subtrahend) => {
+    return diffTwoArrays(diffSoFar, subtrahend);
   }, minuend);
 };
 
-export var for_own = function(iteratee, iterator: (value, key: string) => void) {
+export var forOwn = function(iteratee, iterator: (value, key: string) => void) {
   for (let key in iteratee) {
     if (iteratee.hasOwnProperty(key)) {
       iterator(iteratee[key], key);
@@ -24,9 +24,9 @@ export var for_own = function(iteratee, iterator: (value, key: string) => void) 
   }
 };
 
-export var mix_into = (target, ...sources) => {
-  sources.forEach(source => {
-    for_own(source, (value, key: string) => {
+export var mixInto = function(target, ...sources) {
+  sources.forEach(function(source) {
+    forOwn(source, function(value, key: string) {
       target[key] = value;
     });
   });
@@ -37,53 +37,53 @@ export var mix_into = (target, ...sources) => {
 ////////////////
 // type-checking
 
-export var is_function = (thing) => {
+export var isFunction = function(thing) {
   return typeof thing === 'function';
 };
 
-export var is_plain_object = (thing) => {
+export var isPlainObject = function(thing) {
   // slightly modified from:
   // 
   //    https://github.com/lodash/lodash/blob/master/lodash.js#L9976
-  let is_object_like = () => {
+  let isObjectLike = () => {
     return !!thing && typeof thing === 'object';
   };
-  let object_proto = Object.prototype;
-  if (!is_object_like() || object_proto.toString.call(thing) !== '[object Object]') {
+  let objectProto = Object.prototype;
+  if (!isObjectLike() || objectProto.toString.call(thing) !== '[object Object]') {
     return false;
   }
-  let proto = object_proto;
-  if (is_function(thing.constructor)) {
+  let proto = objectProto;
+  if (isFunction(thing.constructor)) {
     proto = Object.getPrototypeOf(thing);
   }
   if (!proto) {
     return true;
   }
-  let func_to_string = Function.prototype.toString;
+  let funcToString = Function.prototype.toString;
   let ctor = proto.constructor;
-  return (is_function(ctor) &&
+  return (isFunction(ctor) &&
     ctor instanceof ctor &&
-    func_to_string.call(ctor) === func_to_string.call(Object));
+    funcToString.call(ctor) === funcToString.call(Object));
 };
 
-export var is_object = (thing) => {
+export var isObject = function(thing) {
   let type = typeof thing;
   return !!thing && (type === 'object' || type === 'function');
 };
 
-export var is_string = (thing) => {
+export var isString = function(thing) {
   return typeof thing === 'string';
 };
 
-export var is_empty = (thing: any[]) => {
-  return thing.length === 0;
+export var isEmpty = function(array: any[]) {
+  return array.length === 0;
 };
 
 
 ////////////
 // functions
 
-export var compose = (f: Function, g: Function, context: Object): Function => {
+export var compose = function(f: Function, g: Function, context: Object): Function {
   return function() {
     return f.call(context, g.apply(context, [].slice.call(arguments)));
   };

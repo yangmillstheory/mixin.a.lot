@@ -1,46 +1,46 @@
 import {expect} from 'chai';
 import {spy, stub} from 'sinon';
 import {mix} from './index';
-import {logger_mixin} from './spec-utils';
-import {is_string} from './utility';
+import {loggerMixin} from './spec-utils';
+import {isString} from './utility';
 
 describe('mixing', () => {
 
   it('should expect object literals for mixins', () => {
-    [1, 'String', [], new Function()].forEach(thing => {
-      expect(() => {
+    [1, 'String', [], new Function()].forEach(function(thing) {
+      expect(function() {
         mix({}, thing);
       }).to.throw(TypeError, 'Expected mixin to be an object literal');
     });
   });
 
   it('should expect objects for targets', () => {
-    [1, 'string', true, null, undefined].forEach(target => {
-      expect(() => {
-        mix(target, logger_mixin());
+    [1, 'string', true, null, undefined].forEach(function(target) {
+      expect(function() {
+        mix(target, loggerMixin());
       }).to.throw(TypeError, `Expected non-null object, got ${target}`);
     });
   });
 
   it('should mix into the target', () => {
     let target = {};
-    let logger = logger_mixin();
+    let logger = loggerMixin();
 
     mix(target, logger);
-    Object.getOwnPropertyNames(logger).forEach((key: string) => {
+    Object.getOwnPropertyNames(logger).forEach(function(key: string) {
       expect(target[key]).to.equal(logger[key]);
     });
   });
 
   it('should mix in order', () => {
-    let mixin_1 = {name: 'mixin_1', foo: 'bar1', baz: 'qux'};
-    let mixin_2 = {name: 'mixin_2', foo: 'bar2', qux: 'baz'};
+    let mixin1 = {name: 'mixin1', foo: 'bar1', baz: 'qux'};
+    let mixin2 = {name: 'mixin2', foo: 'bar2', qux: 'baz'};
     let target = {};
 
-    mix(target, mixin_1);
-    mix(target, mixin_2);
+    mix(target, mixin1);
+    mix(target, mixin2);
 
-    expect(target.name).to.equal('mixin_2');
+    expect(target.name).to.equal('mixin2');
     expect(target.foo).to.equal('bar2');
     expect(target.baz).to.equal('qux');
     expect(target.qux).to.equal('baz');
@@ -65,45 +65,45 @@ describe('mixing', () => {
     it('should expect functions for mixing callbacks', () => {
       let mixin: IMixin = {
         name: 'mixin',
-        pre_mix: 1,
+        premix: 1,
       };
 
-      expect(() => {
+      expect(function() {
         mix({}, mixin);
-      }).to.throw(TypeError, 'Expected a function for pre_mix');
+      }).to.throw(TypeError, 'Expected a function for premix');
 
       mixin = {
         name: 'mixin',
-        post_mix: [],
+        postmix: [],
       };
 
-      expect(() => {
+      expect(function() {
         mix({}, mixin);
-      }).to.throw(TypeError, 'Expected a function for post_mix');
+      }).to.throw(TypeError, 'Expected a function for postmix');
     });
 
-    describe('pre_mix', () => {
+    describe('premix', () => {
 
       it('should call it on the mixin with the target as a parameter', () => {
         let mixee = {
           logname: 1
         };
-        let logger = logger_mixin({
-          pre_mix(target) {
-            if (!is_string(target.logname)) {
+        let logger = loggerMixin({
+          premix(target) {
+            if (!isString(target.logname)) {
               throw new TypeError(`Expected string logname; got ${target.logname}`);
             }
           },
         });
-        spy(logger, 'pre_mix');
+        spy(logger, 'premix');
 
         expect(logger.log).to.exist;
-        expect(() => {
+        expect(function() {
           mix(mixee, logger);
         }).to.throw(`Expected string logname; got 1`);
 
-        expect(logger.pre_mix.calledOn(logger)).to.be.true;
-        expect(logger.pre_mix.calledWithExactly(mixee)).to.be.true;
+        expect(logger.premix.calledOn(logger)).to.be.true;
+        expect(logger.premix.calledWithExactly(mixee)).to.be.true;
         expect(mixee.log).not.to.exist; // nothing mixed in
       });
 
@@ -113,8 +113,8 @@ describe('mixing', () => {
         let threw = false;
         let target = {};
 
-        let logger = logger_mixin({
-          pre_mix: stub().throws(error)
+        let logger = loggerMixin({
+          premix: stub().throws(error)
         });
         expect(logger.log).to.exist;
 
@@ -130,34 +130,34 @@ describe('mixing', () => {
 
       it('should not mix it into the target', () => {
         let target = {};
-        let logger = logger_mixin({
-          pre_mix: spy()
+        let logger = loggerMixin({
+          premix: spy()
         });
 
         mix(target, logger);
 
-        expect(target.pre_mix).not.to.exist;
+        expect(target.premix).not.to.exist;
         expect(target.log).to.exist;
       });
 
     });
 
-    describe('post_mix', () => {
+    describe('postmix', () => {
 
       it('should call it on the mixin with the target as a parameter', () => {
         let mixee = {};
         let loggers = [];
-        let logger = logger_mixin({
-          post_mix(target): void {
+        let logger = loggerMixin({
+          postmix(target): void {
             loggers.push(target);
           },
         });
-        spy(logger, 'post_mix');
+        spy(logger, 'postmix');
 
         mix(mixee, logger);
 
-        expect(logger.post_mix.calledOn(logger)).to.be.true;
-        expect(logger.post_mix.calledWithExactly(mixee)).to.be.true;
+        expect(logger.postmix.calledOn(logger)).to.be.true;
+        expect(logger.postmix.calledWithExactly(mixee)).to.be.true;
 
         expect(logger.log).to.exist; // mixing was successful
         expect(loggers).to.contain(mixee);
@@ -168,8 +168,8 @@ describe('mixing', () => {
         let threw = false;
         let target = {};
 
-        let mixin = logger_mixin({
-          post_mix: stub().throws(error)
+        let mixin = loggerMixin({
+          postmix: stub().throws(error)
         });
         expect(mixin.log).to.exist;
 
@@ -177,21 +177,20 @@ describe('mixing', () => {
           mix(target, mixin);
         } catch (e) {
           threw = true;
-        } finally {
-          expect(threw).to.be.true;
-          expect(target.log).to.equal(mixin.log); // was mixed in before throwing
         }
+        expect(threw).to.be.true;
+        expect(target.log).to.equal(mixin.log); // was mixed in before throwing
       });
 
       it('should not mix it into the target', () => {
         let target = {};
-        let mixin = logger_mixin({
-          post_mix: new Function()
+        let mixin = loggerMixin({
+          postmix: new Function()
         });
 
         mix(target, mixin);
 
-        expect(target.post_mix).not.to.exist;
+        expect(target.postmix).not.to.exist;
         expect(target.log).to.exist;
       });
 
@@ -202,9 +201,9 @@ describe('mixing', () => {
   describe('mix options', () => {
 
     beforeEach(() => {
-      this.logger = logger_mixin({
-        err_log: '/logs/app.err',
-        inf_log: '/logs/app.log',
+      this.logger = loggerMixin({
+        errLog: '/logs/app.err',
+        infLog: '/logs/app.log',
       });
     });
 
@@ -212,23 +211,23 @@ describe('mixing', () => {
 
       it('should omit some mixin keys', () => {
         let target = {};
-        mix(target, this.logger, {omit: ['err_log', 'inf_log']});
+        mix(target, this.logger, {omit: ['errLog', 'infLog']});
 
-        expect(target.err_log).not.to.exist;
-        expect(target.inf_log).not.to.exist;
+        expect(target.errLog).not.to.exist;
+        expect(target.infLog).not.to.exist;
         expect(target.log).to.exist;
       });
 
       it('should expect a non-empty Array for omissions', () => {
-        [[], {}, null, 1, 'String'].forEach(omit => {
-          expect(() => {
+        [[], {}, null, 1, 'String'].forEach(function(omit) {
+          expect(function() {
             mix({}, this.logger, {omit});
           }).to.throw(TypeError, 'Expected omit option to be a nonempty Array');
         });
       });
 
       it('should expect omission keys that are in the mixin', () => {
-        expect(() => {
+        expect(function() {
           mix({}, this.logger, {omit: ['non_mixin_key']});
         }).to.throw("Some omit keys aren't in mixin: non_mixin_key");
       });
@@ -249,7 +248,7 @@ describe('mixing', () => {
       });
 
       it('should not omit all mixin keys', () => {
-        expect(() => {
+        expect(function() {
           mix({}, this.logger, {
             omit: Object.getOwnPropertyNames(this.logger)
           });
@@ -261,12 +260,12 @@ describe('mixing', () => {
     describe('mixin method adapters', () => {
 
       it('should expect a map of mixin method names to functions', () => {
-        ['String', 1, null, [], true].forEach(adapter_to => {
-          expect(() => {
-            mix({}, this.logger, {adapter_to});
+        ['String', 1, null, [], true].forEach(adapterTo => {
+          expect(function() {
+            mix({}, this.logger, {adapterTo});
           }).to.throw(
             TypeError,
-            'adapter_to: expected dict of mixin methods to functions');
+            'adapterTo: expected dict of mixin methods to functions');
         });
       });
 
@@ -277,89 +276,89 @@ describe('mixing', () => {
           {log: null},
           {log: 'string'},
         ].forEach(adapters => {
-          expect(() => {
-            mix({}, this.logger, {adapter_to: adapters});
-          }).to.throw(TypeError, "adapter_to: value for log isn't a function");
-          expect(() => {
-            mix({}, this.logger, {adapter_from: adapters});
-          }).to.throw(TypeError, "adapter_from: value for log isn't a function");
+          expect(function() {
+            mix({}, this.logger, {adapterTo: adapters});
+          }).to.throw(TypeError, "adapterTo: value for log isn't a function");
+          expect(function() {
+            mix({}, this.logger, {adapterFrom: adapters});
+          }).to.throw(TypeError, "adapterFrom: value for log isn't a function");
         });
       });
 
       it('should expect methods that are in the mixin', () => {
         interface IErrorFixture {
           adapters: Object;
-          expected_error: string;
+          expectedError: string;
         }
 
         let fixtures: IErrorFixture[] = [
           {
             adapters: {
               log: new Function(),                  // valid method
-              not_a_method: new Function(),  // invalid - not in mixin
+              notMethod: new Function(),  // invalid - not in mixin
             },
-            expected_error: `not_a_method isn't a method on ${this.logger}`,
+            expectedError: `notMethod isn't a method on ${this.logger}`,
           },
           {
             adapters: {
               log: new Function(),     // valid method
-              err_log: new Function(), // non-function property
+              errLog: new Function(), // non-function property
             },
-            expected_error: `err_log isn't a method on ${this.logger}`,
+            expectedError: `errLog isn't a method on ${this.logger}`,
           },
         ];
 
-        fixtures.forEach((fixture: IErrorFixture) => {
-          expect(() => {
+        fixtures.forEach(function(fixture: IErrorFixture) {
+          expect(function() {
             mix({}, this.logger, {
-              adapter_to: fixture.adapters
+              adapterTo: fixture.adapters
             });
-          }).to.throw(fixture.expected_error);
-          expect(() => {
+          }).to.throw(fixture.expectedError);
+          expect(function() {
             mix({}, this.logger, {
-              adapter_from: fixture.adapters
+              adapterFrom: fixture.adapters
             });
-          }).to.throw(fixture.expected_error);
+          }).to.throw(fixture.expectedError);
         });
       });
 
       describe('adapters', () => {
 
         beforeEach(() => {
-          this.mock_console = {
+          this.mockConsole = {
             info: spy(),
             error: spy(),
             log: spy(),
           };
         });
 
-        describe('adapter_to', () => {
+        describe('adapterTo', () => {
 
           it('should be called on the target before the mixin method', () => {
             let target = {};
-            let pre_log = spy();
+            let prelog = spy();
 
             spy(this.logger, 'log');
 
             mix(target, this.logger, {
-              adapter_to: {
-                log: pre_log
+              adapterTo: {
+                log: prelog
               },
             });
 
             target.log();
 
             expect(this.logger.log.calledOnce).to.be.true;
-            expect(pre_log.calledOnce).to.be.true;
+            expect(prelog.calledOnce).to.be.true;
 
-            expect(pre_log.calledOn(target)).to.be.true;
-            expect(pre_log.calledBefore(this.logger.log)).to.be.true;
+            expect(prelog.calledOn(target)).to.be.true;
+            expect(prelog.calledBefore(this.logger.log)).to.be.true;
           });
 
           it('should be an adapter to the mixin method', () => {
-            let mock_console = this.mock_console;
+            let mockConsole = this.mockConsole;
             let options: IMixOptions = {
-              adapter_to: {
+              adapterTo: {
                 // prefix every message with ERROR or INFO
                 log(error: Error, message: string): string {
                   if (error) {
@@ -374,50 +373,50 @@ describe('mixing', () => {
             };
 
             stub(this.logger, 'log', function(message: string): void {
-              mock_console.log(`${this.logname}:${message}`);
+              mockConsole.log(`${this.logname}:${message}`);
             });
 
             let target = {
-              logname: 'prefix_logger'
+              logname: 'prefixLogger'
             };
             mix(target, this.logger, options);
 
             target.log(null, 'A-OK.');
-            expect(mock_console.log.calledWithExactly('prefix_logger:INFO:A-OK.'))
+            expect(mockConsole.log.calledWithExactly('prefixLogger:INFO:A-OK.'))
               .to.be.true;
 
             target.log(new Error('Uh oh.'));
-            expect(mock_console.log.calledWithExactly('prefix_logger:ERROR:Uh oh.'))
+            expect(mockConsole.log.calledWithExactly('prefixLogger:ERROR:Uh oh.'))
               .to.be.true;
           });
 
         });
 
-        describe('adapter_from', () => {
+        describe('adapterFrom', () => {
 
           it('should be called on the target after the mixin method', () => {
             let target = {};
-            let post_log = spy();
+            let postLog = spy();
 
             spy(this.logger, 'log');
 
             mix(target, this.logger, {
-              adapter_from: {
-                log: post_log
+              adapterFrom: {
+                log: postLog
               },
             });
 
             target.log();
 
             expect(this.logger.log.calledOnce).to.be.true;
-            expect(post_log.calledOnce).to.be.true;
+            expect(postLog.calledOnce).to.be.true;
 
-            expect(post_log.calledOn(target)).to.be.true;
-            expect(post_log.calledAfter(this.logger.log)).to.be.true;
+            expect(postLog.calledOn(target)).to.be.true;
+            expect(postLog.calledAfter(this.logger.log)).to.be.true;
           });
 
           it('should adapt to the mixin method', () => {
-            let mock_console = this.mock_console;
+            let mockConsole = this.mockConsole;
             interface ILogResult {
               error: boolean;
               message: string;
@@ -440,78 +439,78 @@ describe('mixing', () => {
               });
 
             let options: IMixOptions = {
-              adapter_from: {
+              adapterFrom: {
                 // log to console, afterward
-                log(log_result: ILogResult): void {
-                  if (log_result.error) {
-                    mock_console.error(`${this.logname}:${log_result.message}`);
+                log(logResult: ILogResult): void {
+                  if (logResult.error) {
+                    mockConsole.error(`${this.logname}:${logResult.message}`);
                   }
-                  mock_console.info(`${this.logname}:${log_result.message}`);
+                  mockConsole.info(`${this.logname}:${logResult.message}`);
                 },
               },
             };
 
             let target = {
-              logname: 'console_logger'
+              logname: 'consoleLogger'
             };
             mix(target, this.logger, options);
 
             target.log(null, 'Hello, World!');
-            expect(mock_console.info.calledWithExactly(
-              'console_logger:Hello, World!')).to.be.true;
+            expect(mockConsole.info.calledWithExactly(
+              'consoleLogger:Hello, World!')).to.be.true;
 
             target.log(new Error('Something bad happened.'));
-            expect(mock_console.error.calledWithExactly(
-              'console_logger:Something bad happened.')).to.be.true;
+            expect(mockConsole.error.calledWithExactly(
+              'consoleLogger:Something bad happened.')).to.be.true;
           });
 
         });
 
         it('should chain adapters', () => {
-          let mock_console = this.mock_console;
+          let mockConsole = this.mockConsole;
 
-          let logger = logger_mixin({
-            initial_message: 'Hello, World!',
+          let logger = loggerMixin({
+            initialMessage: 'Hello, World!',
 
             log(message: string): string {
               message = `${message}::log`;
-              mock_console.log(message);
+              mockConsole.log(message);
               return message;
             },
           });
 
           let options: IMixOptions = {
-            adapter_to: {
+            adapterTo: {
               log(): string {
-                let message = `${this.initial_message}**info`;
-                mock_console.info(message);
+                let message = `${this.initialMessage}**info`;
+                mockConsole.info(message);
                 return message;
               },
             },
 
-            adapter_from: {
+            adapterFrom: {
               log(message: string): string {
                 message = `${message}++error`;
-                mock_console.error(message);
+                mockConsole.error(message);
                 return message;
               },
             },
           };
 
-          spy(options.adapter_to, 'log');
-          spy(options.adapter_from, 'log');
+          spy(options.adapterTo, 'log');
+          spy(options.adapterFrom, 'log');
           spy(logger, 'log');
 
           expect(mix({}, logger, options).log())
             .to.equal('Hello, World!**info::log++error');
 
-          expect(mock_console.info.calledBefore(mock_console.log));
-          expect(mock_console.log.calledBefore(mock_console.error));
+          expect(mockConsole.info.calledBefore(mockConsole.log));
+          expect(mockConsole.log.calledBefore(mockConsole.error));
 
           expect(
-            options.adapter_to.log.calledBefore(logger.log)).to.be.true;
+            options.adapterTo.log.calledBefore(logger.log)).to.be.true;
           expect(
-            logger.log.calledBefore(options.adapter_from.log)).to.be.true;
+            logger.log.calledBefore(options.adapterFrom.log)).to.be.true;
         });
 
       });

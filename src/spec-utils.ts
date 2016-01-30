@@ -1,9 +1,5 @@
-import {mix_into} from './utility';
+import {mixInto} from './utility';
 
-export var logger_mixin = (extensions: Object = {}) => {
-  return mix_into(
-    {
-      log: new Function()
-    },
-    extensions);
+export var loggerMixin = function(extensions: Object = {}) {
+  return mixInto({log: new Function()}, extensions);
 };

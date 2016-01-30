@@ -1,11 +1,10 @@
-/// <reference path="../index.d.ts" />
 import {
-  mix_into,
-  diff_arrays,
-  for_own,
-  is_function,
-  is_empty,
-  is_plain_object,
+  mixInto,
+  diffArrays,
+  forOwn,
+  isFunction,
+  isEmpty,
+  isPlainObject,
   NOOP,
 } from '../utility';
 import {Option} from './types';
@@ -17,56 +16,63 @@ interface IOptions extends IMixOptions, IMixin {}
 
 const DEFAULT_IMIX_OPTIONS: IOptions = {
   omit: [],
-  adapter_to: {},
-  pre_mix: NOOP,
-  adapter_from: {},
-  post_mix: NOOP,
+  adapterTo: {},
+  premix: NOOP,
+  adapterFrom: {},
+  postmix: NOOP,
 };
 
-let check_method_adapters = (key: string, adapters: Object, mixin: IMixin): void => {
-  if (!is_plain_object(adapters)) {
+let checkMethodAdapters = function(
+  key: string,
+  adapters: Object,
+  mixin: IMixin
+): void {
+  if (!isPlainObject(adapters)) {
     throw new TypeError(
       `${key}: expected dict of mixin methods to functions`);
   }
-  for_own(adapters, (adapter: Function, fn_name: string) => {
-    if (!is_function(adapter)) {
-      throw new TypeError(`${key}: value for ${fn_name} isn't a function`);
-    } else if (!is_function(mixin[fn_name])) {
-      throw new Error(`${fn_name} isn't a method on ${mixin}`);
+  forOwn(adapters, function(adapter: Function, fnName: string) {
+    if (!isFunction(adapter)) {
+      throw new TypeError(`${key}: value for ${fnName} isn't a function`);
+    } else if (!isFunction(mixin[fnName])) {
+      throw new Error(`${fnName} isn't a method on ${mixin}`);
     }
   });
 };
 
-let check_mixing_fn = (key: string, fn: Function): void => {
-  if (!is_function(fn)) {
+let checkMixinFn = (key: string, fn: Function): void => {
+  if (!isFunction(fn)) {
     throw new TypeError(`Expected a function for ${key}`);
   }
 };
 
-let check_omit = (omit: string[], mixin: IMixin): void => {
-  if (!Array.isArray(omit) || is_empty(omit)) {
+let checkOmit = (omit: string[], mixin: IMixin): void => {
+  if (!Array.isArray(omit) || isEmpty(omit)) {
     throw new TypeError('Expected omit option to be a nonempty Array');
   }
-  let diff = diff_arrays(omit, Object.getOwnPropertyNames(mixin));
-  if (!is_empty(diff)) {
+  let diff = diffArrays(omit, Object.getOwnPropertyNames(mixin));
+  if (!isEmpty(diff)) {
     throw new Error(`Some omit keys aren't in mixin: ${diff}`);
   }
 };
 
-let parse_inline_options = (mixin: IMixin, options: Object,
-                            parsed: IOptions): void => {
-  for_own(options, (value, key: string) => {
-    switch (Option.from_key(key)) {
+let parseInlineOptions = (
+  mixin: IMixin,
+  options: Object,
+  parsed: IOptions
+): void => {
+  forOwn(options, (value, key: string) => {
+    switch (Option.fromKey(key)) {
       case (Option.Type.ADAPTER_TO):
-        check_method_adapters(key, value, mixin);
-        parsed.adapter_to = value;
+        checkMethodAdapters(key, value, mixin);
+        parsed.adapterTo = value;
         break;
       case (Option.Type.ADAPTER_FROM):
-        check_method_adapters(key, value, mixin);
-        parsed.adapter_from = value;
+        checkMethodAdapters(key, value, mixin);
+        parsed.adapterFrom = value;
         break;
       case (Option.Type.OMIT):
-        check_omit(value, mixin);
+        checkOmit(value, mixin);
         parsed.omit = value;
         break;
     }
@@ -74,26 +80,26 @@ let parse_inline_options = (mixin: IMixin, options: Object,
 };
 
 let parse_mixins_options = (mixin: IMixin, parsed: IOptions): void => {
-  for_own(mixin, (value, key: string) => {
-    switch (Option.from_key(key)) {
+  forOwn(mixin, (value, key: string) => {
+    switch (Option.fromKey(key)) {
       case (Option.Type.PRE_MIX):
-        check_mixing_fn(key, value);
-        parsed.pre_mix = value;
+        checkMixinFn(key, value);
+        parsed.premix = value;
         break;
       case (Option.Type.POST_MIX):
-        check_mixing_fn(key, value);
-        parsed.post_mix = value;
+        checkMixinFn(key, value);
+        parsed.postmix = value;
         break;
     }
   });
 };
 
-export var parse_ioptions = (options: Object, mixin: IMixin): IOptions => {
-  if (!is_plain_object(options)) {
+export var parseIOptions = (options: Object, mixin: IMixin): IOptions => {
+  if (!isPlainObject(options)) {
     throw new TypeError('Expected options dictionary');
   }
-  let parsed: IOptions = mix_into({}, DEFAULT_IMIX_OPTIONS);
-  parse_inline_options(mixin, options, parsed);
+  let parsed: IOptions = mixInto({}, DEFAULT_IMIX_OPTIONS);
+  parseInlineOptions(mixin, options, parsed);
   parse_mixins_options(mixin, parsed);
   return parsed;
 };

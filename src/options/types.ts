@@ -57,19 +57,19 @@ export enum OptionType {
 }
 
 export var Option = {
-  from_key: (key: string): OptionType => {
-    let specifies_option = (option_key: IOptionKey) => {
-      return (option_key.primary === key) || (option_key.aliases.indexOf(key) > -1);
+  fromKey: function(key: string): OptionType {
+    let specifiesOption = (optionKey: IOptionKey) => {
+      return (optionKey.primary === key) || (optionKey.aliases.indexOf(key) > -1);
     };
-    if (specifies_option(ADAPTER_TO_KEY)) {
+    if (specifiesOption(ADAPTER_TO_KEY)) {
       return OptionType.ADAPTER_TO;
-    } else if (specifies_option(PRE_MIX_KEY)) {
+    } else if (specifiesOption(PRE_MIX_KEY)) {
       return OptionType.PRE_MIX;
-    } else if (specifies_option(ADAPTER_FROM_KEY)) {
+    } else if (specifiesOption(ADAPTER_FROM_KEY)) {
       return OptionType.ADAPTER_FROM;
-    } else if (specifies_option(POST_MIX_KEY)) {
+    } else if (specifiesOption(POST_MIX_KEY)) {
       return OptionType.POST_MIX;
-    } else if (specifies_option(OMITS_KEY)) {
+    } else if (specifiesOption(OMITS_KEY)) {
       return OptionType.OMIT;
     } else {
       return undefined;

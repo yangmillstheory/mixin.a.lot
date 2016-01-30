@@ -234,7 +234,7 @@ These properties will not be copied into `target`.
 
 ## Development
 
-**Development is in `snake_case` TypeScript.**
+**Development is in TypeScript.**
 
 Get the source:
 

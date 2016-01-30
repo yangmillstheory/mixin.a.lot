@@ -1,10 +1,10 @@
-import {parse_ioptions} from './options';
+import {parseIOptions} from './options';
 import {
   compose,
-  diff_arrays,
-  is_empty,
-  is_object,
-  is_plain_object,
+  diffArrays,
+  isEmpty,
+  isObject,
+  isPlainObject,
 } from './utility';
 
 
@@ -14,8 +14,8 @@ const USAGE = (target?): string => {
 
 interface IAdapting {
   method: Function;
-  pre_adapter: Function;
-  post_adapter: Function;
+  preAdapter: Function;
+  postAdapter: Function;
   key: string;
 }
 
@@ -24,65 +24,65 @@ export var mix = function(target: Object, mixin: IMixin, options: IMixOptions = 
   // setup & pre-mixing checks
   if (target === undefined) {
     throw new TypeError(USAGE());
-  } else if (!is_object(target)) {
+  } else if (!isObject(target)) {
     throw new TypeError(USAGE(target));
   }
-  if (!is_plain_object(mixin)) {
+  if (!isPlainObject(mixin)) {
     throw new TypeError('Expected mixin to be an object literal');
   }
   let {
-    adapter_to,
-    pre_mix,
-    adapter_from,
-    post_mix,
+    adapterTo,
+    premix,
+    adapterFrom,
+    postmix,
     omit,
-  } = parse_ioptions(options, mixin);
-  let keys_to_mix_in = diff_arrays(
-    Object.getOwnPropertyNames(mixin).filter(key => {
-      return (mixin[key] !== pre_mix) && (mixin[key] !== post_mix);
+  } = parseIOptions(options, mixin);
+  let keysToMixIn = diffArrays(
+    Object.getOwnPropertyNames(mixin).filter(function(key) {
+      return (mixin[key] !== premix) && (mixin[key] !== postmix);
     }),
     omit);
-  if (is_empty(keys_to_mix_in)) {
+  if (isEmpty(keysToMixIn)) {
     throw new Error('All mixin keys have been omitted!');
   }
 
   ////////////////////
   // initialize mixing
-  pre_mix.call(mixin, target);
+  premix.call(mixin, target);
 
   //////////////
   // perform mix
   let adaptings: IAdapting[] = [];
-  keys_to_mix_in.forEach((key: string) => {
-    let adapters = adapter_to[key] || adapter_from[key];
+  keysToMixIn.forEach((key: string) => {
+    let adapters = adapterTo[key] || adapterFrom[key];
     if (adapters) {
       // defer attaching adapters until all other
       // data/behavior have been mixed in
       adaptings.push({
         key,
-        pre_adapter: adapter_to[key],
-        post_adapter: adapter_from[key],
+        preAdapter: adapterTo[key],
+        postAdapter: adapterFrom[key],
         method: mixin[key],
       });
     } else  {
       target[key] = mixin[key];
     }
   });
-  adaptings.forEach(adapting => {
+  adaptings.forEach(function(adapting) {
     // attach adapters now
-    let {pre_adapter, post_adapter, method, key} = adapting;
-    if (pre_adapter) {
-      target[key] = compose(method, pre_adapter, target);
-      if (post_adapter) {
-        target[key] = compose(post_adapter, target[key], target);
+    let {preAdapter, postAdapter, method, key} = adapting;
+    if (preAdapter) {
+      target[key] = compose(method, preAdapter, target);
+      if (postAdapter) {
+        target[key] = compose(postAdapter, target[key], target);
       }
-    } else if (post_adapter) {
-      target[key] = compose(post_adapter, method, target);
+    } else if (postAdapter) {
+      target[key] = compose(postAdapter, method, target);
     }
   });
 
   //////////////////
   // finalize mixing
-  post_mix.call(mixin, target);
+  postmix.call(mixin, target);
   return target;
 };
